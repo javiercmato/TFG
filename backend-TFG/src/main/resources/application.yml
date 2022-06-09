@@ -1,0 +1,39 @@
+# Fichero con la configuración global común para todos los entornos de ejecución
+spring:
+  profiles:
+    # Indica a Spring que use la configuración asociada al perfil activo actualmente
+    active: '@activatedProperties@'
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  datasource:
+    tomcat:
+      max-active: 8
+      max-idle: 2
+      max-wait: 5000
+      remove-abandoned: true
+      remove-abandoned-timeout: 15
+      log-abandoned: true
+  devtools:
+    restart:
+      trigger-file: reload
+    livereload:
+      enabled: false
+  jpa:
+    database: postgresql
+    show-sql: false
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+    database-platform:
+
+server:
+  servlet:
+    context-path: '@project.contextPath@'
+

@@ -1,0 +1,17 @@
+# Ficheros generales
+**.DS_Store
+
+# Ficheros de IntelliJ
+.idea
+.project
+.settings
+**.iml
+
+# Ficheros de VSCode
+.vscode
+
+# Ficheros de Draw.io
+**.drawio
+
+# Ficheros de cobertura
+**/coverage

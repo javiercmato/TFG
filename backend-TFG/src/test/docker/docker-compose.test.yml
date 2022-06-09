@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  postgres:
+    image: 'postgres:14-alpine'
+    # Por defecto Postgres se ejecuta en el puerto 5432
+    # Vamos a blindar la conexión de nuestra máquina al contenedor de Postgres con el mismo puerto
+    # [Puerto que abrimos en nuestra máquina]:[Puerto al que queremos acceder en el contenedor]
+    ports:
+      - 5431:5432
+
+    # Creamos una red para evitar conflictos con otras instalaciones existentes en nuestra máquina local
+    networks:
+      - testing_network
+
+    # Variables de entorno del contenedor. Se leen de .env.test en la raíz del proyecto.
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}               # Nombre del usuario por defecto en la BD
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}       # Contraseña para acceder a la BD
+      POSTGRES_DB: ${POSTGRES_DB}                   # Base de datos creada por defecto en la BD
+
+networks:
+  testing_network:
+    driver: bridge

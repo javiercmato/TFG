@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>es.udc.fic.tfg</groupId>
+    <artifactId>backend-tfg</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>backend-TFG</name>
+    <description>Backend de una aplicación web para sugerir y compartir recetas de cocina basadas en ingredientes concretos.</description>
+    <inceptionYear>2022</inceptionYear>
+
+    <properties>
+        <!-- Propiedades del proyecto -->
+        <project.contextPath>/backend</project.contextPath>
+        <docker-compose.test.path>${project.basedir}/src/test/docker/docker-compose.test.yml</docker-compose.test.path>
+
+        <!-- Configuración de CI/CD -->
+        <sonar.organization>javiercmato</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+        <!-- Versiones de dependencias -->
+        <dependencies.versions.testcontainers>1.17.2</dependencies.versions.testcontainers>
+
+        <!-- Versiones de plugins del proyecto -->
+        <plugins.jjwt.version>0.9.1</plugins.jjwt.version>
+        <plugins.maven-help.version>3.2.0</plugins.maven-help.version>
+
+        <!-- Versiones de plugins de los perfiles de desarrollo -->
+        <plugin.jacoco.version>0.8.7</plugin.jacoco.version>
+        <plugin.failsafe.version>3.0.0-M5</plugin.failsafe.version>
+        <plugin.syncdk.version>2.4.0</plugin.syncdk.version>
+
+        <!-- Opciones del compilador -->
+        <java.version>11</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>javax.transaction-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${plugins.jjwt.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${dependencies.versions.testcontainers}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!-- Nombre de la aplicación empaquetada: "backend-tfg:X.Y.Z -->
+        <finalName>${project.artifactId}-${project.version}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources/docker</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+
+            <testResource>
+                <directory>src/test/resources/docker</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+
+        <plugins>
+            <!-- Configuración de Lombok -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Configuración de la ayuda de Maven -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>${plugins.maven-help.version}</version>
+                <executions>
+                    <execution>
+                        <!-- Mostrar qué entorno de desarrollo (development, testinst o production) está activo en la fase de compilación -->
+                        <id>show-active-profile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+    <!--  https://stackabuse.com/spring-boot-profiles-for-dev-and-prod-environments/  -->
+    <profiles>
+        <!-- Configuración del entorno de desarrollo: development -->
+        <profile>
+            <id>development</id>
+            <properties>
+                <!-- Configurar Spring para usar fichero src/main/resources/application-dev.yml -->
+                <activatedProperties>dev</activatedProperties>
+                <!-- Saltar tets -->
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+            <!-- Activar por defecto el entorno de desarrollo -->
+            <!-- En el servidor de aplicaciones se modificará al entorno de producción -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+
+        </profile>
+
+
+        <!-- Configuración del entorno de pruebas: testing -->
+        <profile>
+            <id>testing</id>
+            <properties>
+                <!-- Configurar Spring para usar fichero src/test/resources/application-test.yml -->
+                <activatedProperties>test</activatedProperties>
+            </properties>
+
+            <build>
+                <plugins>
+                    <!-- Configuración de Jacoco: Cobertura del código -->
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${plugin.jacoco.version}</version>
+                        <executions>
+                            <!-- Preparar agente de Jacoco para inspeccionar código -->
+                            <execution>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                            </execution>
+
+                            <!-- Generar informes antes de empaquetar código -->
+                            <execution>
+                                <id>report</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <!-- Configuración de Maven para los tests de integración -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${plugin.failsafe.version}</version>
+                    </plugin>
+
+                    <!-- Configuración de Syncdk: ejecutar comandos de Docker-Compose desde Maven -->
+                    <plugin>
+                        <groupId>com.dkanejs.maven.plugins</groupId>
+                        <artifactId>docker-compose-maven-plugin</artifactId>
+                        <version>${plugin.syncdk.version}</version>
+                        <executions>
+                            <!-- Arrancar BD de pruebas antes de los tests -->
+                            <execution>
+                                <id>up</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <!-- Primero apagar y luego encender para evitar errores -->
+                                    <goal>down</goal>
+                                    <goal>up</goal>
+                                </goals>
+                                <configuration>
+                                    <composeFile>${docker-compose.test.path}</composeFile>
+                                    <detachedMode>true</detachedMode>
+                                    <envFile>${project.basedir}/.env.test</envFile>
+                                </configuration>
+                            </execution>
+
+                            <!-- Apagar BD de pruebas tras los tests -->
+                            <execution>
+                                <id>down</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>down</goal>
+                                </goals>
+                                <configuration>
+                                    <composeFile>${docker-compose.test.path}</composeFile>
+                                    <removeVolumes>true</removeVolumes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+
+
+        <!-- Configuración del entorno de producción: production -->
+        <profile>
+            <id>production</id>
+            <properties>
+                <!-- Configurar Spring para usar fichero src/main/resources/application-prod.yml -->
+                <activatedProperties>prod</activatedProperties>
+                <!-- No ejecutar tests: ya se han ejecutado antes del despliegue -->
+                <maven.test.skip>true</maven.test.skip>
+            </properties>
+
+            <build>
+                <plugins>
+                    <!-- Configuración para copiar dependencias de Maven -->
+                    <!-- Copiar las dependencias de Maven desde Heroku al proyecto -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <!-- Copiar dependencias tras fase de empaquetado -->
+                                <id>copy-dependencies</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+</project>
