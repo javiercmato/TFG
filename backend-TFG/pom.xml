@@ -29,6 +29,7 @@
 
         <!-- Versiones de dependencias -->
         <dependencies.versions.testcontainers>1.17.2</dependencies.versions.testcontainers>
+        <dependencies.versions.postgresqldriver>42.3.4</dependencies.versions.postgresqldriver>
 
         <!-- Versiones de plugins del proyecto -->
         <plugins.jjwt.version>0.9.1</plugins.jjwt.version>
@@ -68,6 +69,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+            <version>${dependencies.versions.postgresqldriver}</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -135,6 +137,11 @@
 
             <resource>
                 <directory>src/main/resources/docker</directory>
+                <filtering>true</filtering>
+            </resource>
+
+            <resource>
+                <directory>src/main/sql</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>

@@ -18,6 +18,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}       # Contraseña para acceder a la BD
       POSTGRES_DB: ${POSTGRES_DB}                   # Base de datos creada por defecto en la BD
 
+    # Crear las tablas tan pronto se arranque el contenedor
+    # https://levelup.gitconnected.com/creating-and-filling-a-postgres-db-with-docker-compose-e1607f6f882f
+    volumes:
+      - ../../main/sql/user-schema.sql:/docker-entrypoint-initdb.d/user-schema.sql    # Crear tablas de subsistema de gestión de usuarios
+
+
 networks:
   testing_network:
     driver: bridge
