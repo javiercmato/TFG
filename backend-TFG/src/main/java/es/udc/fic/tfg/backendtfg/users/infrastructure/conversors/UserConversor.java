@@ -24,9 +24,11 @@ public class UserConversor {
         dto.setRole(entity.getRole().toString());
         dto.setBannedByAdmin(entity.isBannedByAdmin());
         
-        // Codificar la imagen
-        String base64EncodedAvatar = imageConversor.encodeToBase64String(entity.getAvatar());
-        dto.setAvatar(base64EncodedAvatar);
+        // Codificar la imagen (si existe)
+        if (entity.getAvatar() != null) {
+            String base64EncodedAvatar = imageConversor.encodeToBase64String(entity.getAvatar());
+            dto.setAvatar(base64EncodedAvatar);
+        }
         
         return dto;
     }
@@ -69,9 +71,11 @@ public class UserConversor {
         entity.setNickname(dto.getNickname());
         entity.setPassword(dto.getPassword());
         
-        // Decodificar la imagen
-        byte[] byteArrayImage = imageConversor.encodeToByteArray(dto.getAvatar());
-        entity.setAvatar(byteArrayImage);
+        // Decodificar la imagen (si existe)
+        if (dto.getAvatar() != null) {
+            byte[] byteArrayImage = imageConversor.encodeToByteArray(dto.getAvatar());
+            entity.setAvatar(byteArrayImage);
+        }
         
         return entity;
     }

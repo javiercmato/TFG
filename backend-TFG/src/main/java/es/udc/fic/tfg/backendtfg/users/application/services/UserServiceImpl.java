@@ -10,7 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Transactional
 @Service
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
         
         // Asignar datos por defecto del usuario
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRegisterDate(Calendar.getInstance().getTime());
+        user.setRegisterDate(LocalDateTime.now());
         user.setRole(UserRole.USER);
         
         // Guardar datos y devolver usuario creado

@@ -6,6 +6,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Getter
@@ -47,8 +48,9 @@ public class User {
     @Column(name = "avatar")
     private byte[] avatar;
     
+    @Type(type = "org.hibernate.type.LocalDateTimeType")
     @Column(name = "registerdate", nullable = false)
-    private Date registerDate;
+    private LocalDateTime registerDate;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

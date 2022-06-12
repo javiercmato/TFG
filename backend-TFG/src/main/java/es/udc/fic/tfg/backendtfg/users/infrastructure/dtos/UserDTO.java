@@ -3,7 +3,7 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 import lombok.*;
 
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -44,7 +44,7 @@ public class UserDTO {
     private String avatar;
     
     @PastOrPresent(groups = {UpdateValidations.class})
-    private Date registerDate;
+    private LocalDateTime registerDate;
     
     private String role;
     

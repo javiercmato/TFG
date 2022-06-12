@@ -12,7 +12,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp" schema users;
 CREATE TABLE IF NOT EXISTS users.UserTable (
     id              uuid            DEFAULT users.uuid_generate_v1(),
     nickname        VARCHAR(30)     NOT NULL,
-    password        VARCHAR(30)     NOT NULL,
+    password        VARCHAR         NOT NULL,
     name            VARCHAR(50)     NOT NULL,
     surname         VARCHAR(50),
     email           VARCHAR(100)    NOT NULL,
