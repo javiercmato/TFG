@@ -53,6 +53,11 @@ public class User {
     @Column(name = "role", nullable = false)
     private UserRole role;
     
+    @Type(type = "org.hibernate.type.BooleanType")
+    @Column(name = "isbannedbyadmin", nullable = false)
+    private boolean isBannedByAdmin;
+    
+    
     /* *************** Asociaciones con otras entidades *************** */
     @OneToMany(mappedBy = "creator",
             cascade = CascadeType.PERSIST,

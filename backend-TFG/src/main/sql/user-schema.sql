@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
     avatar          bytea,
     registerDate    TIMESTAMP       NOT NULL    DEFAULT CURRENT_TIMESTAMP,
     role            VARCHAR         NOT NULL,
+    isBannedByAdmin bool            NOT NULL    DEFAULT false,
 
     CONSTRAINT PK_IUser PRIMARY KEY (id),
     CONSTRAINT UNIQUE_IUser_nickname    UNIQUE (nickname),
