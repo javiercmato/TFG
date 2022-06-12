@@ -6,6 +6,8 @@
 
 # Configuración del entorno
 - [Spring Boot Profiles for DEV and PROD Environments](https://mkyong.com/maven/maven-profiles-example/)
+- [Spring Security without the WebSecurityConfigurerAdapter](https://www.codejava.net/frameworks/spring-boot/fix-websecurityconfigureradapter-deprecated)
+    - [JwtHttpConfigurer y como obtener el AuthenticationManager](https://stackoverflow.com/a/71449312/11295728)
 
 
 # Testing

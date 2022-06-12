@@ -16,7 +16,7 @@ spring:
     restart:
       trigger-file: reload
     livereload:
-      enabled: false
+      enabled: true
   jpa:
     database: postgresql
     show-sql: false
@@ -28,9 +28,13 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
-    database-platform:
 
 server:
   servlet:
     context-path: '@project.contextPath@'
+
+project:
+  jwt:
+    signKey: mySecretSignKey
+    expirationMinutes: 60
 
