@@ -1,7 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application.utils;
 
-import es.udc.fic.tfg.backendtfg.users.domain.User;
-import es.udc.fic.tfg.backendtfg.users.domain.UserRole;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

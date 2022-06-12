@@ -4,9 +4,6 @@ spring:
     # Indica a Spring que use la configuración asociada al perfil activo actualmente
     active: '@activatedProperties@'
 
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-
   datasource:
     tomcat:
       max-active: 8

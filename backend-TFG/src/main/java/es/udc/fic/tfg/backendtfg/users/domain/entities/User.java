@@ -1,11 +1,11 @@
-package es.udc.fic.tfg.backendtfg.users.domain;
+package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.*;
 
 @Getter
@@ -21,15 +21,15 @@ public class User {
     @Column(name = "id", nullable = false)
     private UUID id;
     
-    @NotNull
+    @NotBlank
     @Column(name = "nickname", nullable = false, unique = true, length = 30)
     private String nickname;
     
-    @NotNull
+    @NotBlank
     @Column(name = "password", nullable = false, length = 30)
     private String password;
     
-    @NotNull
+    @NotBlank
     @Column(name = "name", nullable = false, length = 50)
     private String name;
     
@@ -37,7 +37,8 @@ public class User {
     @Column(name = "surname", length = 50)
     private String surname;
     
-    @NotNull
+    @NotBlank
+    @Email
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
     
@@ -63,4 +64,5 @@ public class User {
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY)
     private Set<PrivateList> privateLists = new HashSet<>();
+    
 }

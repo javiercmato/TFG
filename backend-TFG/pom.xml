@@ -30,6 +30,7 @@
         <!-- Versiones de dependencias -->
         <dependencies.versions.testcontainers>1.17.2</dependencies.versions.testcontainers>
         <dependencies.versions.postgresqldriver>42.3.4</dependencies.versions.postgresqldriver>
+        <dependencies.versions.commons-io>2.11.0</dependencies.versions.commons-io>
 
         <!-- Versiones de plugins del proyecto -->
         <plugins.jjwt.version>0.9.1</plugins.jjwt.version>
@@ -110,6 +111,11 @@
             <artifactId>jjwt</artifactId>
             <version>${plugins.jjwt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${dependencies.versions.commons-io}</version>
+        </dependency>
 
     </dependencies>
 
@@ -136,7 +142,7 @@
             </resource>
 
             <resource>
-                <directory>src/main/resources/docker</directory>
+                <directory>src/main/docker</directory>
                 <filtering>true</filtering>
             </resource>
 
@@ -153,7 +159,7 @@
             </testResource>
 
             <testResource>
-                <directory>src/test/resources/docker</directory>
+                <directory>src/test/docker</directory>
                 <filtering>true</filtering>
             </testResource>
         </testResources>

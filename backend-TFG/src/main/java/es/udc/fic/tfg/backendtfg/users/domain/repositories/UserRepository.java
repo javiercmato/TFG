@@ -1,6 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.domain.repositories;
 
-import es.udc.fic.tfg.backendtfg.users.domain.User;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
@@ -15,8 +15,4 @@ public interface UserRepository extends CrudRepository<User, UUID> {
     boolean existsByNicknameIgnoreCase(String nickname);
     
     Optional<User> findByNicknameIgnoreCase(String nickname);
-    
-    
-
-
 }

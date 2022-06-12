@@ -1,8 +1,8 @@
-package es.udc.fic.tfg.backendtfg.users.application;
+package es.udc.fic.tfg.backendtfg.users.application.services;
 
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
-import es.udc.fic.tfg.backendtfg.users.domain.User;
-import es.udc.fic.tfg.backendtfg.users.domain.UserRole;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-@Service
 @Transactional
+@Service
 public class UserServiceImpl implements UserService {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired

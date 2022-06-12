@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.users.domain;
+package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

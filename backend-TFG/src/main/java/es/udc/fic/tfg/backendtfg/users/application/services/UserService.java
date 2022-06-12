@@ -1,6 +1,6 @@
-package es.udc.fic.tfg.backendtfg.users.application;
+package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.users.domain.User;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.*;
 
 import java.util.UUID;
