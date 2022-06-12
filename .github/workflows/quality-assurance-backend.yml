@@ -1,11 +1,11 @@
-# Acción para escanear la calidad del código
+# Acción para escanear la calidad del código del backend
 
-name: Escanear cálidad del código en SonarCloud
+name: Escanear cálidad del backend en SonarCloud
 on:
   # Al pushear a ramas relevantes (desarrollo, despliegue y rama principal)
   push:
     branches:
-      - features/**
+      - features/backend/**
       - develop
       - release
       - main
@@ -21,11 +21,6 @@ jobs:
     defaults:
       run:
         working-directory: ./backend-TFG/
-    # Ejecutar solo si la rama está asociada a código del backend
-    if:
-      contains(
-        'refs/heads/features/backend',
-        github.ref)
     steps:
       # Clonar repositorio en máquina remota
       - name: Checkout code.
@@ -61,35 +56,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # Needed to get PR data, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=javiercmato_TFG -P testing
-
-  # Analizar el código del frontend en servidores de SonarCloud
-  analyze_frontend:
-    name: Analyze frontend
-    runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ./frontend-tfg/
-    # Ejecutar solo si la rama está asociada a código del frontend
-    if:
-      contains(
-        'refs/heads/features/frontend',
-        github.ref)
-    steps:
-      # Clonar repositorio en máquina remota
-      - name: Checkout code.
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      
-      # Analizar código
-      - name: Analyze code.
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=javiercmato_TFG
-            -Dsonar.sources=src/
-            -Dsonar.tests=tests/
-            -Dsonar.exclusions=.node_modules
