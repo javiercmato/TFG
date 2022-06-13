@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.users.domain.exceptions;
+package es.udc.fic.tfg.backendtfg.common.domain.exceptions;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

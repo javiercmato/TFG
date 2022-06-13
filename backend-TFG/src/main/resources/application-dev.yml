@@ -6,7 +6,7 @@ logging:
         SQL: debug    # Mostrar parámetros en consultas SQL generadas por Hibernate
 
 
-# Es necesario ejecutar 'docker-compose up' sobre el fichero src/main/docker/docker-compose.dev.yml
+# Es necesario ejecutar 'docker-compose up -d' sobre el fichero src/main/docker/docker-compose.dev.yml
 spring:
   datasource:
     url: "jdbc:postgresql://localhost:${POSTGRES_DB_PORT:5430}/${POSTGRES_DB:tfg-development}"

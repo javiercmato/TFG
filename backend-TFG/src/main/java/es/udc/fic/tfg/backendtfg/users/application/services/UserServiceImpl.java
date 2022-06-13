@@ -1,9 +1,11 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
-import es.udc.fic.tfg.backendtfg.users.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public User signUp(User user) throws EntityAlreadyExistsException {
         // Comprobar si existe un usuario con el mismo nickname
         if (userRepository.existsByNicknameIgnoreCase(user.getNickname()))
-            throw new EntityAlreadyExistsException(User.class.getName(), user.getNickname());
+            throw new EntityAlreadyExistsException(User.class.getSimpleName(), user.getNickname());
         
         // Asignar datos por defecto del usuario
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -45,7 +47,8 @@ public class UserServiceImpl implements UserService {
     
     @Transactional(readOnly = true)
     @Override
-    public User login(String nickname, String rawPassword) throws IncorrectLoginException, ResourceBannedByAdministratorException {
+    public User login(String nickname, String rawPassword) throws IncorrectLoginException,
+                                                                  ResourceBannedByAdministratorException {
         // Comprobar si existe el usuario recibido
         Optional<User> optionalUser = userRepository.findByNicknameIgnoreCase(nickname);
         if ( optionalUser.isEmpty() ) {

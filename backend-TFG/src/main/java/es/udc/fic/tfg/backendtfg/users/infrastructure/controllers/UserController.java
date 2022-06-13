@@ -1,8 +1,8 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.AuthenticatedUserDTO;
@@ -25,6 +25,7 @@ public class UserController {
     
     @Autowired
     private UserControllerUtils controllerUtils;
+    
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
     
@@ -56,6 +57,5 @@ public class UserController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(authenticatedUserDTO);
     }
-    
-    /* ******************** ENDPOINTS ******************** */
+
 }

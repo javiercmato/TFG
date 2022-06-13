@@ -1,7 +1,9 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 
 import java.util.UUID;
 

@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.common.infrastructure.security;
 
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,13 +15,11 @@ import org.springframework.web.filter.CorsFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Autowired
-    private JwtGenerator jwtGenerator;
-    
+
     
     /* Cómo obtener el AuthenticationManager: https://stackoverflow.com/a/71449312/11295728 */
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtGenerator jwtGenerator) throws Exception {
         // Crear un filtro que procese el JWT que hemos creado
         JwtHttpConfigurer jwtConfigurer = new JwtHttpConfigurer(jwtGenerator);
         

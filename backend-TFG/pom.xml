@@ -29,7 +29,7 @@
 
         <!-- Versiones de dependencias -->
         <dependencies.versions.testcontainers>1.17.2</dependencies.versions.testcontainers>
-        <dependencies.versions.postgresqldriver>42.3.4</dependencies.versions.postgresqldriver>
+        <dependencies.versions.postgresqldriver>42.3.6</dependencies.versions.postgresqldriver>
         <dependencies.versions.commons-io>2.11.0</dependencies.versions.commons-io>
 
         <!-- Versiones de plugins del proyecto -->
@@ -96,7 +96,6 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
