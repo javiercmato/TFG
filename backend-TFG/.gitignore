@@ -6,7 +6,6 @@ target/
 
 ### Ficheros de configuración ###
 .env.dev
-.env.test
 
 ### STS ###
 .apt_generated
