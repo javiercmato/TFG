@@ -14,7 +14,7 @@
 - [Spring Boot Integration Tests with Docker-Compose](https://fullstackcode.dev/2021/12/25/spring-boot-integration-tests-with-docker-compose/)
 - [Syncdk Maven Plugin - Github](https://github.com/syncdk/docker-compose-maven-plugin)
 - [Creating and filling a PostgresDB with Docker-Compose](https://levelup.gitconnected.com/creating-and-filling-a-postgres-db-with-docker-compose-e1607f6f882f)
- 
+- [Loading images as byte[] in Java](https://mkyong.com/java/how-to-convert-bufferedimage-to-byte-in-java/)
 
 # Despliegue de la aplicación
 - [Preparing a Spring Boot App for Production on Heroku](https://devcenter.heroku.com/articles/preparing-a-spring-boot-app-for-production-on-heroku)

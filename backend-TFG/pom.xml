@@ -161,6 +161,11 @@
                 <directory>src/test/docker</directory>
                 <filtering>true</filtering>
             </testResource>
+
+            <testResource>
+                <directory>src/test/assets</directory>
+                <filtering>true</filtering>
+            </testResource>
         </testResources>
 
         <plugins>
