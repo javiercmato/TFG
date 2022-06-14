@@ -8,6 +8,7 @@ version: '3.3'
 services:
   postgres:
     image: 'postgres:14-alpine'
+    container_name: 'Development_container'
     # Por defecto Postgres se ejecuta en el puerto 5432
     # Vamos a blindar la conexión de nuestra máquina desde un puerto distinto, al puerto de Postgres dentro del contenedor
     # [Puerto que abrimos en nuestra máquina]:[Puerto al que queremos acceder en el contenedor]

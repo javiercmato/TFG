@@ -1,17 +1,14 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.conversors;
 
-import es.udc.fic.tfg.backendtfg.common.infrastructure.conversors.ImageConversor;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import lombok.experimental.UtilityClass;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Base64;
 
 @UtilityClass
 public class UserConversor {
-    @Autowired
-    private ImageConversor imageConversor;
-    
     /* ******************** Convertir a DTO ******************** */
     public static UserDTO toUserDTO(User entity) {
         UserDTO dto = new UserDTO();
@@ -26,8 +23,9 @@ public class UserConversor {
         
         // Codificar la imagen (si existe)
         if (entity.getAvatar() != null) {
-            String base64EncodedAvatar = imageConversor.encodeToBase64String(entity.getAvatar());
-            dto.setAvatar(base64EncodedAvatar);
+            dto.setAvatar(
+                Base64.getEncoder().encodeToString(entity.getAvatar())
+            );
         }
         
         return dto;
@@ -35,7 +33,8 @@ public class UserConversor {
     
     public static AuthenticatedUserDTO toAuthenticatedUserDTO(User entity, String token) {
         AuthenticatedUserDTO dto = new AuthenticatedUserDTO();
-        dto.setUserDTO(toUserDTO(entity));
+        UserDTO userDTO = toUserDTO(entity);
+        dto.setUserDTO(userDTO);
         dto.setServiceToken(token);
         
         return dto;
@@ -57,8 +56,10 @@ public class UserConversor {
         entity.setBannedByAdmin(dto.isBannedByAdmin());
         
         // Decodificar la imagen
-        byte[] byteArrayImage = imageConversor.encodeToByteArray(dto.getAvatar());
-        entity.setAvatar(byteArrayImage);
+        if (entity.getAvatar() != null)
+            entity.setAvatar(
+                Base64.getDecoder().decode(dto.getAvatar())
+            );
         
         return entity;
     }
@@ -73,8 +74,9 @@ public class UserConversor {
         
         // Decodificar la imagen (si existe)
         if (dto.getAvatar() != null) {
-            byte[] byteArrayImage = imageConversor.encodeToByteArray(dto.getAvatar());
-            entity.setAvatar(byteArrayImage);
+            entity.setAvatar(
+                Base64.getDecoder().decode(dto.getAvatar())
+            );
         }
         
         return entity;
@@ -86,9 +88,12 @@ public class UserConversor {
         entity.setSurname(dto.getSurname());
         entity.setEmail(dto.getEmail());
         
-        // Decodificar la imagen
-        byte[] byteArrayImage = imageConversor.encodeToByteArray(dto.getAvatar());
-        entity.setAvatar(byteArrayImage);
+        // Decodificar la imagen (si existe)
+        if (dto.getAvatar() != null) {
+            entity.setAvatar(
+                    Base64.getDecoder().decode(dto.getAvatar())
+            );
+        }
         
         return entity;
     }

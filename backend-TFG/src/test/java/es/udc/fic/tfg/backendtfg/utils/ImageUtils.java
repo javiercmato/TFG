@@ -6,7 +6,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.nio.file.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /** Utilidad para cargar imágenes en los tests
  * https://mkyong.com/java/how-to-convert-bufferedimage-to-byte-in-java/

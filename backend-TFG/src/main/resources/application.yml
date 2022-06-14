@@ -40,6 +40,11 @@ spring:
       max-request-size: 10MB
       file-size-threshold: 2KB
 
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+
 server:
   servlet:
     context-path: '@project.contextPath@'
@@ -48,4 +53,3 @@ project:
   jwt:
     signKey: mySecretSignKey
     expirationMinutes: 60
-
