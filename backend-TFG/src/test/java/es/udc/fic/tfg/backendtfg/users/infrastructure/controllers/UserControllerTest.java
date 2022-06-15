@@ -34,6 +34,7 @@ import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -132,7 +133,7 @@ class UserControllerTest {
     }
     
     /** Recupera el texto asociado a la propiedad recibida con los parámetros recibidos a partir del fichero de I18N en el idioma indicado. */
-    private String getI18NExceptionMessage(String propertyName, Locale locale, Object[] args, Class exceptionClass) {
+    private String getI18NExceptionMessageWithParams(String propertyName, Locale locale, Object[] args, Class exceptionClass) {
         String exceptionMessage = messageSource.getMessage(
                 exceptionClass.getSimpleName(), null, exceptionClass.getSimpleName(), locale
         );
@@ -262,7 +263,6 @@ class UserControllerTest {
         loginAction.andExpect(status().isBadRequest())
                    .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                    .andExpect(content().json(encodedResponseBodyContent));
-    
     }
     
     
@@ -337,7 +337,7 @@ class UserControllerTest {
                         .requestAttr("token", jwtData.toString())
                         .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
         );
-        String errorMessage = getI18NExceptionMessage(
+        String errorMessage = getI18NExceptionMessageWithParams(
                 CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
                 locale,
                 new Object[] {User.class.getName(), jwtData.getUserID()},
@@ -352,5 +352,129 @@ class UserControllerTest {
     }
     
     
-
+    @Test
+    void whenChangePassword_thenNoContent_andPasswordIsChanged() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "X");
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + userID.toString() + "/changePassword";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", userID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        
+        // Comprobar resultados
+        changePasswordAction.andExpect(status().isNoContent());
+    }
+    
+    
+    @Test
+    void whenChangePasswordNoExistentUser_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "X");
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + NON_EXISTENT_UUID + "/changePassword";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", NON_EXISTENT_UUID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {User.class.getName(), NON_EXISTENT_UUID},
+                User.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        changePasswordAction.andExpect(status().isNotFound())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenChangePasswordToOtherUser_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        User currentUser = generateValidUser("currentUser");
+        AuthenticatedUserDTO currentUserDTO = createAuthenticatedUser(currentUser);
+        User targetUser = generateValidUser("targetUser");
+        AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(targetUser);
+        UUID currentUserID = currentUserDTO.getUserDTO().getUserID();
+        UUID targetUserID = targetUserDTO.getUserDTO().getUserID();
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO(DEFAULT_PASSWORD, DEFAULT_PASSWORD + "X");
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + targetUserID.toString() + "/changePassword";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + currentUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", currentUserID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        changePasswordAction.andExpect(status().isForbidden())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenChangePasswordIncorrectly_thenBadRequest_becauseIncorrectPasswordException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+        ChangePasswordParamsDTO paramsDTO = new ChangePasswordParamsDTO();
+        paramsDTO.setOldPassword(DEFAULT_PASSWORD + "1234");
+        paramsDTO.setNewPassword(DEFAULT_PASSWORD + "5678");
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + userID.toString() + "/changePassword";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", userID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        String errorMessage = getI18NExceptionMessage(UserController.INCORRECT_PASSWORD_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        changePasswordAction.andExpect(status().isBadRequest())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
 }
