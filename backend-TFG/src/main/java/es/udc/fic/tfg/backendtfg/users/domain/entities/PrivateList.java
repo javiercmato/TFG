@@ -20,9 +20,10 @@ public class PrivateList {
     @Column(name = "id", nullable = false)
     private UUID id;
     
-    
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
     
+    @Column(name = "description", length = 100)
     private String description;
     
     @ManyToOne(optional = false,

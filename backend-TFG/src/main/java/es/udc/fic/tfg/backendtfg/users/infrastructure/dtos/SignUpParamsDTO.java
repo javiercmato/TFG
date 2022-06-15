@@ -6,7 +6,6 @@ import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class SignUpParamsDTO {
     @NotBlank
     @Size(min = 1, max = 30)

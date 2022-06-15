@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserDTO {
     /**
      * Atributos que debe contener obligatoriamente
