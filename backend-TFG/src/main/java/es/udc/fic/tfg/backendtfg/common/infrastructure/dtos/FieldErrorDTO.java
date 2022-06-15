@@ -1,9 +1,9 @@
 package es.udc.fic.tfg.backendtfg.common.infrastructure.dtos;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class FieldErrorDTO {
     /** Nombre del campo que provoca el error */

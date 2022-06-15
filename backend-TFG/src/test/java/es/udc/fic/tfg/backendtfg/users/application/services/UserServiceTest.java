@@ -4,6 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,7 +204,6 @@ class UserServiceTest {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
-        String clearPassword = expectedUser.getPassword();
     
         // Ejecutar funcionalidades
         User registeredUser = userService.signUp(expectedUser);
@@ -238,7 +238,6 @@ class UserServiceTest {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
-        String clearPassword = expectedUser.getPassword();
         expectedUser.setBannedByAdmin(true);
         
         // Ejecutar funcionalidades
@@ -259,4 +258,72 @@ class UserServiceTest {
     }
     
     
+    @Test
+    void whenChangePassword_thenPasswordIsChanged()
+            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User expectedUser = generateValidUser(nickname);
+        String oldPassword = expectedUser.getPassword();
+        String newPassword = oldPassword + 'X';
+        
+        // Ejecutar funcionalidades
+        User registeredUser = userService.signUp(expectedUser);
+        userService.changePassword(registeredUser.getId(), oldPassword, newPassword);
+        
+        // Comprobar resultados
+        assertAll(
+                // Puede iniciar sesión con la nueva contraseña
+                () -> assertDoesNotThrow(
+                        () -> userService.login(nickname, newPassword)
+                ),
+                // No puede iniciar sesión con la contraseña antigua
+                () -> assertThrows(
+                        IncorrectLoginException.class,
+                        () -> userService.login(nickname, oldPassword)
+                )
+        );
+    }
+    
+    
+    @Test
+    void whenChangePasswordNonExistentUser_thenEntityNotFoundException()
+            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User expectedUser = generateValidUser(nickname);
+        String oldPassword = expectedUser.getPassword();
+        String newPassword = oldPassword + 'X';
+        
+        // Comprobar resultados
+        assertAll(
+                // No se encuentra al usuario
+                () -> assertThrows(
+                        EntityNotFoundException.class,
+                        () -> userService.changePassword(NON_EXISTENT_UUID, DEFAULT_PASSWORD, newPassword)
+                )
+        );
+    }
+    
+    @Test
+    void whenChangePassword_andNotMatching_thenIncorrectPasswordException()
+            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User expectedUser = generateValidUser(nickname);
+        String oldPassword = expectedUser.getPassword() + "1234";
+        String newPassword = oldPassword + 'X';
+    
+        // Ejecutar funcionalidades
+        User registeredUser = userService.signUp(expectedUser);
+        
+        // Comprobar resultados
+        assertAll(
+                // No se encuentra al usuario
+                () -> assertThrows(
+                        IncorrectPasswordException.class,
+                        () -> userService.changePassword(registeredUser.getId(), oldPassword, newPassword)
+                )
+        );
+    }
 }

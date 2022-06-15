@@ -2,13 +2,11 @@ package es.udc.fic.tfg.backendtfg.common.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import lombok.*;
+import lombok.Getter;
 
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class ErrorsDTO {
     /** Error global en la aplicación */
     private String globalError;
