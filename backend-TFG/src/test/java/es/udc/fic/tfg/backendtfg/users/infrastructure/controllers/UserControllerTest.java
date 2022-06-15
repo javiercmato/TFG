@@ -1,9 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.ResourceBannedByAdministratorException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
@@ -29,13 +27,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.Locale;
+import java.util.*;
 
+import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
-import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -67,8 +64,8 @@ class UserControllerTest {
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
-    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
     
     /** Genera datos de un usuario válido. */
     private User generateValidUser(String nickname) {
@@ -81,6 +78,7 @@ class UserControllerTest {
         user.setRole(UserRole.USER);
         user.setBannedByAdmin(false);
         user.setRegisterDate(LocalDateTime.now());
+        user.setPrivateLists(Collections.emptySet());
         
         // Cargar imagen por defecto
         byte[] avatarBytes = loadImageFromResourceName(DEFAULT_AVATAR_NAME, PNG_EXTENSION);

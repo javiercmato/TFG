@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
 
 CREATE TABLE IF NOT EXISTS users.PrivateList (
     id                  uuid,
-    title               varchar(50),
+    title               varchar(50)     NOT NULL,
     description         varchar(100),
     creatorID           uuid,
 

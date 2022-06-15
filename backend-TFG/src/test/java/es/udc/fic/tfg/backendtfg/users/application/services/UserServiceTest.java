@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
@@ -43,6 +44,7 @@ class UserServiceTest {
         user.setBannedByAdmin(false);
         user.setRegisterDate(LocalDateTime.now());
         user.setAvatar(loadImageFromResourceName(DEFAULT_AVATAR_NAME, PNG_EXTENSION));
+        user.setPrivateLists(Collections.emptySet());
         
         return user;
     }
