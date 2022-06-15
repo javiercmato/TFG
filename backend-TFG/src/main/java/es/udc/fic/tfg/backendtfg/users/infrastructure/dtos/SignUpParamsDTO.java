@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 

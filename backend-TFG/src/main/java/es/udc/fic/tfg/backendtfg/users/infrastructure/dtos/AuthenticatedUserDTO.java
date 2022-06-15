@@ -1,10 +1,10 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
 public class AuthenticatedUserDTO {
     @JsonProperty(value = "serviceToken")

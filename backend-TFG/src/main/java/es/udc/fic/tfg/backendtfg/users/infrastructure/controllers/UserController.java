@@ -122,5 +122,21 @@ public class UserController {
         return UserConversor.toAuthenticatedUserDTO(user, token);
     }
     
+    
+    @PutMapping(path = "/{userID}/changePassword",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changePassword(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @Validated @RequestBody ChangePasswordParamsDTO params)
+            throws PermissionException, IncorrectPasswordException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Actualizar contraseña en el servicio
+        userService.changePassword(userID, params.getOldPassword(), params.getNewPassword());
+    }
 
 }

@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import lombok.experimental.UtilityClass;
 
@@ -39,26 +38,6 @@ public class UserConversor {
     
     
     /* ******************** Convertir a Entidad ******************** */
-    public static User fromUserDTO(UserDTO dto) {
-        User entity = new User();
-        entity.setId(dto.getUserID());
-        entity.setNickname(dto.getNickname());
-        entity.setName(dto.getName());
-        entity.setSurname(dto.getSurname());
-        entity.setEmail(dto.getEmail());
-        entity.setRegisterDate(dto.getRegisterDate());
-        entity.setRole(UserRole.valueOf(dto.getRole()));
-        entity.setBannedByAdmin(dto.isBannedByAdmin());
-        
-        // Decodificar la imagen
-        if (entity.getAvatar() != null)
-            entity.setAvatar(
-                Base64.getDecoder().decode(dto.getAvatar())
-            );
-        
-        return entity;
-    }
-    
     public static User fromSignUpParamsDTO(SignUpParamsDTO dto) {
         User entity = new User();
         entity.setName(dto.getName());
