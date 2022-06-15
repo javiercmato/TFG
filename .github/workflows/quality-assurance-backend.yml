@@ -33,6 +33,7 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+          distribution: 'adopt'
 
       # Copiar código a la caché de SonarCloud
       - name: Cache SonarCloud packages.
