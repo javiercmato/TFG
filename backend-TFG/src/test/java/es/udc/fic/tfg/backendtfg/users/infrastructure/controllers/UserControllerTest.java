@@ -64,8 +64,8 @@ class UserControllerTest {
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
-    private BCryptPasswordEncoder passwordEncoder;
     @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     
     /** Genera datos de un usuario válido. */
     private User generateValidUser(String nickname) {
