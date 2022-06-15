@@ -1,20 +1,23 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +30,38 @@ public class UserController {
     @Autowired
     private UserControllerUtils controllerUtils;
     
+    @Autowired
+    private MessageSource messageSource;
     
+    
+    /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
+    // Referencias a los errores en los ficheros de i18n
+    public static final String INCORRECT_LOGIN_EXCEPTION_KEY            = "users.domain.exceptions.IncorrectLoginException";
+    public static final String INCORRECT_PASSWORD_EXCEPTION_KEY         = "users.domain.exceptions.IncorrectPasswordException";
+    
+
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
+    @ExceptionHandler(IncorrectLoginException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleIncorrectLoginException(IncorrectLoginException exception, Locale locale) {
+        String errorMessage = messageSource.getMessage(
+                INCORRECT_LOGIN_EXCEPTION_KEY, null, INCORRECT_LOGIN_EXCEPTION_KEY, locale
+        );
+        
+        return new ErrorsDTO(errorMessage);
+    }
+    
+    @ExceptionHandler(IncorrectPasswordException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleIncorrectPasswordException(IncorrectPasswordException exception, Locale locale) {
+        String errorMessage = messageSource.getMessage(
+                INCORRECT_PASSWORD_EXCEPTION_KEY, null, INCORRECT_PASSWORD_EXCEPTION_KEY, locale
+        );
+        
+        return new ErrorsDTO(errorMessage);
+    }
     
     
     /* ******************** ENDPOINTS ******************** */
@@ -74,6 +107,7 @@ public class UserController {
     
     
     @PostMapping(path = "/login",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public AuthenticatedUserDTO login(@Validated @RequestBody LoginParamsDTO params)

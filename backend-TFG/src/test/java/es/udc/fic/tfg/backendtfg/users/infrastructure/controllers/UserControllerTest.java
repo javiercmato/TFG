@@ -1,8 +1,13 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.ResourceBannedByAdministratorException;
+import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -14,6 +19,8 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -23,10 +30,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.Locale;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
+import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -39,6 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
     private static final String API_ENDPOINT = "/api/users";
     private final ObjectMapper jsonMapper = new ObjectMapper();
+    private final Locale locale = Locale.getDefault();
     
     @Autowired
     private MockMvc mockMvc;
@@ -52,6 +62,8 @@ class UserControllerTest {
     private UserController userController;
     @Autowired
     private UserControllerUtils userControllerUtils;
+    @Autowired
+    private MessageSource messageSource;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -91,7 +103,7 @@ class UserControllerTest {
         
         // Iniciar sesión para obtener los datos del usuario y el token
         AuthenticatedUserDTO dto = userController.login(loginParamsDTO);
-        userRepository.delete(user);
+        //userRepository.delete(user);
         return dto;
     }
     
@@ -109,6 +121,38 @@ class UserControllerTest {
         return dto;
     }
     
+    /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
+    private String getI18NExceptionMessage(String propertyName, Locale locale) {
+        String globalErrorMessage = messageSource.getMessage(
+                propertyName,
+                null,
+                propertyName,
+                locale
+        );
+        
+        return globalErrorMessage;
+    }
+    
+    /** Recupera el texto asociado a la propiedad recibida con los parámetros recibidos a partir del fichero de I18N en el idioma indicado. */
+    private String getI18NExceptionMessage(String propertyName, Locale locale, Object[] args, Class exceptionClass) {
+        String exceptionMessage = messageSource.getMessage(
+                exceptionClass.getSimpleName(), null, exceptionClass.getSimpleName(), locale
+        );
+        // Añadir el mensaje traducido al principio del array de argumentos a traducir
+        Object[] values = new Object[args.length + 1];
+        for (int i = 1; i <= args.length; i++) {
+            values[i] = args[i-1];
+        }
+        String globalErrorMessage = messageSource.getMessage(
+                propertyName,
+                args,
+                propertyName,
+                locale
+        );
+        
+        return globalErrorMessage;
+    }
+    
     
     /* ************************* CASOS DE PRUEBA ************************* */
     @Test
@@ -117,28 +161,30 @@ class UserControllerTest {
         String nickname = "Foo";
         User validUser = generateValidUser(nickname);
         SignUpParamsDTO paramsDTO = generateSignUpParamsDtoFromUser(validUser);     // Parámetros para registrarse
-        AuthenticatedUserDTO expectedDTO = createAuthenticatedUser(validUser);      // Respuesta deseada
         
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/register";
         String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
-        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedDTO);
-        ResultActions performAction = mockMvc.perform(
+        ResultActions signUpAction = mockMvc.perform(
             post(endpointAddress)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(encodedBodyContent)
         );
         
         // Comprobar resultados
-        performAction.andExpect(status().isCreated())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        //AuthenticatedUserDTO expectedDTO = createAuthenticatedUser(validUser);      // Respuesta deseada
+        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedDTO);
+        signUpAction
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         // FIXME: Ver como evitar comparar contraseña sin cifrar al registrar usuario (SignUpParamsDTO)
         // y contraseña cifrada al iniciar sesión (AuthenticatedUserDTO)
         //    .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    
     @Test
-    void whenSignUpTwice_thenEntityAlreadyExistsException() throws Exception {
+    void whenSignUpTwice_thenBadRequest_becauseEntityAlreadyExistsException() throws Exception {
         // Crear datos de prueba
         String nickname = "Foo";
         User validUser = generateValidUser(nickname);
@@ -147,23 +193,166 @@ class UserControllerTest {
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/register";
         String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
-        ResultActions successfulSignUp = mockMvc.perform(
+        ResultActions signUpAction = mockMvc.perform(
             post(endpointAddress)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(encodedBodyContent)
         );
-        ResultActions exceptionalSignUp = mockMvc.perform(
+        ResultActions signUpTwiceAction = mockMvc.perform(
             post(endpointAddress)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(encodedBodyContent)
         );
         
         // Comprobar resultados
-        successfulSignUp
+        signUpAction
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        exceptionalSignUp
+        signUpTwiceAction
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
+    
+    
+    @Test
+    void whenLogin_thenReturnAuthenticatedUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);      // Registra un usuario y obtiene el DTO respuesta
+        LoginParamsDTO paramsDTO = new LoginParamsDTO(nickname, DEFAULT_PASSWORD);
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/login";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions loginAction = mockMvc.perform(
+                post(endpointAddress)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+    
+        // Comprobar resultados
+        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(authUserDTO);
+        loginAction.andExpect(status().isOk())
+                   .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+                   //.andExpect(content().string(encodedResponseBodyContent));
+        
+    }
+    
+    
+    @Test
+    void whenLoginWithIncorrectPassword_thenBadRequest_becauseIncorrectLoginException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);      // Registra un usuario y obtiene el DTO respuesta
+        LoginParamsDTO paramsDTO = new LoginParamsDTO(nickname, DEFAULT_PASSWORD + 'X');
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/login";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions loginAction = mockMvc.perform(
+                post(endpointAddress)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+        );
+        String errorMessage = getI18NExceptionMessage(UserController.INCORRECT_LOGIN_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        loginAction.andExpect(status().isBadRequest())
+                   .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                   .andExpect(content().json(encodedResponseBodyContent));
+    
+    }
+    
+    
+    @Test
+    void whenLoginNonExistentUser_thenBadRequest_becauseIncorrectLoginException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        LoginParamsDTO paramsDTO = new LoginParamsDTO(nickname, DEFAULT_PASSWORD);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/login";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions loginAction = mockMvc.perform(
+                post(endpointAddress)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+        );
+        String errorMessage = getI18NExceptionMessage(UserController.INCORRECT_LOGIN_EXCEPTION_KEY, locale);
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        loginAction.andExpect(status().isBadRequest())
+                   .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                   .andExpect(content().json(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenLoginWithToken_thenReturnAuthenticatedUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);      // Registra un usuario y obtiene el DTO respuesta
+        JwtData jwtData = jwtGenerator.extractInfo(authUserDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/login/token";
+        ResultActions loginAction = mockMvc.perform(
+                post(endpointAddress)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+        );
+        
+        // Comprobar resultados
+        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(authUserDTO);
+        loginAction.andExpect(status().isOk())
+                   .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        //.andExpect(content().string(encodedResponseBodyContent));
+        
+    }
+    
+    
+    @Test
+    void whenLoginWithTokenNonExistentUser_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);      // Registra un usuario y obtiene el DTO respuesta
+        JwtData jwtData = jwtGenerator.extractInfo(authUserDTO.getServiceToken());
+        userRepository.deleteById(authUserDTO.getUserDTO().getUserID());            // Borrar al usuario recien creado para que no se pueda encontrar
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/login/token";
+        ResultActions loginAction = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+        );
+        String errorMessage = getI18NExceptionMessage(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {User.class.getName(), jwtData.getUserID()},
+                User.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        loginAction.andExpect(status().isNotFound())
+                   .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                   .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+
 }

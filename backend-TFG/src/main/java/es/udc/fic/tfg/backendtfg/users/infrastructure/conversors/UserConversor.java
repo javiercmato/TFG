@@ -32,12 +32,7 @@ public class UserConversor {
     }
     
     public static AuthenticatedUserDTO toAuthenticatedUserDTO(User entity, String token) {
-        AuthenticatedUserDTO dto = new AuthenticatedUserDTO();
-        UserDTO userDTO = toUserDTO(entity);
-        dto.setUserDTO(userDTO);
-        dto.setServiceToken(token);
-        
-        return dto;
+        return new AuthenticatedUserDTO(token, toUserDTO(entity));
     }
     
     /* ******************** Convertir a conjunto de DTO ******************** */

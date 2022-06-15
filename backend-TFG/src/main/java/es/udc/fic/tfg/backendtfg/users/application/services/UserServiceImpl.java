@@ -49,11 +49,12 @@ public class UserServiceImpl implements UserService {
     public User login(String nickname, String rawPassword) throws IncorrectLoginException,
                                                                   ResourceBannedByAdministratorException {
         // Comprobar si existe el usuario recibido
-        Optional<User> optionalUser = userRepository.findByNicknameIgnoreCase(nickname);
-        if ( optionalUser.isEmpty() ) {
+        User user;
+        try {
+            user = userUtils.fetchUserByNickname(nickname);
+        } catch ( EntityNotFoundException ex ) {            // Convertir EntityNotFoundException en IncorrectLoginExceptions
             throw new IncorrectLoginException();
         }
-        User user = optionalUser.get();
         
         // Comprobar si usuario está baneado por administrador
         if (user.isBannedByAdmin())
