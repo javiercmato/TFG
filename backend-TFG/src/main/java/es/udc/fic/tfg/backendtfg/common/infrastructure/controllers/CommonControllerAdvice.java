@@ -20,8 +20,6 @@ public class CommonControllerAdvice {
     public static final String ENTITY_ALREADY_EXISTS_EXCEPTION_KEY              = "common.domain.exceptions.EntityAlreadyExistsException";
     public static final String ENTITY_NOT_FOUND_EXCEPTION_KEY                   = "common.domain.exceptions.EntityNotFoundException";
     public static final String PERMISION_EXCEPTION_KEY                          = "common.domain.exceptions.PermissionException";
-    public static final String RESOURCE_BANNED_BY_ADMINISTRATOR_EXCEPTION_KEY   = "common.domain.exceptions.ResourceBannedByAdministratorException";
-    
     
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
@@ -70,15 +68,5 @@ public class CommonControllerAdvice {
         return new ErrorsDTO(globalErrorMessage);
     }
     
-    @ExceptionHandler(ResourceBannedByAdministratorException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)     // 404
-    @ResponseBody
-    public ErrorsDTO handleResourceBannedByAdministratorException(ResourceBannedByAdministratorException exception, Locale locale) {
-        String globalErrorMessage = messageSource.getMessage(
-                RESOURCE_BANNED_BY_ADMINISTRATOR_EXCEPTION_KEY, null, RESOURCE_BANNED_BY_ADMINISTRATOR_EXCEPTION_KEY, locale
-        );
-        
-        return new ErrorsDTO(globalErrorMessage);
-    }
     
 }

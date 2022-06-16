@@ -16,7 +16,4 @@ public abstract class AbstractEntityException extends Exception implements Seria
     @NotNull
     private Object key;
     
-    protected AbstractEntityException(String message) {
-        super(message);
-    }
 }

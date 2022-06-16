@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -45,8 +46,7 @@ public class UserServiceImpl implements UserService {
     
     @Transactional(readOnly = true)
     @Override
-    public User login(String nickname, String rawPassword) throws IncorrectLoginException,
-                                                                  ResourceBannedByAdministratorException {
+    public User login(String nickname, String rawPassword) throws IncorrectLoginException {
         // Comprobar si existe el usuario recibido
         User user;
         try {
@@ -54,10 +54,6 @@ public class UserServiceImpl implements UserService {
         } catch ( EntityNotFoundException ex ) {            // Convertir EntityNotFoundException en IncorrectLoginExceptions
             throw new IncorrectLoginException();
         }
-        
-        // Comprobar si usuario está baneado por administrador
-        if (user.isBannedByAdmin())
-            throw new ResourceBannedByAdministratorException();
     
         // Comprobar si las contraseñas coinciden
         if ( !passwordEncoder.matches(rawPassword, user.getPassword()) ) {
@@ -69,15 +65,9 @@ public class UserServiceImpl implements UserService {
     
     @Transactional(readOnly = true)
     @Override
-    public User loginFromToken(UUID userID) throws EntityNotFoundException, ResourceBannedByAdministratorException {
+    public User loginFromToken(UUID userID) throws EntityNotFoundException {
         // Obtener al usuario
-        User user = userUtils.fetchUserByID(userID);
-        
-        // Comprobar si usuario está baneado por administrador
-        if (user.isBannedByAdmin())
-            throw new ResourceBannedByAdministratorException();
-        
-        return user;
+        return userUtils.fetchUserByID(userID);
     }
     
     @Override

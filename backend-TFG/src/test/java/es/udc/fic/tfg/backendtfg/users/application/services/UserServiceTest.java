@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
@@ -63,7 +65,15 @@ class UserServiceTest {
         
         // Comprobar resultados
         User databaseUser = userRepository.findByNicknameIgnoreCase(nickname).get();
-        assertEquals(registeredUser, databaseUser);
+        assertAll(
+            // Usuario se ha registrado
+            () -> assertNotNull(registeredUser),
+            // Datos son los mismos
+            () -> assertEquals(registeredUser, databaseUser),
+            // Usuario nuevo no tiene listas privadas
+            () -> assertTrue(registeredUser.getPrivateLists().isEmpty())
+            
+        );
     }
     
     
@@ -90,8 +100,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenLogin_thenUserDataIsReturned()
-            throws EntityAlreadyExistsException, IncorrectLoginException, ResourceBannedByAdministratorException {
+    void whenLogin_thenUserDataIsReturned() throws EntityAlreadyExistsException, IncorrectLoginException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -173,34 +182,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenUserIsBanned_andLogin_thenRaiseResourceBannedByAdminException() throws EntityAlreadyExistsException {
-        // Crear datos de prueba
-        String nickname = "Foo";
-        User expectedUser = generateValidUser(nickname);
-        String clearPassword = expectedUser.getPassword();
-        expectedUser.setBannedByAdmin(true);
-    
-        // Ejecutar funcionalidades
-        User registeredUser = userService.signUp(expectedUser);
-    
-        // Comprobar resultados
-        assertAll(
-                // Se ha registrado un usuario
-                () -> assertNotNull(registeredUser),
-                // Usuario está baneado
-                () -> assertTrue(registeredUser.isBannedByAdmin()),
-                // Se lanza la excepción
-                () -> assertThrows(
-                        ResourceBannedByAdministratorException.class,
-                        () -> userService.login(nickname, clearPassword)
-                )
-        );
-    }
-    
-    
-    @Test
-    void whenLoginWithID_thenUserDataIsReturned()
-            throws EntityAlreadyExistsException, ResourceBannedByAdministratorException, EntityNotFoundException {
+    void whenLoginWithID_thenUserDataIsReturned() throws EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -229,30 +211,6 @@ class UserServiceTest {
                 () -> assertThrows(
                         EntityNotFoundException.class,
                         () -> userService.loginFromToken(NON_EXISTENT_UUID)
-                )
-        );
-    }
-    
-    @Test
-    void whenUserIsBanned_andLoginWithID_thenRaiseResourceBannedByAdminException() throws EntityAlreadyExistsException {
-        // Crear datos de prueba
-        String nickname = "Foo";
-        User expectedUser = generateValidUser(nickname);
-        expectedUser.setBannedByAdmin(true);
-        
-        // Ejecutar funcionalidades
-        User registeredUser = userService.signUp(expectedUser);
-        
-        // Comprobar resultados
-        assertAll(
-                // Se ha registrado un usuario
-                () -> assertNotNull(registeredUser),
-                // Usuario está baneado
-                () -> assertTrue(registeredUser.isBannedByAdmin()),
-                // Se lanza la excepción
-                () -> assertThrows(
-                        ResourceBannedByAdministratorException.class,
-                        () -> userService.loginFromToken(registeredUser.getId())
                 )
         );
     }
@@ -287,8 +245,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenChangePasswordNonExistentUser_thenEntityNotFoundException()
-            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+    void whenChangePasswordNonExistentUser_thenEntityNotFoundException() {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -306,8 +263,7 @@ class UserServiceTest {
     }
     
     @Test
-    void whenChangePassword_andNotMatching_thenIncorrectPasswordException()
-            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+    void whenChangePassword_andNotMatching_thenIncorrectPasswordException() throws EntityAlreadyExistsException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -324,6 +280,32 @@ class UserServiceTest {
                         IncorrectPasswordException.class,
                         () -> userService.changePassword(registeredUser.getId(), oldPassword, newPassword)
                 )
+        );
+    }
+    
+    
+    @Test
+    void whenUpdateProfile_thenProfileIsUpdated() throws EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User originalUser = userService.signUp(generateValidUser(nickname));
+        UUID userID = originalUser.getId();
+        
+        // Ejecutar funcionalidades
+        String updatedName = originalUser.getName() + "TEST";
+        String updatedSurname = originalUser.getSurname() + "TEST";
+        String updatedEmail = "TEST" + originalUser.getEmail();
+        byte[] updatedAvatar = loadImageFromResourceName("updated_user_avatar.png", PNG_EXTENSION);
+        
+        // Comprobar resultdos
+        User updatedUser = userService.updateProfile(userID, updatedName, updatedSurname, updatedEmail, updatedAvatar);
+        assertAll(
+                () -> assertEquals(userID, updatedUser.getId()),
+                // Se han cambiado los atributos
+                () -> assertEquals(updatedName, updatedUser.getName()),
+                () -> assertEquals(updatedSurname, updatedUser.getSurname()),
+                () -> assertEquals(updatedEmail, updatedUser.getEmail()),
+                () -> assertEquals(updatedAvatar, updatedUser.getAvatar())
         );
     }
 }

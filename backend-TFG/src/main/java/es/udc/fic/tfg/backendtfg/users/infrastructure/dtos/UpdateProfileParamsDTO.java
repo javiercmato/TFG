@@ -1,12 +1,12 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import lombok.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.*;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class UpdateProfileParamsDTO {
     @NotBlank
     @Size(min = 1, max = 30)
