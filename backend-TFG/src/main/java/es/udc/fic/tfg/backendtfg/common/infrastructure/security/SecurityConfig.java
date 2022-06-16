@@ -33,7 +33,14 @@ public class SecurityConfig {
             // Permitir las peticiones que indiquemos
             .and().authorizeHttpRequests()
                 // USER ENDPOINTS
-                .antMatchers(HttpMethod.POST,   "/api/users/register").permitAll()
+                .antMatchers(HttpMethod.GET,    "/api/users/*").permitAll()                         // findUserById, findUserByNickname
+                .antMatchers(HttpMethod.POST,   "/api/users/register").permitAll()                  // signUp
+                .antMatchers(HttpMethod.POST,   "/api/users/login").permitAll()                     // login
+                .antMatchers(HttpMethod.POST,   "/api/users/login/token").permitAll()               // loginFromToken
+                .antMatchers(HttpMethod.PUT,    "/api/users/*/changePassword").permitAll()          // changePassword
+                .antMatchers(HttpMethod.DELETE, "/api/users/*").permitAll()                         // deleteUser
+                .antMatchers(HttpMethod.PUT,    "/api/users/*").permitAll()                         // upadteProfile
+            
     
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll();

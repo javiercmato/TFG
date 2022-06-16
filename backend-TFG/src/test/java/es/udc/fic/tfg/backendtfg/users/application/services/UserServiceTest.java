@@ -335,4 +335,43 @@ class UserServiceTest {
             EntityNotFoundException.class,
             () -> userService.deleteUser(NON_EXISTENT_UUID));
     }
+    
+    
+    @Test
+    void whenFindUserByID_thenUserIsFound() throws EntityAlreadyExistsException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User expectedUser = generateValidUser(nickname);
+    
+        // Ejecutar funcionalidades
+        User registeredUser = userService.signUp(expectedUser);
+        UUID userID = registeredUser.getId();
+    
+        // Comprobar resultados
+        assertAll(
+                // Se ha registrado un usuario
+                () -> assertNotNull(registeredUser),
+                // Se puede recuperar al usuario por su id
+                () -> assertEquals(registeredUser, userService.findUserById(userID))
+        );
+    }
+    
+    
+    @Test
+    void whenFindUserByNickname_thenUserIsFound() throws EntityAlreadyExistsException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User expectedUser = generateValidUser(nickname);
+        
+        // Ejecutar funcionalidades
+        User registeredUser = userService.signUp(expectedUser);
+        
+        // Comprobar resultados
+        assertAll(
+                // Se ha registrado un usuario
+                () -> assertNotNull(registeredUser),
+                // Se puede recuperar al usuario por su id
+                () -> assertEquals(registeredUser, userService.findUserByNickname(nickname))
+        );
+    }
 }
