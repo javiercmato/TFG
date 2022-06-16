@@ -97,7 +97,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public AuthenticatedUserDTO loginUsingToken(@RequestAttribute UUID userID, @RequestAttribute String token)
-            throws ResourceBannedByAdministratorException, EntityNotFoundException {
+            throws EntityNotFoundException {
         // Inicia sesión en el servicio
         User user = userService.loginFromToken(userID);
         
@@ -110,8 +110,7 @@ public class UserController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public AuthenticatedUserDTO login(@Validated @RequestBody LoginParamsDTO params)
-            throws IncorrectLoginException, ResourceBannedByAdministratorException {
+    public AuthenticatedUserDTO login(@Validated @RequestBody LoginParamsDTO params) throws IncorrectLoginException {
         // Inicia sesión en el servicio
         User user = userService.login(params.getNickname(), params.getPassword());
         

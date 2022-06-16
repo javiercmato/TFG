@@ -2,7 +2,6 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.ResourceBannedByAdministratorException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
@@ -89,8 +88,7 @@ class UserControllerTest {
     }
     
     /** Registra el usuario recibido en el sistema y devuelve sus datos y el token de acceso */
-    private AuthenticatedUserDTO createAuthenticatedUser(User user)
-            throws IncorrectLoginException, ResourceBannedByAdministratorException {
+    private AuthenticatedUserDTO createAuthenticatedUser(User user) throws IncorrectLoginException {
         // Guardar al usuario en la BD
         user.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
         userRepository.save(user);

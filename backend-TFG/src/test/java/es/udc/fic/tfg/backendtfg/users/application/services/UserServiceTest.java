@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -90,8 +91,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenLogin_thenUserDataIsReturned()
-            throws EntityAlreadyExistsException, IncorrectLoginException, ResourceBannedByAdministratorException {
+    void whenLogin_thenUserDataIsReturned() throws EntityAlreadyExistsException, IncorrectLoginException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -173,34 +173,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenUserIsBanned_andLogin_thenRaiseResourceBannedByAdminException() throws EntityAlreadyExistsException {
-        // Crear datos de prueba
-        String nickname = "Foo";
-        User expectedUser = generateValidUser(nickname);
-        String clearPassword = expectedUser.getPassword();
-        expectedUser.setBannedByAdmin(true);
-    
-        // Ejecutar funcionalidades
-        User registeredUser = userService.signUp(expectedUser);
-    
-        // Comprobar resultados
-        assertAll(
-                // Se ha registrado un usuario
-                () -> assertNotNull(registeredUser),
-                // Usuario está baneado
-                () -> assertTrue(registeredUser.isBannedByAdmin()),
-                // Se lanza la excepción
-                () -> assertThrows(
-                        ResourceBannedByAdministratorException.class,
-                        () -> userService.login(nickname, clearPassword)
-                )
-        );
-    }
-    
-    
-    @Test
-    void whenLoginWithID_thenUserDataIsReturned()
-            throws EntityAlreadyExistsException, ResourceBannedByAdministratorException, EntityNotFoundException {
+    void whenLoginWithID_thenUserDataIsReturned() throws EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -229,30 +202,6 @@ class UserServiceTest {
                 () -> assertThrows(
                         EntityNotFoundException.class,
                         () -> userService.loginFromToken(NON_EXISTENT_UUID)
-                )
-        );
-    }
-    
-    @Test
-    void whenUserIsBanned_andLoginWithID_thenRaiseResourceBannedByAdminException() throws EntityAlreadyExistsException {
-        // Crear datos de prueba
-        String nickname = "Foo";
-        User expectedUser = generateValidUser(nickname);
-        expectedUser.setBannedByAdmin(true);
-        
-        // Ejecutar funcionalidades
-        User registeredUser = userService.signUp(expectedUser);
-        
-        // Comprobar resultados
-        assertAll(
-                // Se ha registrado un usuario
-                () -> assertNotNull(registeredUser),
-                // Usuario está baneado
-                () -> assertTrue(registeredUser.isBannedByAdmin()),
-                // Se lanza la excepción
-                () -> assertThrows(
-                        ResourceBannedByAdministratorException.class,
-                        () -> userService.loginFromToken(registeredUser.getId())
                 )
         );
     }

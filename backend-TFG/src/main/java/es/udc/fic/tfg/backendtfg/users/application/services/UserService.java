@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
@@ -22,18 +23,16 @@ public interface UserService {
      * @param rawPassword Contraseña (sin cifrar)
      * @return Datos del usuario autenticado
      * @throws IncorrectLoginException Nickname o contraseña incorrectos
-     * @throws ResourceBannedByAdministratorException Usuario baneado por el administrador
      */
-    User login(String nickname, String rawPassword) throws IncorrectLoginException, ResourceBannedByAdministratorException;
+    User login(String nickname, String rawPassword) throws IncorrectLoginException;
     
     /**
      * Iniciar sesión en el sistema con un token (JWT).
      * @param userID ID del usuario
      * @return Datos del usuario autenticado
      * @throws EntityNotFoundException No se encuentra al usuario
-     * @throws ResourceBannedByAdministratorException Usuario baneado por el administrador
      */
-    User loginFromToken(UUID userID) throws EntityNotFoundException, ResourceBannedByAdministratorException;
+    User loginFromToken(UUID userID) throws EntityNotFoundException;
     
     /**
      * Actualizar datos del usuario.
