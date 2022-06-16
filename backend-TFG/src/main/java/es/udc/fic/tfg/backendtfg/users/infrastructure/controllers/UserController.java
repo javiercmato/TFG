@@ -137,5 +137,26 @@ public class UserController {
         // Actualizar contraseña en el servicio
         userService.changePassword(userID, params.getOldPassword(), params.getNewPassword());
     }
+    
+    
+    @PutMapping(path = "/{userID}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserDTO updateProfile(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @Validated @RequestBody UpdateProfileParamsDTO params) throws PermissionException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Actualizar perfil en el el servicio
+        User userData = UserConversor.fromUpdateProfileParamsDTO(params);
+        User updatedUser = userService.updateProfile(userID, userData.getName(), userData.getSurname(), userData.getEmail(),
+                                                     userData.getAvatar());
+        
+        // Generar respuesta
+        return UserConversor.toUserDTO(updatedUser);
+    }
 
 }

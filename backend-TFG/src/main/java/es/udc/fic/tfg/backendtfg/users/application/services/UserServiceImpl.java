@@ -67,9 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User loginFromToken(UUID userID) throws EntityNotFoundException {
         // Obtener al usuario
-        User user = userUtils.fetchUserByID(userID);
-
-        return user;
+        return userUtils.fetchUserByID(userID);
     }
     
     @Override

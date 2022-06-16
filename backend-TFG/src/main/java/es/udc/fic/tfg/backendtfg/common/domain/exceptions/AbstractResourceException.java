@@ -8,7 +8,4 @@ import java.io.Serializable;
 @Getter
 @AllArgsConstructor
 public abstract class AbstractResourceException extends Exception implements Serializable {
-    protected AbstractResourceException(String message) {
-        super(message);
-    }
 }

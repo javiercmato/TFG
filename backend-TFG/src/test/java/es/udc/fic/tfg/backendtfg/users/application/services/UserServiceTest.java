@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
@@ -64,7 +65,15 @@ class UserServiceTest {
         
         // Comprobar resultados
         User databaseUser = userRepository.findByNicknameIgnoreCase(nickname).get();
-        assertEquals(registeredUser, databaseUser);
+        assertAll(
+            // Usuario se ha registrado
+            () -> assertNotNull(registeredUser),
+            // Datos son los mismos
+            () -> assertEquals(registeredUser, databaseUser),
+            // Usuario nuevo no tiene listas privadas
+            () -> assertTrue(registeredUser.getPrivateLists().isEmpty())
+            
+        );
     }
     
     
@@ -236,8 +245,7 @@ class UserServiceTest {
     
     
     @Test
-    void whenChangePasswordNonExistentUser_thenEntityNotFoundException()
-            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+    void whenChangePasswordNonExistentUser_thenEntityNotFoundException() {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -255,8 +263,7 @@ class UserServiceTest {
     }
     
     @Test
-    void whenChangePassword_andNotMatching_thenIncorrectPasswordException()
-            throws EntityAlreadyExistsException, IncorrectPasswordException, EntityNotFoundException {
+    void whenChangePassword_andNotMatching_thenIncorrectPasswordException() throws EntityAlreadyExistsException {
         // Crear datos de prueba
         String nickname = "Foo";
         User expectedUser = generateValidUser(nickname);
@@ -273,6 +280,32 @@ class UserServiceTest {
                         IncorrectPasswordException.class,
                         () -> userService.changePassword(registeredUser.getId(), oldPassword, newPassword)
                 )
+        );
+    }
+    
+    
+    @Test
+    void whenUpdateProfile_thenProfileIsUpdated() throws EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User originalUser = userService.signUp(generateValidUser(nickname));
+        UUID userID = originalUser.getId();
+        
+        // Ejecutar funcionalidades
+        String updatedName = originalUser.getName() + "TEST";
+        String updatedSurname = originalUser.getSurname() + "TEST";
+        String updatedEmail = "TEST" + originalUser.getEmail();
+        byte[] updatedAvatar = loadImageFromResourceName("updated_user_avatar.png", PNG_EXTENSION);
+        
+        // Comprobar resultdos
+        User updatedUser = userService.updateProfile(userID, updatedName, updatedSurname, updatedEmail, updatedAvatar);
+        assertAll(
+                () -> assertEquals(userID, updatedUser.getId()),
+                // Se han cambiado los atributos
+                () -> assertEquals(updatedName, updatedUser.getName()),
+                () -> assertEquals(updatedSurname, updatedUser.getSurname()),
+                () -> assertEquals(updatedEmail, updatedUser.getEmail()),
+                () -> assertEquals(updatedAvatar, updatedUser.getAvatar())
         );
     }
 }

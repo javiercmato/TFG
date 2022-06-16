@@ -10,7 +10,7 @@ import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
-import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,8 +57,6 @@ class UserControllerTest {
     private UserService userService;
     @Autowired
     private UserController userController;
-    @Autowired
-    private UserControllerUtils userControllerUtils;
     @Autowired
     private MessageSource messageSource;
     
@@ -472,6 +470,88 @@ class UserControllerTest {
         // Comprobar resultados
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
         changePasswordAction.andExpect(status().isBadRequest())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenUpdateProfile_thenReturnUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(validUser);
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+        User originalUser = userService.findUserById(userID);
+        UpdateProfileParamsDTO paramsDTO = new UpdateProfileParamsDTO();
+        paramsDTO.setName(originalUser.getName() + "X");
+        paramsDTO.setSurname(originalUser.getSurname() + "X");
+        paramsDTO.setEmail("X" + originalUser.getEmail());
+        paramsDTO.setAvatar(Base64.getEncoder()
+            .encodeToString(
+                loadImageFromResourceName("updated_user_avatar.png", PNG_EXTENSION)
+            )
+        );
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + userID.toString();
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", userID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+    
+        // Comprobar resultados
+        User updatedUser = userService.findUserById(userID);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(UserConversor.toUserDTO(updatedUser));
+        changePasswordAction.andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenUpdateProfileToOtherUser_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        User currentUser = generateValidUser("currentUser");
+        User targetUser = generateValidUser("targetUser");
+        AuthenticatedUserDTO currentUserDTO = createAuthenticatedUser(currentUser);
+        AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(targetUser);
+        UUID currentUserID = currentUserDTO.getUserDTO().getUserID();
+        UUID targetUserID = targetUserDTO.getUserDTO().getUserID();
+        User currentUserOriginal = userService.findUserById(currentUserID);
+        UpdateProfileParamsDTO paramsDTO = new UpdateProfileParamsDTO();
+        paramsDTO.setName(currentUserOriginal.getName() + "X");
+        paramsDTO.setSurname(currentUserOriginal.getSurname() + "X");
+        paramsDTO.setEmail("X" + currentUserOriginal.getEmail());
+        paramsDTO.setAvatar(Base64.getEncoder()
+            .encodeToString(
+                loadImageFromResourceName("updated_user_avatar.png", PNG_EXTENSION)
+            )
+        );
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + targetUserID.toString();
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions changePasswordAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + currentUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", currentUserID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        changePasswordAction.andExpect(status().isForbidden())
                             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                             .andExpect(content().string(encodedResponseBodyContent));
     }
