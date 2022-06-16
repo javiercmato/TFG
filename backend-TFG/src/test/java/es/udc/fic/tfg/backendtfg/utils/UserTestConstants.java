@@ -15,4 +15,5 @@ public class UserTestConstants {
     public static final String DEFAULT_PASSWORD = "password";
     public static final String DEFAULT_EMAIL_DOMAIN = "@email.es";
     public static final String DEFAULT_AVATAR_NAME = "default_user_avatar.png";
+    public static final String ADMIN_NICKNAME = "admin";
 }

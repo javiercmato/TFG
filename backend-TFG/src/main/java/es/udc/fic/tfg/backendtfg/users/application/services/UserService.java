@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
@@ -88,5 +87,5 @@ public interface UserService {
      * @return True si el usuario está baneado; false si no está baneado.
      * @throws EntityNotFoundException No se encuentra al usuario
      */
-    boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException;
+    boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException, PermissionException;
 }

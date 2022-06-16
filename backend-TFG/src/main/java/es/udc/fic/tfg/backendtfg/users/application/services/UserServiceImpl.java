@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -125,9 +124,13 @@ public class UserServiceImpl implements UserService {
     
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
     @Override
-    public boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException {
+    public boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException, PermissionException {
         // Commprobar si existe el administrador
-        userUtils.fetchAdministrator(adminID);
+        try {
+            userUtils.fetchAdministrator(adminID);
+        } catch ( EntityNotFoundException ex) {
+            throw new PermissionException();
+        }
         
         // Obtener al usuario a banear
         User targetUser = userUtils.fetchUserByID(targetUserID);

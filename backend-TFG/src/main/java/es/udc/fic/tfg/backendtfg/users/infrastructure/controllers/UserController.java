@@ -3,6 +3,7 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
+import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
@@ -26,10 +27,10 @@ public class UserController {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
     private UserService userService;
-    
+    @Autowired
+    private UserUtils userUtils;
     @Autowired
     private UserControllerUtils controllerUtils;
-    
     @Autowired
     private MessageSource messageSource;
     
@@ -96,7 +97,7 @@ public class UserController {
     @PostMapping(path = "/login/token",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public AuthenticatedUserDTO loginUsingToken(@RequestAttribute UUID userID, @RequestAttribute String token)
+    public AuthenticatedUserDTO loginUsingToken(@RequestAttribute("userID") UUID userID, @RequestAttribute String token)
             throws EntityNotFoundException {
         // Inicia sesión en el servicio
         User user = userService.loginFromToken(userID);
@@ -162,7 +163,7 @@ public class UserController {
     
     @DeleteMapping(path = "/{userID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deleteUser(@RequestAttribute UUID userID,
+    ResponseEntity<Void> deleteUser(@RequestAttribute("userID") UUID userID,
             @PathVariable("userID") UUID pathUserID) throws EntityNotFoundException, PermissionException {
         // Comprobar que el usuario actual y el usuario objetivo son el mismo
         if (!controllerUtils.doUsersMatch(userID, pathUserID))
@@ -192,6 +193,14 @@ public class UserController {
         User user = userService.findUserByNickname(nickname);
         
         return UserConversor.toUserDTO(user);
+    }
+    
+    
+    @PutMapping(path = "/admin/ban/{userID}")
+    public boolean banUserAsAdmin(@RequestAttribute("userID") UUID adminID,
+            @PathVariable("userID") UUID targetUserID) throws EntityNotFoundException, PermissionException {
+        // Banear al usuario
+        return userService.banUserAsAdmin(adminID, targetUserID);
     }
     
 }

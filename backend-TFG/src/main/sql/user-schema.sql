@@ -38,3 +38,9 @@ CREATE TABLE IF NOT EXISTS users.PrivateList (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+
+
+-- ******************** DATOS POR DEFECTO ********************
+-- Contraseña del administrador: secretPassword
+INSERT INTO users.UserTable (nickname, password, name, surname, email, role) VALUES ('admin', '$2a$10$T.xjZnNTCmZzMMTQbUfac.k3wNsHe4mhVhxEH0kLMn8TqE21vKbTK', 'Administrador', 'Sistema', 'admin@admin.es', 'ADMIN');

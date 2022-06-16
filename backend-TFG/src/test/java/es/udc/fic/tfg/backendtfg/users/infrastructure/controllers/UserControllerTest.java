@@ -6,6 +6,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
+import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -57,6 +58,8 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
     @Autowired
+    private UserUtils userUtils;
+    @Autowired
     private MessageSource messageSource;
     
     
@@ -96,9 +99,7 @@ class UserControllerTest {
         loginParamsDTO.setPassword(DEFAULT_PASSWORD);
         
         // Iniciar sesión para obtener los datos del usuario y el token
-        AuthenticatedUserDTO dto = userController.login(loginParamsDTO);
-        //userRepository.delete(user);
-        return dto;
+        return userController.login(loginParamsDTO);
     }
     
     private SignUpParamsDTO generateSignUpParamsDtoFromUser(User user) {
@@ -117,14 +118,12 @@ class UserControllerTest {
     
     /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
     private String getI18NExceptionMessage(String propertyName, Locale locale) {
-        String globalErrorMessage = messageSource.getMessage(
+        return messageSource.getMessage(
                 propertyName,
                 null,
                 propertyName,
                 locale
         );
-        
-        return globalErrorMessage;
     }
     
     /** Recupera el texto asociado a la propiedad recibida con los parámetros recibidos a partir del fichero de I18N en el idioma indicado. */
@@ -137,14 +136,12 @@ class UserControllerTest {
         for (int i = 1; i <= args.length; i++) {
             values[i] = args[i-1];
         }
-        String globalErrorMessage = messageSource.getMessage(
+        return messageSource.getMessage(
                 propertyName,
                 args,
                 propertyName,
                 locale
         );
-        
-        return globalErrorMessage;
     }
     
     
@@ -646,4 +643,56 @@ class UserControllerTest {
                       .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                       .andExpect(content().string(encodedResponseBodyContent));
     }
+    
+    
+    @Test
+    void whenBanUserAsAdmin_thenReturnUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(generateValidUser(nickname));
+        User admin = userRepository.findByNicknameIgnoreCase(ADMIN_NICKNAME).get();
+        AuthenticatedUserDTO adminDTO = createAuthenticatedUser(admin);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/admin/ban/" + targetUserDTO.getUserDTO().getUserID();
+        ResultActions banUserAsAdminAction = mockMvc.perform(
+                put(endpointAddress)
+                    .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                    // Valores anotados como @RequestAttribute
+                    .requestAttr("userID", admin)
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(true);
+        banUserAsAdminAction.andExpect(status().isOk())
+                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                      .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenBanUserAsAdmin_andCurrentUserIsNotAdmin_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        String targetNickname = "TargetUser";
+        String currentUserNickname = "CurrentUser";
+        AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(generateValidUser(targetNickname));
+        AuthenticatedUserDTO notAdminUserDTO = createAuthenticatedUser(generateValidUser(currentUserNickname));
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/admin/ban/" + targetUserDTO.getUserDTO().getUserID();
+        ResultActions banUserAsAdminAction = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + notAdminUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", notAdminUserDTO.getUserDTO().getUserID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        banUserAsAdminAction.andExpect(status().isForbidden())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
 }
