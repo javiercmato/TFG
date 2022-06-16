@@ -605,4 +605,45 @@ class UserControllerTest {
                         .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                         .andExpect(content().string(encodedResponseBodyContent));
     }
+    
+    
+    @Test
+    void whenFindUserByID_thenReturnUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(generateValidUser(nickname));
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + userID.toString();
+        ResultActions findUserAction = mockMvc.perform(
+                get(endpointAddress)
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(authUserDTO.getUserDTO());
+        findUserAction.andExpect(status().isOk())
+                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                      .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenFindUserByNickname_thenReturnUserDTO() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(generateValidUser(nickname));
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/?nickname=" + nickname;
+        ResultActions findUserAction = mockMvc.perform(
+                get(endpointAddress)
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(authUserDTO.getUserDTO());
+        findUserAction.andExpect(status().isOk())
+                      .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                      .andExpect(content().string(encodedResponseBodyContent));
+    }
 }

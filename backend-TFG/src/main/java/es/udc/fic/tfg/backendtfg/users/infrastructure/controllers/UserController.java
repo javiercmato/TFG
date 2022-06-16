@@ -174,4 +174,24 @@ public class UserController {
         // Generar respuesta
         return ResponseEntity.noContent().build();
     }
+    
+    
+    @GetMapping(path = "/{userID}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserDTO findUserByID(@PathVariable("userID") UUID userID) throws EntityNotFoundException {
+        User user = userService.findUserById(userID);
+        
+        return UserConversor.toUserDTO(user);
+    }
+    
+    @GetMapping(path = "/",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public UserDTO findUserByID(@RequestParam("nickname") String nickname) throws EntityNotFoundException {
+        User user = userService.findUserByNickname(nickname);
+        
+        return UserConversor.toUserDTO(user);
+    }
+    
 }
