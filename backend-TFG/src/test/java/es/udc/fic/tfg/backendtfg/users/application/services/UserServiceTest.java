@@ -308,4 +308,31 @@ class UserServiceTest {
                 () -> assertEquals(updatedAvatar, updatedUser.getAvatar())
         );
     }
+    
+    @Test
+    void whenDeleteUser_thenUserDontExist() throws EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User user = generateValidUser(nickname);
+        
+        // Ejecutar funcionalidades
+        User registeredUser = userService.signUp(user);
+        UUID userID = registeredUser.getId();
+        userService.deleteUser(userID);
+        
+        // Comprobar resultados
+        assertAll(
+                // Ha existido un usuario
+                () -> assertNotNull(registeredUser),
+                // Se ha borrado el usuario
+                () -> assertTrue(userRepository.findById(userID).isEmpty())
+        );
+    }
+    
+    @Test
+    void whenDeleteNonExistentUser_thenEntityNotFound() {
+        assertThrows(
+            EntityNotFoundException.class,
+            () -> userService.deleteUser(NON_EXISTENT_UUID));
+    }
 }

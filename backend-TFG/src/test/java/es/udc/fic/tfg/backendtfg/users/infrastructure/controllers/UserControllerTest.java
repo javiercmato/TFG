@@ -32,8 +32,7 @@ import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -442,6 +441,7 @@ class UserControllerTest {
                             .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    
     @Test
     void whenChangePasswordIncorrectly_thenBadRequest_becauseIncorrectPasswordException() throws Exception {
         // Crear datos de prueba
@@ -496,7 +496,7 @@ class UserControllerTest {
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/" + userID.toString();
         String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
-        ResultActions changePasswordAction = mockMvc.perform(
+        ResultActions updateProfileAction = mockMvc.perform(
                 put(endpointAddress)
                         .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
                         .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
@@ -509,9 +509,9 @@ class UserControllerTest {
         // Comprobar resultados
         User updatedUser = userService.findUserById(userID);
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(UserConversor.toUserDTO(updatedUser));
-        changePasswordAction.andExpect(status().isOk())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                            .andExpect(content().string(encodedResponseBodyContent));
+        updateProfileAction.andExpect(status().isOk())
+                           .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                           .andExpect(content().string(encodedResponseBodyContent));
     }
     
     
@@ -538,7 +538,7 @@ class UserControllerTest {
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/" + targetUserID.toString();
         String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
-        ResultActions changePasswordAction = mockMvc.perform(
+        ResultActions updateProfileAction = mockMvc.perform(
                 put(endpointAddress)
                         .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + currentUserDTO.getServiceToken())
                         .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
@@ -551,8 +551,58 @@ class UserControllerTest {
     
         // Comprobar resultados
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
-        changePasswordAction.andExpect(status().isForbidden())
-                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                            .andExpect(content().string(encodedResponseBodyContent));
+        updateProfileAction.andExpect(status().isForbidden())
+                           .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                           .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
+    @Test
+    void whenDeleteUser_thenNoContent() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO authUserDTO = createAuthenticatedUser(generateValidUser(nickname));
+        UUID userID = authUserDTO.getUserDTO().getUserID();
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + userID.toString();
+        ResultActions deleteUserAction = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + authUserDTO.getServiceToken())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", userID)
+        );
+    
+        // Comprobar resultados
+        deleteUserAction.andExpect(status().isNoContent());
+    }
+    
+    
+    @Test
+    void whenDeleteAnotherUser__thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        User currentUser = generateValidUser("currentUser");
+        User targetUser = generateValidUser("targetUser");
+        AuthenticatedUserDTO currentUserDTO = createAuthenticatedUser(currentUser);
+        AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(targetUser);
+        UUID currentUserID = currentUserDTO.getUserDTO().getUserID();
+        UUID targetUserID = targetUserDTO.getUserDTO().getUserID();
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + targetUserID.toString();
+        ResultActions deleteUserAction = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + currentUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", currentUserID)
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        deleteUserAction.andExpect(status().isForbidden())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(content().string(encodedResponseBodyContent));
     }
 }

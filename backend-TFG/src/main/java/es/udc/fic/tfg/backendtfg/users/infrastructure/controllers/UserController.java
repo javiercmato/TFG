@@ -159,4 +159,19 @@ public class UserController {
         return UserConversor.toUserDTO(updatedUser);
     }
 
+    
+    @DeleteMapping(path = "/{userID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    ResponseEntity<Void> deleteUser(@RequestAttribute UUID userID,
+            @PathVariable("userID") UUID pathUserID) throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Eliminar usuario del servicio
+        userService.deleteUser(userID);
+        
+        // Generar respuesta
+        return ResponseEntity.noContent().build();
+    }
 }
