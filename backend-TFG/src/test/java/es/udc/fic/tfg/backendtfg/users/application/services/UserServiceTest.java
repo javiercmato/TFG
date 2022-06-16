@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -52,6 +51,20 @@ class UserServiceTest {
         return user;
     }
     
+    /** Recupera al administrador */
+    private User findAdmin() {
+        Iterable<User> iterableUsers = userRepository.findAll();
+        User admin = null;
+        // Recorre todos los usuarios
+        for (User user : iterableUsers) {
+            // Si el usuario es ADMIN, lo devuelve
+            if (user.getRole().equals(UserRole.ADMIN)) {
+                admin = user;
+            }
+        }
+        
+        return admin;
+    }
     
     /* ************************* CASOS DE PRUEBA ************************* */
     @Test
@@ -372,6 +385,50 @@ class UserServiceTest {
                 () -> assertNotNull(registeredUser),
                 // Se puede recuperar al usuario por su id
                 () -> assertEquals(registeredUser, userService.findUserByNickname(nickname))
+        );
+    }
+    
+    
+    @Test
+    void whenAdminBansUsers_thenUserIsBanned() throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User targetUser = userService.signUp(generateValidUser(nickname));
+        User admin = findAdmin();
+        
+        // Ejecutar funcionalidades
+        boolean isBanned = userService.banUserAsAdmin(admin.getId(), targetUser.getId());
+        
+        // Comprobar resultados
+        assertAll(
+                // Se encuentra al administrador
+                () -> assertNotNull(admin),
+                // Usuario ahora está baneado
+                () -> assertTrue(isBanned)
+        );
+    }
+    
+    
+    @Test
+    void whenAdminBansUsers_andUserWasBanned_thenUserIsNotBannedAnymore()
+            throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        User validUser = generateValidUser(nickname);
+        User targetUser = userService.signUp(validUser);
+        targetUser.setBannedByAdmin(true);
+        userRepository.save(targetUser);
+        User admin = findAdmin();
+        
+        // Ejecutar funcionalidades
+        boolean isBanned = userService.banUserAsAdmin(admin.getId(), targetUser.getId());
+        
+        // Comprobar resultados
+        assertAll(
+                // Se encuentra al administrador
+                () -> assertNotNull(admin),
+                // Usuario ahora ya no está baneado
+                () -> assertFalse(isBanned)
         );
     }
 }

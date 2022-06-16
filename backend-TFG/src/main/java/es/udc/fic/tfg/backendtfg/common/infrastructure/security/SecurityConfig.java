@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.common.infrastructure.security;
 
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -24,24 +25,25 @@ public class SecurityConfig {
         JwtHttpConfigurer jwtConfigurer = new JwtHttpConfigurer(jwtGenerator);
         
         http
-            // Desactivar CSRF porque no usamos
-            .cors().and().csrf().disable()
-            // No guardar datos de la sesión del usuario
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            // Aplicar filtro creado para poder usar JWT
-            .and().apply(jwtConfigurer)
-            // Permitir las peticiones que indiquemos
-            .and().authorizeHttpRequests()
+                // Desactivar CSRF porque no usamos
+                .cors().and().csrf().disable()
+                // No guardar datos de la sesión del usuario
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                // Aplicar filtro creado para poder usar JWT
+                .and().apply(jwtConfigurer)
+                // Permitir las peticiones que indiquemos
+                .and().authorizeHttpRequests()
                 // USER ENDPOINTS
-                .antMatchers(HttpMethod.GET,    "/api/users/*").permitAll()                         // findUserById, findUserByNickname
-                .antMatchers(HttpMethod.POST,   "/api/users/register").permitAll()                  // signUp
-                .antMatchers(HttpMethod.POST,   "/api/users/login").permitAll()                     // login
-                .antMatchers(HttpMethod.POST,   "/api/users/login/token").permitAll()               // loginFromToken
-                .antMatchers(HttpMethod.PUT,    "/api/users/*/changePassword").permitAll()          // changePassword
-                .antMatchers(HttpMethod.DELETE, "/api/users/*").permitAll()                         // deleteUser
-                .antMatchers(HttpMethod.PUT,    "/api/users/*").permitAll()                         // upadteProfile
-            
-    
+                .antMatchers(HttpMethod.GET,    "/api/users/*").permitAll()                                             // findUserById, findUserByNickname
+                .antMatchers(HttpMethod.POST,   "/api/users/register").permitAll()                                      // signUp
+                .antMatchers(HttpMethod.POST,   "/api/users/login").permitAll()                                         // login
+                .antMatchers(HttpMethod.POST,   "/api/users/login/token").permitAll()                                   // loginFromToken
+                .antMatchers(HttpMethod.PUT,    "/api/users/*/changePassword").permitAll()                              // changePassword
+                .antMatchers(HttpMethod.DELETE, "/api/users/*").permitAll()                                             // deleteUser
+                .antMatchers(HttpMethod.PUT,    "/api/users/*").permitAll()                                             // updateProfile
+                .antMatchers(HttpMethod.PUT,    "/api/users/admin/ban/*").hasRole(UserRole.ADMIN.toString())            // banUserAsAdmin
+        
+        
                 // DENEGAR EL RESTO DE PETICIONES
                 .anyRequest().denyAll();
         
