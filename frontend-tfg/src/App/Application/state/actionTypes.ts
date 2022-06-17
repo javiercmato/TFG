@@ -1,5 +1,6 @@
 import {ErrorDto} from "../../Domain";
 
+/* ******************** Nombres de las acciones ******************** */
 
 export const LOADING : string = 'App/Loading';
 export const LOADED : string = 'App/Loaded';

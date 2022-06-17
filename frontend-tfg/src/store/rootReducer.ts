@@ -1,10 +1,12 @@
-import {appRedux} from "../App";
 import {combineReducers} from "@reduxjs/toolkit";
 import {RootState} from "./RootState";
 
+import {appRedux} from "../App";
+import {userRedux} from '../Users';
 
 const rootReducer = combineReducers<RootState>({
-    app: appRedux.reducer
+    app: appRedux.reducer,
+    users: userRedux.reducer,
 })
 
 

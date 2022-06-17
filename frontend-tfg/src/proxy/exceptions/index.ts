@@ -1,7 +1,7 @@
-import NetworkException from "./NetworkException";
+import NetworkErrorException from "./NetworkErrorException";
 import ServiceException from "./ServiceException";
 
 export {
-    NetworkException,
+    NetworkErrorException,
     ServiceException
 }

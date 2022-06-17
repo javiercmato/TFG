@@ -14,10 +14,13 @@ Convocatoria: septiembre
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
 
 - Cobertura de tests:
-    - [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=coverage)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Backend: [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=coverage)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Frontend: [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=TFG-frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=TFG-frontend)
 
 - Calidad del código:
-    - [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Backend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Frontend: [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=TFG-frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=TFG-frontend)
 
 - Vulnerabilidades:
-    - [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Backend: [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=javiercmato_TFG&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=javiercmato_TFG)
+    - Frontend: [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=TFG-frontend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=TFG-frontend)

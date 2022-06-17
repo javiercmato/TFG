@@ -1,12 +1,14 @@
-import {CallbackFunction} from "./types";
-import {NetworkException} from "./exceptions";
+import {NetworkErrorException} from "./exceptions";
 import {handle2xxResponse, handle4xxResponse} from './responseHandlers';
 
 /** URL del backend extraído de la configuración del entorno */
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const SERVICE_TOKEN_NAME = process.env.REACT_APP_SERVICE_TOKEN_NAME!;
+
+let onReauthenticationCallback : CallbackFunction;
+let onNetworkErrorCallback : CallbackFunction;
 
 /* ****************************************** SERVICIOS ***************************************** */
-
 /**
  * Configura la petición que se realizará al backend.
  * @param {String} method - Tipo de petición HTTP: {GET, POST, PUT, etc}
@@ -51,17 +53,35 @@ export const appFetch = (
     const resourceURL = `${BACKEND_URL}${endpoint}`;
 
     fetch(resourceURL, configuration)
-        .then( (response: Response) => _handleResponse(response, onSuccessCallback, onErrorCallback));
+        .then( (response: Response) => _handleResponse(response, onSuccessCallback, onErrorCallback))
+        .catch(onNetworkErrorCallback);
 }
 
+/** Guarda el JWT del usuario en el navegador */
+export const setServiceToken = (serviceToken: string) : void => {
+    sessionStorage.setItem(SERVICE_TOKEN_NAME, serviceToken);
+}
 
+/** Recupera el JWT del usuario del navegador */
+export const getServiceToken = () : string => {
+    return sessionStorage.getItem(SERVICE_TOKEN_NAME)!;
+}
+
+/** Elimina el JWT del usuario del navegador */
+export const removeServiceToken = () : void => {
+    sessionStorage.removeItem(SERVICE_TOKEN_NAME);
+}
+
+export const setOnReauthenticationCallback = (callback: CallbackFunction) : void => {
+    onReauthenticationCallback = callback;
+}
 /* ****************************************** HANDLERS ****************************************** */
 /**
  * Función que maneja la respuesta _response_ recibida del backend.
  * @param {Response} response - Respuesta recibida
  * @param {Function} onSuccessCallback - Función a ejecutar en caso de respuesta exitosa
  * @param {Function} onErrorCallback - Función a ejecutar en caso de error en la respuesta
- * @throws {NetworkException} No se recibió ninguna respuesta
+ * @throws {NetworkErrorException} No se recibió ninguna respuesta
  * @throws {ServiceException} Error procesando respuesta
  */
  const _handleResponse = (response: Response, onSuccessCallback: CallbackFunction, onErrorCallback?: CallbackFunction): void => {
@@ -69,5 +89,5 @@ export const appFetch = (
     
     if (handle4xxResponse(response, onErrorCallback)) return;
     
-    throw new NetworkException(response.statusText);
+    throw new NetworkErrorException(response.statusText);
 };

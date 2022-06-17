@@ -1,5 +1,4 @@
 import {ServiceException} from './exceptions';
-import {CallbackFunction} from "./types";
 
 /**
  * Función que gestiona una respuesta correcta del backend.

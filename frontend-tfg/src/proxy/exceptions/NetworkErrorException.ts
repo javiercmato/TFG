@@ -1,4 +1,4 @@
-class NetworkException extends Error {
+class NetworkErrorException extends Error {
     /**
      * @type {String} Texto descriptivo del error
      */
@@ -6,7 +6,7 @@ class NetworkException extends Error {
 
 
     constructor(details: string) {
-        super(`${NetworkException.name}: ${details}`);
+        super(`${NetworkErrorException.name}: ${details}`);
         this._details = details;
     }
 
@@ -16,4 +16,4 @@ class NetworkException extends Error {
     }
 }
 
-export default NetworkException;
+export default NetworkErrorException;
