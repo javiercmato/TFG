@@ -1,2 +1,3 @@
-export * as ProxyExceptions from './exceptions';
+export {NetworkErrorException, ServiceException} from './exceptions'
+
 export * from './appFetch';
