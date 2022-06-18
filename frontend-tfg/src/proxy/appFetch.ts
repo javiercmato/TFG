@@ -75,6 +75,12 @@ export const removeServiceToken = () : void => {
 export const setOnReauthenticationCallback = (callback: CallbackFunction) : void => {
     onReauthenticationCallback = callback;
 }
+
+export const initializeBackend = (callback: CallbackFunction) : void => {
+    onNetworkErrorCallback = callback;
+}
+
+
 /* ****************************************** HANDLERS ****************************************** */
 /**
  * Función que maneja la respuesta _response_ recibida del backend.

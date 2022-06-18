@@ -1,11 +1,17 @@
 import React from 'react';
-import './style/App.css';
+import './styles/App.css';
+import {BrowserRouter as Router} from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      HOLA MUNDO
-    </div>
+const App = () => {
+
+    return (
+        <div>
+            <Router>
+                <div>
+                    HOLA MUNDO
+                </div>
+            </Router>
+        </div>
   );
 }
 
