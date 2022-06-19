@@ -2,9 +2,9 @@ import {ErrorDto} from "../../Domain";
 
 /* ******************** Nombres de las acciones ******************** */
 
-export const LOADING : string = 'App/Loading';
-export const LOADED : string = 'App/Loaded';
-export const ERROR : string = 'App/Error';
+export const LOADING : string = 'app/Loading';
+export const LOADED : string = 'app/Loaded';
+export const ERROR : string = 'app/Error';
 
 /* ******************** Tipos de datos ******************** */
 

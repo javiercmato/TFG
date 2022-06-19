@@ -1,4 +1,4 @@
-export default {
+const translations = {
     /* ******************** common ******************** */
     'common.buttons.close': 'Cerrar',
 
@@ -8,9 +8,12 @@ export default {
 
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
+    'app.components.Header.signUp' : 'Registrarse'
 
 
 
     /* ******************** Users ******************** */
 
 }
+
+export default translations;

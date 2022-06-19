@@ -1,16 +1,18 @@
 import React from 'react';
-import './styles/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {BrowserRouter as Router} from "react-router-dom";
 import Body from "./Body";
+import Header from "./Header";
+import Footer from "./Footer";
 
 const App = () => {
 
     return (
-        <div>
+        <div className={App.name}>
             <Router>
-                <div>
-                    <Body />
-                </div>
+                <Header />
+                <Body />
+                <Footer />
             </Router>
         </div>
   );

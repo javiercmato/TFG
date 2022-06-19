@@ -7,12 +7,12 @@ import Home from "./Home";
 const Body = () => {
 
     return (
-        <Container>
+        <Container className={Body.name}>
             <br/>
             <AppGlobalComponents />
             <Routes>
                 <Route path="/" element={<Home />} />
-                <Route></Route>
+                <Route element={<Home />}></Route>
             </Routes>
         </Container>
     )
