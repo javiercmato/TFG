@@ -1,6 +1,6 @@
 import {Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import {FaCloud, FaGithub} from "react-icons/fa";
-import {footer, footerColStyle, footerRowStyle} from "./styles/footer";
+import {footer, footerColStyle} from "./styles/footer";
 import ExternalLink from "./ExternalLink";
 import {Fragment} from "react";
 
@@ -19,12 +19,12 @@ const Footer = () => {
 
     return (
         <footer style={footer}>
-            <Row style={footerRowStyle}>
+            <Row>
                 {/* Enlaces */}
                 <Col style={footerColStyle}>
-                    <ListGroup horizontal variant="flush">
-                        {footerLinks.map((item) =>
-                            <ListGroupItem variant="dark" >
+                    <ListGroup horizontal>
+                        {footerLinks.map((item, index) =>
+                            <ListGroupItem variant="dark" key={index}>
                                 <Fragment>
                                     {item.icon}
                                     <br />

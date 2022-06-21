@@ -16,8 +16,7 @@ const ConnectedErrorDialog = () => {
 const ConnectedLoader = () => {
     const isLoading = useAppSelector(appRedux.selectors.isLoading);
 
-    if (!isLoading) return null;
-    return <Spinner animation="border"  />
+    return (isLoading) ? <Spinner animation={"border"} /> : null;
 }
 
 

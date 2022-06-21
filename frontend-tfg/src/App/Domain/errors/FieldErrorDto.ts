@@ -1,4 +1,4 @@
-interface FieldErrorDto {
+type FieldErrorDto = {
     fieldname : string,
     message : string
 }

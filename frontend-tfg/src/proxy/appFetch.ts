@@ -95,5 +95,5 @@ export const initializeBackend = (callback: CallbackFunction) : void => {
     
     if (handle4xxResponse(response, onErrorCallback)) return;
     
-    throw new NetworkErrorException(response.statusText);
+    throw new NetworkErrorException();
 };

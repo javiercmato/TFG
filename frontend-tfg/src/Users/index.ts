@@ -13,3 +13,4 @@ export {usersInitialState} from './Application';
 
 
 /* ********** Components ********** */
+export {SignUp} from './Components';

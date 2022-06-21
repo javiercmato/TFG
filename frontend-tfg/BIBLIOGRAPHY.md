@@ -7,4 +7,6 @@
 # Componentes con Typescript
 - [Introducción a Typescript con React](https://softwarecrafters.io/typescript/introduccion-typescript-react)
 - [React Router DOM v6](https://www.escuelafrontend.com/articulos/rutas-react-router6)
-- [Iconos gratuítos](https://react-icons.github.io/react-icons/icons?name=fa)
+- [Iconos gratuítos](https://react-icons.github.io/react-icons/)
+- [Upload files with Typescript and Bootstrap](https://medium.com/codex/use-a-button-to-upload-files-on-your-react-app-with-bootstrap-ef963cbe8280)
+- [Convert File to Image](https://stackoverflow.com/a/42498790/11295728)

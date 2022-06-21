@@ -1,7 +1,7 @@
 import {appFetch, configFetchParameters, setOnReauthenticationCallback, setServiceToken} from "../../proxy";
 import {AuthenticatedUser, User} from "../Domain";
 
-const USERS_ENDPOINT = process.env.REACT_APP_BACKEND_URL + '/users';
+const USERS_ENDPOINT = '/users';
 
 export const signUp = (user: User,
                        onSuccessCallback: CallbackFunction,

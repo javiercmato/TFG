@@ -15,7 +15,7 @@ const {locale, messages} = initReactI18N();
 
 /* Configurar proxy con el backend: si no establece conexión lanza error */
 initializeBackend( () => {
-    const networkException: NetworkErrorException = new NetworkErrorException('Network error');
+    const networkException: NetworkErrorException = new NetworkErrorException();
 
     store.dispatch(
         appRedux.actions.error(networkException)

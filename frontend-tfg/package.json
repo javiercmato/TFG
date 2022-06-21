@@ -2,7 +2,7 @@
   "name": "frontend-tfg",
   "version": "0.1.0",
   "private": true,
-  "proxy": "",
+  "proxy": "https://localhost:8080/backend/api",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",

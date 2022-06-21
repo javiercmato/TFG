@@ -15,3 +15,5 @@ export {appInitialState} from './Application';
 
 /* ********** Components ********** */
 export {App} from './Components';
+export {Errors} from './Components';
+export {UploadFileButton} from './Components';

@@ -8,7 +8,7 @@ export const loading = () : AppDispatchType => ({
 });
 
 export const loaded = () : AppDispatchType => ({
-    type: actionTypes.LOADING
+    type: actionTypes.LOADED
 });
 
 export const error = (appError : AppErrorType) : AppDispatchType => ({

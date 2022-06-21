@@ -6,6 +6,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 
 const App = () => {
+    document.title = "TFG";
 
     return (
         <div className={App.name}>

@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {Container, Nav, Navbar, NavbarBrand, NavDropdown, NavLink} from "react-bootstrap";
+import {Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
 import NavbarToggle from "react-bootstrap/NavbarToggle";
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
 import {FormattedMessage} from "react-intl";
@@ -19,11 +19,9 @@ const Header = () => {
         >
             <Container>
                 <NavbarBrand>
-                    <NavLink>
-                        <Link to="/" style={headerLink}>
-                            <FaHome size="2rem"/>
-                        </Link>
-                    </NavLink>
+                    <Link to="/" style={headerLink}>
+                        <FaHome size="2rem"/>
+                    </Link>
                 </NavbarBrand>
 
                 <NavbarToggle type="button">
@@ -40,11 +38,9 @@ const Header = () => {
                             </NavDropdown>
                             :
                             // Elementos a mostrar para un usuario no registrado
-                            <NavLink>
-                                <Link to="/users/register" style={headerLink}>
-                                    <FormattedMessage id="app.components.Header.signUp" />
-                                </Link>
-                            </NavLink>
+                            <Link to="/signUp" style={headerLink}>
+                                <FormattedMessage id="app.components.Header.signUp" />
+                            </Link>
                         }
                     </Nav>
                 </NavbarCollapse>

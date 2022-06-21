@@ -1,6 +1,6 @@
 import {FieldErrorDto} from "./FieldErrorDto";
 
-interface ErrorDto {
+type ErrorDto = {
     globalError : string,
     fieldErrors? : FieldErrorDto[]
 }
