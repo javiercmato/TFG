@@ -1,7 +1,6 @@
 import {useIntl} from "react-intl";
 import {ErrorDto, FieldErrorDto} from "../Domain";
-import {Alert, Button, Fade} from "react-bootstrap";
-import {FaTimes} from "react-icons/fa";
+import {Alert, Fade} from "react-bootstrap";
 
 
 interface Props {
@@ -42,20 +41,14 @@ const Errors = ({error, onCloseCallback}: Props) => {
             dismissible={true}
             transition={Fade}
             show={true}
+            onClose={onCloseCallback}
         >
-            <Alert.Heading>{globalError}</Alert.Heading>
+            <Alert.Heading >{globalError}</Alert.Heading>
             {fieldErrors.map( (field: FieldErrorDto, index: number) =>
                 <li key={index}>
                     <b>{field.fieldname}</b> : {field.message}
                 </li>
             )}
-
-            <Button
-                type="button"
-                onClick={onCloseCallback}
-            >
-                <FaTimes />
-            </Button>
         </Alert>
     )
 

@@ -45,7 +45,7 @@ export const handle4xxResponse = (response: Response, onErrorCallback?: Callback
     if (onErrorCallback)
         response.json()
             .then((json) => {
-                if (json.error || json.globalErrors)            // Comprobar si respuesta es un ErrorDto
+                if (json.error || json.globalError)            // Comprobar si respuesta es un ErrorDto
                     onErrorCallback(json);
             });
 

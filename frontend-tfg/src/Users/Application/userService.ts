@@ -11,6 +11,7 @@ export const signUp = (user: User,
     let onSuccess = (authUser: AuthenticatedUser) : void => {
         setServiceToken(authUser.serviceToken);     // Guardar JWT en navegador
         setOnReauthenticationCallback(onReauthenticationCallback);
+        authUser.user = formatUserData(authUser.user);              // Formatear datos del usuario
         onSuccessCallback(authUser);
     };
 
@@ -21,5 +22,15 @@ export const signUp = (user: User,
 
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
+
+/** Función que limpia y formatea los datos del usuario recibido */
+const formatUserData = (user: User) : User => {
+    // Añadir cabecera de Base64 al avatar del usuario para visualizarlo correctamente
+    //https://stackoverflow.com/a/40196009/11295728
+    user.avatar = "data:image/*;base64," + user.avatar;
+
+    return user;
 }
 

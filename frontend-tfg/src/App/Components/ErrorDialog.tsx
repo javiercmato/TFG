@@ -22,7 +22,7 @@ const ErrorDialog = ({error, onCloseCallback} : Props) => {
     return (
         <Modal>
             <ModalDialog>
-                <ModalHeader>
+                <ModalHeader closeButton>
                     <ModalTitle>
                         <FormattedMessage id='app.components.ErrorDialog.title' />
                     </ModalTitle>
@@ -33,7 +33,7 @@ const ErrorDialog = ({error, onCloseCallback} : Props) => {
                 </ModalBody>
 
                 <ModalFooter>
-                    <Button variant='primary'
+                    <Button
                         onClick={onCloseCallback}
                     >
                         <FormattedMessage id='common.buttons.close' />

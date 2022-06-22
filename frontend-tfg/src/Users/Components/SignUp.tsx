@@ -64,6 +64,7 @@ const SignUp = () => {
             }
 
             let onError = (error: ErrorDto) => {
+                console.log(error);
                 setBackendErrors(error);
             }
 
@@ -77,7 +78,7 @@ const SignUp = () => {
                 email: email.trim(),
                 nickname: nickname.trim(),
                 password: password,
-                avatar: avatar,
+                avatar: avatar?.split(",")[1],
             };
 
             dispatch(userRedux.actions.signUpAsyncAction(
