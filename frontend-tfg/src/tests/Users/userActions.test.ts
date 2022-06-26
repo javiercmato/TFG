@@ -1,5 +1,5 @@
 import {default as createMockStore} from 'redux-mock-store';
-import {AppThunk, initialState} from "../../store";
+import {initialState} from "../../store";
 import {AuthenticatedUser, User, userRedux, userService} from '../../Users'
 import thunk from "redux-thunk";
 import {appRedux, ErrorDto} from "../../App";

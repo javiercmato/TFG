@@ -1,4 +1,4 @@
-import {AuthenticatedUser, User} from "../../Users";
+import {AuthenticatedUser} from "../../Users";
 import {UserDispatchType} from "../../Users/Application/state/actionTypes";
 import {signUpAction} from "../../Users/Application/state/actions";
 import rootReducer, {RootStateType} from "../../store/rootReducer";

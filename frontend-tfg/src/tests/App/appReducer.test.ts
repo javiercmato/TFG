@@ -1,5 +1,5 @@
-import {AppDispatchType, AppErrorType} from "../../App/Application/state/actionTypes";
-import {loaded, loading, error} from "../../App/Application/state/actions";
+import {AppDispatchType} from "../../App/Application/state/actionTypes";
+import {error, loaded, loading} from "../../App/Application/state/actions";
 import {appInitialState, ErrorDto, IAppState} from "../../App";
 import appReducer from "../../App/Application/state/reducer";
 

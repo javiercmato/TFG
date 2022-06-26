@@ -3,8 +3,8 @@ import {ReactNode} from "react";
 import rootReducer from "../store/rootReducer";
 import {createMemoryHistory} from 'history';
 import {render} from "@testing-library/react";
-import { Provider } from "react-redux";
-import { Router, useLocation } from "react-router-dom";
+import {Provider} from "react-redux";
+import {Router, useLocation} from "react-router-dom";
 import {configureStore} from "@reduxjs/toolkit";
 
 /** Genera datos de un usuario en función de su ID (si es administrador o no) */
