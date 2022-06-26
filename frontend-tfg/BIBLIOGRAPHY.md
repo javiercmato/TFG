@@ -10,3 +10,4 @@
 - [Iconos gratuítos](https://react-icons.github.io/react-icons/)
 - [Upload files with Typescript and Bootstrap](https://medium.com/codex/use-a-button-to-upload-files-on-your-react-app-with-bootstrap-ef963cbe8280)
 - [Convert File to Image](https://stackoverflow.com/a/42498790/11295728)
+- [React Testing Library for components testing](https://testing-library.com/docs/react-testing-library/example-intro)
