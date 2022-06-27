@@ -4,7 +4,8 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "ES6"
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,9 +19,15 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "baseUrl": "src"
   },
   "include": [
-    "src"
+    "src",
+    "global.d.ts",
+    "src/tests/setupTests.ts"
+  ],
+  "exclude": [
+    "node_modules",
   ]
 }

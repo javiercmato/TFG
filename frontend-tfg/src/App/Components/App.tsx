@@ -1,11 +1,21 @@
 import React from 'react';
-import './style/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {BrowserRouter as Router} from "react-router-dom";
+import Body from "./Body";
+import Header from "./Header";
+import Footer from "./Footer";
 
-function App() {
-  return (
-    <div className="App">
-      HOLA MUNDO
-    </div>
+const App = () => {
+    document.title = "TFG";
+
+    return (
+        <div className={App.name}>
+            <Router>
+                <Header />
+                <Body />
+                <Footer />
+            </Router>
+        </div>
   );
 }
 

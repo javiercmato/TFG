@@ -2,31 +2,35 @@
   "name": "frontend-tfg",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8080",
+  "proxy": "https://localhost:8080/backend/api",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.2",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
     "@types/node": "^16.11.39",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
+    "@types/uuid": "^8.3.4",
+    "autoprefixer": "^10.4.7",
     "bootstrap": "^5.1.3",
     "react": "^18.1.0",
     "react-bootstrap": "^2.4.0",
     "react-dom": "^18.1.0",
+    "react-icons": "^4.4.0",
+    "react-intl": "^6.0.4",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
+    "redux-mock-store": "^1.5.4",
     "redux-thunk": "^2.4.1",
-    "uuid": "^8.3.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "build": "tsc --project tsconfig.build.json",
+    "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -35,22 +39,48 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    "defaults"
+  ],
   "devDependencies": {
+    "@babel/preset-typescript": "^7.17.12",
+    "@testing-library/react": "^13.3.0",
     "@tsconfig/create-react-app": "^1.0.2",
+    "@types/jest": "^28.1.3",
     "@types/react-router-dom": "^5.3.3",
+    "@types/redux-mock-store": "^1.0.3",
     "dotenv": "^16.0.1",
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.1",
+    "react-test-renderer": "^18.2.0",
+    "ts-jest": "^28.0.5",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.7.3"
+  },
+  "jest": {
+    "coverageReporters": [
+      "text",
+      "lcov",
+      "json",
+      "clover",
+      "cobertura"
+    ],
+    "collectCoverageFrom": [
+      "src/App",
+      "src/Users",
+      "!src/Users/Application/userService.ts",
+      "src/**/*.{ts,tsx}"
+    ],
+    "coveragePathIgnorePatterns": [
+      "public/",
+      "coverage/",
+      "node_modules/",
+      "src/tests",
+      "src/proxy",
+      "src/store",
+      "src/reportWebVitals.ts",
+      "src/index.tsx",
+      "src/i18n"
+    ]
   }
 }

@@ -2,12 +2,16 @@ package es.udc.fic.tfg.backendtfg.common.infrastructure.controllers;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.FieldErrorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class CommonControllerAdvice {
@@ -68,5 +72,17 @@ public class CommonControllerAdvice {
         return new ErrorsDTO(globalErrorMessage);
     }
     
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorsDTO handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+        List<FieldErrorDTO> fieldErrorDTOS = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map( (field) -> new FieldErrorDTO(field.getField(), field.getDefaultMessage()) )
+                .collect(Collectors.toList());
+        
+        return new ErrorsDTO(fieldErrorDTOS);
+    }
     
 }

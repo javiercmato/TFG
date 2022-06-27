@@ -1,14 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App/Components/App';
 import reportWebVitals from './reportWebVitals';
+import {store} from './store';
+import {Provider} from 'react-redux'
+import {App, appRedux} from "./App";
+import {initializeBackend} from "./proxy";
+import {NetworkErrorException} from "./proxy/exceptions";
+import {initReactI18N} from "./i18n";
+import {IntlProvider} from "react-intl";
+
+
+/* Configurar I18N */
+const {locale, messages} = initReactI18N();
+
+/* Configurar proxy con el backend: si no establece conexión lanza error */
+initializeBackend( () => {
+    const networkException: NetworkErrorException = new NetworkErrorException();
+
+    store.dispatch(
+        appRedux.actions.error(networkException)
+    );
+});
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+        <IntlProvider locale={locale} messages={messages}>
+            <App />
+        </IntlProvider>
+    </Provider>
   </React.StrictMode>
 );
 

@@ -27,16 +27,22 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
+      # Generar cobertura de código
+      - name: Install dependencies
+        run: npm ci
+      - name: Test and coverage
+        run: npm run test --coverage --watchAll
       
       # Analizar código
       - name: Analyze code.
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}
         with:
+          projectBaseDir: frontend-tfg
           args: >
-            -Dsonar.projectKey=javiercmato_TFG
-            -Dsonar.sources=src/
-            -Dsonar.tests=tests/
-            -Dsonar.exclusions=.node_modules
+            -Dsonar.organization=javiercmato
+            -Dsonar.projectKey=TFG-frontend
+            -Dsonar.host.url=https://sonarcloud.io
