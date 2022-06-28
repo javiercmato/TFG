@@ -27,6 +27,7 @@ const translations = {
     'app.components.ErrorDialog.title' : 'Error',
     'app.components.Header.signUp': 'Registrar',
     'app.components.Header.login': 'Acceder',
+    'app.components.Header.userActions.logout': 'Cerrar sesión',
 
 
     /* ******************** Users ******************** */

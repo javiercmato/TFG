@@ -34,7 +34,11 @@ const Header = () => {
                         {nickname ?
                             // Elementos a mostrar para un usuario registrado
                             <NavDropdown id="basic-nav-dropdown" title={nickname}>
-                                {/*// TODO: Meter enlaces a acciones (cambiar contraseña, ver perfil, etc)*/}
+                                <NavDropdown.Item>
+                                    <Link to="/logout" style={headerLink}>
+                                        <FormattedMessage id="app.components.Header.userActions.logout" />
+                                    </Link>
+                                </NavDropdown.Item>
                             </NavDropdown>
                             :
                             // Elementos a mostrar para un usuario no registrado

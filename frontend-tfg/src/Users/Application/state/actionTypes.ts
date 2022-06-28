@@ -5,6 +5,7 @@ import {AuthenticatedUser} from "../../Domain";
 
 export const SIGN_UP : string = 'users/signUp';
 export const LOGIN : string = 'users/login';
+export const LOGOUT : string = 'users/logout';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -21,6 +22,11 @@ export interface LoginActionType {
     payload: AuthenticatedUser
 }
 
+export interface LogoutActionType {
+    type: string,
+}
 
-export type UserDispatchType =SignUpUserActionType
-    | LoginActionType;
+
+export type UserDispatchType = SignUpUserActionType
+    | LoginActionType
+    | LogoutActionType;

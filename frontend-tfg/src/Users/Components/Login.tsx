@@ -3,15 +3,17 @@ import {useNavigate} from "react-router-dom";
 import {ChangeEvent, FormEvent, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {userRedux} from "../Application";
-import {Button, Card, Form, FormGroup, Row,} from "react-bootstrap";
+import {Button, Card, Form, FormGroup, InputGroup, Row,} from "react-bootstrap";
 import {cardHeader, form, formGroup, row} from "./styles/signUp";
 import {FormattedMessage} from "react-intl";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 const Login = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [nickname, setNickname] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [hidePassword, setHidePassword] = useState<boolean>(true);
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     let formRef: HTMLFormElement;
 
@@ -92,11 +94,18 @@ const Login = () => {
                                 <Form.Label>
                                     <b><FormattedMessage id="common.fields.password" /></b>
                                 </Form.Label>
-                                <Form.Control as="input"
-                                              type="text"
-                                              value={password}
-                                              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-                                />
+                                <InputGroup>
+                                    <Form.Control as="input"
+                                                  type={(hidePassword) ? 'password' : 'text'}
+                                                  value={password}
+                                                  onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                                    />
+                                    <Button variant="outline-secondary"
+                                        onClick={() => setHidePassword((prevState => !prevState))}
+                                    >
+                                        {(hidePassword) ? <FaEye/> : <FaEyeSlash />}
+                                    </Button>
+                                </InputGroup>
                                 <Form.Control.Feedback
                                     type="invalid"
                                     role="alert"

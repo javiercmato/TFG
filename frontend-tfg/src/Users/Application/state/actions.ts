@@ -17,6 +17,10 @@ export const loginAction = (authenticatedUser: AuthenticatedUser) : UserDispatch
     payload: authenticatedUser
 })
 
+export const logoutAction = () : UserDispatchType => ({
+    type: actionTypes.LOGOUT
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
@@ -85,5 +89,38 @@ export const loginAsyncAction = (
 
     // Llamar al servicio y ejecutar los callbacks
     userService.login(nickname, password, onSuccess, onError, onReauthenticateCallback);
+}
+
+export const loginWithServiceTokenAsyncAction = (
+    onReauthenticateCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (authUser: AuthenticatedUser) : void => {
+        // Actualiza estado de la aplicación
+        if (authUser)
+            dispatch(loginAction(authUser));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+    };
+    // Función a ejecutar en caso de no poder autenticarse
+    const onReauthenticate: NoArgsCallbackFunction = () : void => {
+        // Actualiza estado de la aplicacion
+        dispatch(app.actions.loaded());         // Indica operacion ya finalizada
+
+        // Ejecuta el callback recibido
+        // @ts-ignore
+        onReauthenticateCallback();
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.loginWithServiceToken(onSuccess, onReauthenticate);
+}
+
+export const logoutAsyncAction = () : AppThunk => dispatch => {
+    dispatch(logoutAction());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.logout();
 }
 
