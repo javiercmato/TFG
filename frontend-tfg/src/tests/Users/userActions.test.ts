@@ -9,10 +9,14 @@ const mockStore = createMockStore(middlewares);
 
 
 describe("User actions tests: ", () => {
-/* ******************** CONFIGURACIÓN PREVIA ******************** */
     const signUpBackendSpy = jest.spyOn(userService, 'signUp');
+    const loginBackendSpy = jest.spyOn(userService, 'login');
+
+/* ******************** CONFIGURACIÓN PREVIA ******************** */
     afterEach(() => jest.restoreAllMocks());
 
+
+/* **************************** TESTS *************************** */
     test('Sign Up action -> SUCCESS', () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
@@ -30,10 +34,10 @@ describe("User actions tests: ", () => {
             serviceToken: 'token',
             user: {
                 // Datos generados en backend
-                "userID": "00000000-0000-4000-8000-000000000000",
-                "role": "USER",
-                "isBannedByAdmin": false,
-                "registerdate": new Date(),
+                userID: "00000000-0000-4000-8000-000000000000",
+                role: "USER",
+                isBannedByAdmin: false,
+                registerdate: new Date(),
                 // Datos introducidos por el usuario
                 ...inputUserData
             }
@@ -110,4 +114,65 @@ describe("User actions tests: ", () => {
         expect(store.getActions()).toEqual(expectedActions);
         //expect(onErrors.mock.calls[0][0]).toEqual(backendError);
     });
+
+    test('Login action -> SUCCESS', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        // Datos que introduce el usuario
+        let inputUserData = {
+            nickname: "foo",
+            password: "password",
+        };
+        // Respuesta esperada por el backend
+        let result: AuthenticatedUser = {
+            serviceToken: 'token',
+            user: {
+                // Datos generados en backend
+                userID: "00000000-0000-4000-8000-000000000000",
+                role: "USER",
+                isBannedByAdmin: false,
+                registerdate: new Date(),
+                name: "name",
+                surname: "surname",
+                email: `foo@email.es`,
+                // Datos introducidos por el usuario
+                ...inputUserData
+            }
+        };
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+        const onReauthenticate = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let loginMockImplementation = (_nickname: string,
+                                       _password: string,
+                                       _onSuccess: CallbackFunction,
+                                       _onErrors: CallbackFunction,
+                                       _onReauthenticate: CallbackFunction) => _onSuccess(result);
+        loginBackendSpy.mockImplementation(loginMockImplementation);
+
+        const action = userRedux.actions.loginAsyncAction(
+            inputUserData.nickname,
+            inputUserData.password,
+            onSuccess,
+            onErrors,
+            onReauthenticate
+        );
+        const expectedActions = [
+            appRedux.actions.loading(),
+            //userRedux.actions.loginAction(result),
+            //appRedux.actions.loaded(),
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        //expect(loginBackendSpy.mock.calls[0][0]).toEqual(inputUserData.nickname);
+        //expect(loginBackendSpy.mock.calls[0][1]).toEqual(inputUserData.password);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
+
 })

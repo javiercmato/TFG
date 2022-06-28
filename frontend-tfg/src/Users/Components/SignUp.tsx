@@ -64,7 +64,6 @@ const SignUp = () => {
             }
 
             let onError = (error: ErrorDto) => {
-                console.log(error);
                 setBackendErrors(error);
             }
 

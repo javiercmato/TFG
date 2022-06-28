@@ -17,6 +17,7 @@ let onNetworkErrorCallback : CallbackFunction;
  */
 export const configFetchParameters = (method: string, body?: Record<string, any>): RequestInit => {
     const configuration : RequestInit = {};
+    configuration.headers = new Headers();
 
     // Establecer tipo de petición HTTP
     if (method)
@@ -28,11 +29,30 @@ export const configFetchParameters = (method: string, body?: Record<string, any>
             configuration.body = body;
         // Sino, convierte el contenido a JSON
         else {
-            configuration.headers = {
-                'Content-Type' : 'application/json'
-            };
+            configuration.headers.append('Content-Type', 'application/json');
             configuration.body = JSON.stringify(body);
         }
+    }
+
+    // Insertar el JWT en las cabeceras de la petición si está disponible
+    const serviceToken = getServiceToken();
+    if (serviceToken) {
+        // Si hay cabeceras, añade el token. Sino, crea las cabeceras y añade el token
+        if (configuration.headers) {
+            configuration.headers.append('Authorization', `Bearer ${serviceToken}`);
+        } else {
+            configuration.headers = new Headers();
+            configuration.headers.append('Authorization', `Bearer ${serviceToken}`);
+        }
+    }
+
+    // Indicar en cabeceras el idioma que usa el navegador
+    let hasDefaultLocale = navigator.language;                                  // Comprobar si navegador tiene un idioma principal por defecto
+    let hasDefaultLocales = navigator.languages && navigator.languages[0];      // Comprobar si navegador tiene idiomas configurados
+    const defaultLocale = 'es';                                                 // Idioma por defecto
+    let locale = hasDefaultLocales || hasDefaultLocale || defaultLocale;
+    if (configuration.headers) {
+        configuration.headers.append('Accept-Language', locale);
     }
 
     return configuration;
