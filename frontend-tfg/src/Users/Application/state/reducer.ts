@@ -6,9 +6,12 @@ import {User} from "../../Domain";
 
 
 const user = (state: Nullable<User> = initialState.user,
-                     action: UserDispatchType) : Nullable<User> => {
+              action: UserDispatchType) : Nullable<User> => {
     switch (action.type) {
         case actionTypes.SIGN_UP:
+            return action.payload.user;
+
+        case actionTypes.LOGIN:
             return action.payload.user;
 
         default:

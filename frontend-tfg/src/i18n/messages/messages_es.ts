@@ -26,12 +26,15 @@ const translations = {
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
     'app.components.Header.signUp': 'Registrar',
+    'app.components.Header.login': 'Acceder',
 
 
     /* ******************** Users ******************** */
     'users.components.SignUp.title': 'Registrar usuario',
     'users.components.SignUp.signUpButton': 'Registrarse',
     'users.componentes.SignUp.confirmPasswordError': 'Revisa que las contraseñas coincidan',
+    'users.components.Login.title': 'Iniciar sesión',
+    'users.components.Login.loginButton': 'Acceder',
 
 
 }

@@ -2,7 +2,7 @@ import {Route, Routes} from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import AppGlobalComponents from "./AppGlobalComponents";
 import Home from "./Home";
-import {SignUp} from "../../Users";
+import {Login, SignUp} from "../../Users";
 import {body} from './styles/body';
 
 
@@ -15,6 +15,7 @@ const Body = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/signUp" element={<SignUp />} />
+                <Route path="/login" element={<Login />} />
                 <Route element={<Home />}></Route>
             </Routes>
         </Container>

@@ -38,8 +38,8 @@ const Header = () => {
                             </NavDropdown>
                             :
                             // Elementos a mostrar para un usuario no registrado
-                            <Link to="/signUp" style={headerLink}>
-                                <FormattedMessage id="app.components.Header.signUp" />
+                            <Link to="/login" style={headerLink}>
+                                <FormattedMessage id="app.components.Header.login" />
                             </Link>
                         }
                     </Nav>
