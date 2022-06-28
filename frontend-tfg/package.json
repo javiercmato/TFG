@@ -29,7 +29,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "tsc --project tsconfig.build.json",
-    "test": "react-scripts test --env=jsdom --coverage --watchAll",
+    "test": "react-scripts test --env=jsdom",
+    "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
