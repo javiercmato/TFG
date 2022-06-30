@@ -11,3 +11,5 @@ export const isLoggedIn = (state: RootState) : boolean => getUserModule(state) !
 
 export const selectNickname = (state: RootState) : string => getUserModule(state)?.nickname!;
 
+export const selectUserID = (state: RootState) : string => getUserModule(state)?.userID!;
+

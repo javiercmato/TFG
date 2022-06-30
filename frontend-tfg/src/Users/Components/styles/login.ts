@@ -1,7 +1,7 @@
 import {CSSProperties} from "react";
 
 export const form: CSSProperties = {
-
+    
 }
 
 export const cardHeader: CSSProperties = {
@@ -15,4 +15,8 @@ export const row : CSSProperties = {
 export const formGroup: CSSProperties = {
     display: "flex",
     justifyContent: "center",
+}
+
+export const encouragementText: CSSProperties = {
+    textAlign: "center",
 }

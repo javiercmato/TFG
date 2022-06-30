@@ -17,6 +17,9 @@ const user = (state: Nullable<User> = initialState.user,
         case actionTypes.LOGOUT:
             return initialState.user;
 
+        case actionTypes.CHANGE_PASSWORD:
+            return state;
+
         default:
             return state;
     }

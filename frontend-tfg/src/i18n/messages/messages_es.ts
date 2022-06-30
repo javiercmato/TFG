@@ -28,6 +28,7 @@ const translations = {
     'app.components.Header.signUp': 'Registrar',
     'app.components.Header.login': 'Acceder',
     'app.components.Header.userActions.logout': 'Cerrar sesión',
+    'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
 
 
     /* ******************** Users ******************** */
@@ -36,6 +37,12 @@ const translations = {
     'users.componentes.SignUp.confirmPasswordError': 'Revisa que las contraseñas coincidan',
     'users.components.Login.title': 'Iniciar sesión',
     'users.components.Login.loginButton': 'Acceder',
+    'users.components.Login.signUpEncouragementText': '¿Todavía no tienes cuenta?',
+    'users.components.ChangePassword.title': 'Cambiar contraseña',
+    'users.components.ChangePassword.oldPassword': 'Antigua contraseña',
+    'users.components.ChangePassword.newPassword': 'Nueva contraseña',
+    'users.components.ChangePassword.confirmNewPassword': 'Repite la nueva contraseña',
+    'users.components.ChangePassword.changePassword': 'Cambiar contraseña',
 
 
 }
