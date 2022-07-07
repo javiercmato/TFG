@@ -6,6 +6,7 @@ import {AuthenticatedUser} from "../../Domain";
 export const SIGN_UP : string = 'users/signUp';
 export const LOGIN : string = 'users/login';
 export const LOGOUT : string = 'users/logout';
+export const CHANGE_PASSWORD : string = 'users/changePassword';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -25,8 +26,12 @@ export interface LoginActionType {
 export interface LogoutActionType {
     type: string,
 }
+export interface ChangePasswordActionType {
+    type: string,
+}
 
 
 export type UserDispatchType = SignUpUserActionType
     | LoginActionType
-    | LogoutActionType;
+    | LogoutActionType
+    | ChangePasswordActionType;

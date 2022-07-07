@@ -21,6 +21,10 @@ export const logoutAction = () : UserDispatchType => ({
     type: actionTypes.LOGOUT
 })
 
+export const changePasswordAction = () : UserDispatchType => ({
+    type: actionTypes.LOGOUT
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
@@ -98,20 +102,13 @@ export const loginWithServiceTokenAsyncAction = (
         // Actualiza estado de la aplicación
         if (authUser)
             dispatch(loginAction(authUser));
-        dispatch(app.actions.loaded());         // Indica operación ya finalizada
     };
     // Función a ejecutar en caso de no poder autenticarse
     const onReauthenticate: NoArgsCallbackFunction = () : void => {
-        // Actualiza estado de la aplicacion
-        dispatch(app.actions.loaded());         // Indica operacion ya finalizada
-
         // Ejecuta el callback recibido
         // @ts-ignore
         onReauthenticateCallback();
     }
-
-    // Indicar que se está realizando una operación
-    dispatch(app.actions.loading());
 
     // Llamar al servicio y ejecutar los callbacks
     userService.loginWithServiceToken(onSuccess, onReauthenticate);
@@ -124,3 +121,13 @@ export const logoutAsyncAction = () : AppThunk => dispatch => {
     userService.logout();
 }
 
+export const changePasswordAsyncAction = (userID: string,
+    oldPassword: string,
+    newPassword: string,
+    onSuccessCallback: CallbackFunction,
+    onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    dispatch(changePasswordAction());
+
+    // LLamar al servicio y ejecutar los callbacks
+    userService.changePassword(userID, oldPassword, newPassword, onSuccessCallback, onErrorCallback);
+}

@@ -79,17 +79,17 @@ export const appFetch = (
 
 /** Guarda el JWT del usuario en el navegador */
 export const setServiceToken = (serviceToken: string) : void => {
-    sessionStorage.setItem(SERVICE_TOKEN_NAME, serviceToken);
+    localStorage.setItem(SERVICE_TOKEN_NAME, serviceToken);
 }
 
 /** Recupera el JWT del usuario del navegador */
 export const getServiceToken = () : string => {
-    return sessionStorage.getItem(SERVICE_TOKEN_NAME)!;
+    return localStorage.getItem(SERVICE_TOKEN_NAME)!;
 }
 
 /** Elimina el JWT del usuario del navegador */
 export const removeServiceToken = () : void => {
-    sessionStorage.removeItem(SERVICE_TOKEN_NAME);
+    localStorage.removeItem(SERVICE_TOKEN_NAME);
 }
 
 export const setOnReauthenticationCallback = (callback: CallbackFunction) : void => {

@@ -1,6 +1,6 @@
 import {ErrorDto, Errors, UploadFileButton} from "../../App";
 import {ChangeEvent, createRef, FormEvent, useState} from "react";
-import {Button, Card, Form, FormGroup, Image, Row} from "react-bootstrap";
+import {Button, Card, Form, FormGroup, Image, InputGroup, Row} from "react-bootstrap";
 import CardHeader from "react-bootstrap/CardHeader";
 import {FormattedMessage} from "react-intl";
 import {avatarPreview, cardHeader, form, formGroup, row} from "./styles/signUp";
@@ -8,6 +8,7 @@ import {useAppDispatch} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {userRedux} from "../Application";
 import {User} from "../Domain";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 
 const SignUp = () => {
@@ -19,6 +20,7 @@ const SignUp = () => {
     const [nickname, setNickname] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setconfirmPassword] = useState<string>('');
+    const [hideConfirmPassword, setHideConfirmPassword] = useState<boolean>(true);
     const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState<boolean>(false);
     // @ts-ignore
     const [avatar, setAvatar] = useState<string>(null);
@@ -219,12 +221,19 @@ const SignUp = () => {
                                 <Form.Label>
                                     <b><FormattedMessage id="common.fields.confirmPassword" /></b>
                                 </Form.Label>
-                                <Form.Control as="input"
-                                              ref={confirmPasswordInputRef}
-                                              type="password"
-                                              value={confirmPassword}
-                                              onChange={(e: ChangeEvent<HTMLInputElement>) => handleConfirmPasswordChange(e)}
-                                />
+                                <InputGroup>
+                                    <Form.Control as="input"
+                                       ref={confirmPasswordInputRef}
+                                       type={(hideConfirmPassword) ? 'password' : 'text'}
+                                       value={confirmPassword}
+                                       onChange={(e: ChangeEvent<HTMLInputElement>) => handleConfirmPasswordChange(e)}
+                                    />
+                                    <Button variant="outline-secondary"
+                                        onClick={() => setHideConfirmPassword((prevState => !prevState))}
+                                    >
+                                        {(hideConfirmPassword) ? <FaEye/> : <FaEyeSlash/>}
+                                    </Button>
+                                </InputGroup>
                                 <Form.Control.Feedback
                                     type="invalid"
                                     role="alert"

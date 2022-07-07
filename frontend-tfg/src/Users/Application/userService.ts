@@ -78,6 +78,20 @@ export const logout = () : void => {
     removeServiceToken();
 }
 
+export const changePassword = (userID: string,
+                               oldPassword: string,
+                               newPassword: string,
+                               onSuccessCallback: CallbackFunction,
+                               onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/changePassword`;
+    const changePasswordParams = {oldPassword, newPassword};
+    const requestConfig = configFetchParameters('PUT', changePasswordParams);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */

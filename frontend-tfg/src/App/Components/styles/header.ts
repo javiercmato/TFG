@@ -10,3 +10,8 @@ export const headerUserAccessLinks: CSSProperties = {
     flexDirection: 'row',
     
 }
+
+export const navItem: CSSProperties = {
+    marginLeft: "1em",
+    marginRight: "1em"
+}
