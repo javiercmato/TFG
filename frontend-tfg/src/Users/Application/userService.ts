@@ -92,6 +92,23 @@ export const changePassword = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const getUserProfile = (userID: string,
+                               onSuccessCallback: CallbackFunction,
+                               onErrorCallback: CallbackFunction): void => {
+    // Callback para cuando se encuentra al usuario con éxito
+    let onSuccess = (authUser: AuthenticatedUser) : void => {
+        authUser.user = formatUserData(authUser.user);
+        onSuccessCallback(authUser);
+    };
+
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `${userID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
