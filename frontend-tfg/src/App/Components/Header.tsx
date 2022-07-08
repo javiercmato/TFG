@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
-import {Container, Nav, Navbar, NavbarBrand, NavDropdown, NavItem} from "react-bootstrap";
+import {Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
+import Dropdown from 'react-bootstrap/Dropdown'
 import NavbarToggle from "react-bootstrap/NavbarToggle";
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
 import {FormattedMessage} from "react-intl";
@@ -37,12 +38,18 @@ const Header = () => {
                     {/* Elementos a mostrar para un usuario registrado */}
                     {nickname ?
                         <Nav className="ms-auto">
-                            <NavDropdown id="basic-nav-dropdown" title={nickname}>
+                            <NavDropdown id="basic-nav-dropdown" title={nickname} align={"end"}>
+                                <NavDropdown.Item>
+                                    <Link to={`/users/${nickname}`} style={headerLink}>
+                                        <FormattedMessage id="app.components.Header.userActions.seeProfile" />
+                                    </Link>
+                                </NavDropdown.Item>
                                 <NavDropdown.Item>
                                     <Link to="/changePassword" style={headerLink}>
                                         <FormattedMessage id="app.components.Header.userActions.changePassword" />
                                     </Link>
                                 </NavDropdown.Item>
+                                <Dropdown.Divider />
                                 <NavDropdown.Item>
                                     <Link to="/logout" style={headerLink}>
                                         <FormattedMessage id="app.components.Header.userActions.logout" />

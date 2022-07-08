@@ -1,6 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {SignUpUserActionType, UserDispatchType} from './actionTypes';
+import {FindUserActionType, SignUpUserActionType, UserDispatchType} from './actionTypes';
 import {initialState, IUserState} from "./IUserState";
 import {User} from "../../Domain";
 
@@ -25,9 +25,21 @@ const user = (state: Nullable<User> = initialState.user,
     }
 }
 
+const userSearch = (state: Nullable<User> = initialState.userSearch,
+                    action: UserDispatchType) : Nullable<User> => {
+    switch (action.type) {
+        case actionTypes.FIND_USER:
+            return (action as FindUserActionType).payload;
+
+        default:
+            return state;
+    }
+}
+
 
 const userReducer = combineReducers<IUserState>({
     user: user,
+    userSearch: userSearch
 });
 
 export default userReducer;

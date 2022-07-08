@@ -7,7 +7,8 @@ export const SIGN_UP : string = 'users/signUp';
 export const LOGIN : string = 'users/login';
 export const LOGOUT : string = 'users/logout';
 export const CHANGE_PASSWORD : string = 'users/changePassword';
-export const GET_USER_PROFILE : string = 'users/getUserProfile';
+export const FIND_USER : string = 'users/findUser';
+export const FIND_USER_BY_NICKNAME : string = 'users/findUserByNickname';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -31,7 +32,7 @@ export interface ChangePasswordActionType {
     type: string,
 }
 
-export interface GetUserProfileActionType {
+export interface FindUserActionType {
     type: string,
     payload: User
 }
@@ -41,4 +42,4 @@ export type UserDispatchType = SignUpUserActionType
     | LoginActionType
     | LogoutActionType
     | ChangePasswordActionType
-    | GetUserProfileActionType;
+    | FindUserActionType;

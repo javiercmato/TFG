@@ -92,17 +92,34 @@ export const changePassword = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
-export const getUserProfile = (userID: string,
-                               onSuccessCallback: CallbackFunction,
-                               onErrorCallback: CallbackFunction): void => {
+export const findUserProfile = (userID: string,
+                                onSuccessCallback: CallbackFunction,
+                                onErrorCallback: CallbackFunction): void => {
     // Callback para cuando se encuentra al usuario con éxito
-    let onSuccess = (authUser: AuthenticatedUser) : void => {
-        authUser.user = formatUserData(authUser.user);
-        onSuccessCallback(authUser);
+    let onSuccess = (user: User) : void => {
+        user = formatUserData(user);
+        onSuccessCallback(user);
     };
 
     // Configurar petición al servicio
     const endpoint = USERS_ENDPOINT + `${userID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
+export const findUserProfileByNickname = (nickname: string,
+                                          onSuccessCallback: CallbackFunction,
+                                          onErrorCallback: CallbackFunction): void => {
+    // Callback para cuando se encuentra al usuario con éxito
+    let onSuccess = (user: User) : void => {
+        user = formatUserData(user);
+        onSuccessCallback(user);
+    };
+
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/?nickname=${nickname}`;
     const requestConfig = configFetchParameters('GET');
 
     // Realizar la petición
@@ -125,10 +142,11 @@ const processAuthenticatedUser = (authUser: AuthenticatedUser,
 const formatUserData = (user: User) : User => {
     // Añadir cabecera de Base64 al avatar del usuario para visualizarlo correctamente
     //https://stackoverflow.com/a/40196009/11295728
-    if (user.avatar) {
+    if (user?.avatar) {
         user.avatar = "data:image/*;base64," + user.avatar;
     }
 
+    console.log(user)
     return user;
 }
 
