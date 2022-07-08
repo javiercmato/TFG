@@ -29,6 +29,7 @@ const translations = {
     'app.components.Header.login': 'Acceder',
     'app.components.Header.userActions.logout': 'Cerrar sesión',
     'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
+    'app.components.Header.userActions.seeProfile': 'Ver perfil',
 
 
     /* ******************** Users ******************** */

@@ -22,7 +22,12 @@ export const logoutAction = () : UserDispatchType => ({
 })
 
 export const changePasswordAction = () : UserDispatchType => ({
-    type: actionTypes.LOGOUT
+    type: actionTypes.CHANGE_PASSWORD
+})
+
+export const findUserByNicknameAction = (user: User) : UserDispatchType => ({
+    type: actionTypes.FIND_USER_BY_NICKNAME,
+    payload: user,
 })
 
 
@@ -130,4 +135,34 @@ export const changePasswordAsyncAction = (userID: string,
 
     // LLamar al servicio y ejecutar los callbacks
     userService.changePassword(userID, oldPassword, newPassword, onSuccessCallback, onErrorCallback);
+}
+
+export const findUserByNicknameAsyncAction = (nickname: string,
+                                              onSuccessCallback: CallbackFunction,
+                                              onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (user: User) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(findUserByNicknameAction(user));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(user);
+    };
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    };
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.findUserByNickname(nickname, onSuccess, onError);
 }
