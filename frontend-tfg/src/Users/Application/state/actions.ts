@@ -172,7 +172,8 @@ export const findUserByNicknameAsyncAction = (nickname: string,
     userService.findUserByNickname(nickname, onSuccess, onError);
 }
 
-export const updateProfileAsyncAction = (user: User,
+export const updateProfileAsyncAction = (userID: string,
+                                         updatedUser: User,
                                          onSuccessCallback: CallbackFunction,
                                          onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
@@ -199,5 +200,5 @@ export const updateProfileAsyncAction = (user: User,
     dispatch(app.actions.loading());
 
     // Llamar al servicio y ejecutar los callbacks
-    userService.updateProfile(user, onSuccess, onError);
+    userService.updateProfile(userID, updatedUser, onSuccess, onError);
 }

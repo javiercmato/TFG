@@ -21,6 +21,11 @@ const Header = () => {
             isDivided: false,
         },
         {
+            link: '/profile',
+            i18nID: 'editProfile',
+            isDivided: false,
+        },
+        {
             link: `/changePassword`,
             i18nID: 'changePassword',
             isDivided: false,
@@ -72,11 +77,11 @@ const Header = () => {
                     {nickname ?
                         <Nav className="ms-auto">
                             <NavDropdown id="basic-nav-dropdown" title={nickname} align={"end"}>
-                                {loggedUserActions.map( (action) => (
+                                {loggedUserActions.map( (action, index) => (
                                     <>
                                         {(action.isDivided) ? <Dropdown.Divider/> : null}
                                         <NavDropdown.Item>
-                                            <Link to={action.link} style={headerLink}>
+                                            <Link to={action.link} style={headerLink} key={index}>
                                                 <FormattedMessage id={`app.components.Header.userActions.${action.i18nID}`} />
                                             </Link>
                                         </NavDropdown.Item>
@@ -87,9 +92,9 @@ const Header = () => {
                         :
                         // Elementos a mostrar para un usuario no registrado
                         <Nav className="ms-auto">
-                            {nonLoggedUserActions.map( (action) => (
+                            {nonLoggedUserActions.map( (action, index) => (
                                 <Nav.Item style={navItem}>
-                                    <Link to={action.link} style={headerLink}>
+                                    <Link to={action.link} style={headerLink} key={index}>
                                         <FormattedMessage id={`app.components.Header.${action.i18nID}`} />
                                     </Link>
                                 </Nav.Item>

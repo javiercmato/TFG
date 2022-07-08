@@ -2,7 +2,7 @@ import {Route, Routes} from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import AppGlobalComponents from "./AppGlobalComponents";
 import Home from "./Home";
-import {ChangePassword, Login, Logout, SignUp, UserProfile, userRedux} from "../../Users";
+import {ChangePassword, Login, Logout, SignUp, UpdateProfile, UserProfile, userRedux} from "../../Users";
 import {body} from './styles/body';
 import {useAppSelector} from "../../store";
 
@@ -22,6 +22,7 @@ const Body = () => {
                 <Route path="/users/:nickname" element={<UserProfile />} />
                 {isUserLogged && <Route path="/logout" element={<Logout />} />}
                 {isUserLogged && <Route path="/changePassword" element={<ChangePassword />} />}
+                {isUserLogged && <Route path="/profile" element={<UpdateProfile />} />}
                 <Route element={<Home />} />
             </Routes>
         </Container>

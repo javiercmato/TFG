@@ -1,9 +1,5 @@
 import {CSSProperties} from "react";
 
-export const form: CSSProperties = {
-
-}
-
 export const cardHeader: CSSProperties = {
     textAlign: "center",
 }
@@ -13,10 +9,10 @@ export const avatarPreview: CSSProperties = {
 }
 
 export const row : CSSProperties = {
-    padding: "1%"
+    padding: "1%",
 }
 
 export const formGroup: CSSProperties = {
     display: "flex",
-    justifyContent: "center"
+    justifyContent: "center",
 }
