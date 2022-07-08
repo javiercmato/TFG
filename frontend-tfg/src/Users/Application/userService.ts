@@ -109,6 +109,23 @@ export const findUserByNickname = (nickname: string,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const updateProfile = (user: User,
+                              onSuccessCallback: CallbackFunction,
+                              onErrorCallback: CallbackFunction) : void => {
+    // Callback para cuando se actualiza al usuario con éxito
+    let onSuccess = (user: User) : void => {
+        user = formatUserData(user);
+        onSuccessCallback(user);
+    };
+
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `${user.userID}`;
+    const requestConfig = configFetchParameters('PUT', user);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */

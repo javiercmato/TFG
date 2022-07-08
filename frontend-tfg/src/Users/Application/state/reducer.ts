@@ -1,6 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {FindUserActionType, SignUpUserActionType, UserDispatchType} from './actionTypes';
+import {FindUserActionType, SignUpUserActionType, UpdateProfileActionType, UserDispatchType} from './actionTypes';
 import {initialState, IUserState} from "./IUserState";
 import {User} from "../../Domain";
 
@@ -19,6 +19,9 @@ const user = (state: Nullable<User> = initialState.user,
 
         case actionTypes.CHANGE_PASSWORD:
             return state;
+
+        case actionTypes.UPDATE_PROFILE:
+            return (action as UpdateProfileActionType).payload;
 
         default:
             return state;
