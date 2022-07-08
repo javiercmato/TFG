@@ -3,7 +3,7 @@ import {initialState} from "../../store";
 import {AuthenticatedUser, User, userRedux, userService} from '../../Users'
 import thunk from "redux-thunk";
 import {appRedux, ErrorDto} from "../../App";
-import {generateValidUser} from "../TestUtils";
+import {generateValidUser, NICKNAME, USER_ID} from "../TestUtils";
 
 const middlewares = [thunk];
 const mockStore = createMockStore(middlewares);
@@ -15,6 +15,7 @@ describe("User actions tests: ", () => {
     const loginWithTokenBackendSpy = jest.spyOn(userService, 'loginWithServiceToken');
     const changePasswordBackendSpy = jest.spyOn(userService, 'changePassword');
     const findUserByNicknameBackendSpy = jest.spyOn(userService, 'findUserByNickname');
+    const updateProfileBackendSpy = jest.spyOn(userService, 'updateProfile');
 
 /* ******************** CONFIGURACIÓN PREVIA ******************** */
     afterAll(() => jest.restoreAllMocks());
@@ -25,7 +26,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData: User = {
-            nickname: "foo",
+            nickname: NICKNAME,
             password: "password",
             name: "name",
             surname: "surname",
@@ -38,7 +39,7 @@ describe("User actions tests: ", () => {
             serviceToken: 'token',
             user: {
                 // Datos generados en backend
-                userID: "00000000-0000-4000-8000-000000000000",
+                userID: USER_ID,
                 role: "USER",
                 isBannedByAdmin: false,
                 registerdate: new Date(),
@@ -79,7 +80,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData: User = {
-            nickname: "foo",
+            nickname: NICKNAME,
             password: "password",
             name: "name",
             surname: "surname",
@@ -125,7 +126,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData = {
-            nickname: "foo",
+            nickname: NICKNAME,
             password: "password",
         };
         // Respuesta esperada por el backend
@@ -133,7 +134,7 @@ describe("User actions tests: ", () => {
             serviceToken: 'token',
             user: {
                 // Datos generados en backend
-                userID: "00000000-0000-4000-8000-000000000000",
+                userID: USER_ID,
                 role: "USER",
                 isBannedByAdmin: false,
                 registerdate: new Date(),
@@ -185,7 +186,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData = {
-            nickname: "foo",
+            nickname: NICKNAME,
             password: "password",
         };
         // Respuesta esperada por el backend
@@ -235,7 +236,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData = {
-            nickname: "foo",
+            nickname: NICKNAME,
             password: "password",
         };
         // Respuesta esperada por el backend
@@ -243,7 +244,7 @@ describe("User actions tests: ", () => {
             serviceToken: 'token',
             user: {
                 // Datos generados en backend
-                userID: "00000000-0000-4000-8000-000000000000",
+                userID: USER_ID,
                 role: "USER",
                 isBannedByAdmin: false,
                 registerdate: new Date(),
@@ -301,7 +302,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Usuario actual con sesión ya iniciada
         let loggedUser: User = {
-            userID: "00000000-0000-4000-8000-000000000000",
+            userID: USER_ID,
             role: "USER",
             isBannedByAdmin: false,
             registerdate: new Date(),
@@ -333,7 +334,7 @@ describe("User actions tests: ", () => {
 
     test('Change Password action -> SUCCESS', () => {
         /* ******************** PREPARAR DATOS ******************** */
-        const userID = "00000000-0000-4000-8000-000000000000";
+        const userID = USER_ID;
         // Datos que introduce el usuario
         let inputUserData = {
             oldPassword: "oldPassword",
@@ -378,7 +379,7 @@ describe("User actions tests: ", () => {
 
     test('Change Password action -> FAILURE', () => {
         /* ******************** PREPARAR DATOS ******************** */
-        const userID = "00000000-0000-4000-8000-000000000000";
+        const userID = USER_ID;
         // Datos que introduce el usuario
         let inputUserData = {
             oldPassword: "oldPassword",
@@ -429,10 +430,10 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData = {
-            nickname: 'user',
+            nickname: NICKNAME,
         };
         // Respuesta esperada por el backend
-        let result = generateValidUser("00000000-0000-4000-8000-000000000000", inputUserData.nickname)
+        let result = generateValidUser(USER_ID, inputUserData.nickname)
         const onSuccess = jest.fn();
         const onErrors = jest.fn();
 
@@ -464,7 +465,7 @@ describe("User actions tests: ", () => {
         /* ******************** PREPARAR DATOS ******************** */
         // Datos que introduce el usuario
         let inputUserData = {
-            nickname: 'user',
+            nickname: NICKNAME,
         };
         // Respuesta esperada por el backend
         let backendError: ErrorDto = {
@@ -499,4 +500,98 @@ describe("User actions tests: ", () => {
         expect(store.getActions()).toEqual(expectedActions);
     });
 
+    test('Update profile action -> SUCCESS', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        const userID = USER_ID;
+        let nickname = NICKNAME;
+        // Datos que introduce el usuario
+        let originalUser: User = generateValidUser(userID, nickname);
+        let inputUserData : User = {
+            name: originalUser.name + 'X',
+            surname: originalUser.surname + 'X',
+            email: 'X' + originalUser.email,
+            avatar: originalUser.avatar + 'X'
+        }
+
+        // Respuesta esperada por el backend
+        let result: User = {
+            ...inputUserData,
+            ...originalUser
+        };
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let updateProfileMockImplementation = (_userID: string,
+                                               _updatedUser: User,
+                                               _onSuccess: CallbackFunction,
+                                               _onErrors: CallbackFunction) => _onSuccess(result);
+        updateProfileBackendSpy.mockImplementation(updateProfileMockImplementation);
+
+        const action = userRedux.actions.updateProfileAsyncAction(userID, inputUserData, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            userRedux.actions.updateProfileAction(result),
+            appRedux.actions.loaded(),
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(updateProfileBackendSpy.mock.calls[0][0]).toEqual(userID);
+        expect(updateProfileBackendSpy.mock.calls[0][1]).toEqual(inputUserData);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
+
+    test('Update profile action -> FAILURE', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        const userID = USER_ID;
+        let nickname = NICKNAME;
+        // Datos que introduce el usuario
+        let originalUser: User = generateValidUser(userID, nickname);
+        let inputUserData : User = {
+            name: originalUser.name + 'X',
+            surname: originalUser.surname + 'X',
+            email: 'X' + originalUser.email,
+            avatar: originalUser.avatar + 'X'
+        }
+
+        // Respuesta esperada por el backend
+        let backendError: ErrorDto = {
+            globalError: 'Error al realizar operación'
+        };
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let updateProfileMockImplementation = (_userID: string,
+                                               _updatedUser: User,
+                                               _onSuccess: CallbackFunction,
+                                               _onErrors: CallbackFunction) => _onErrors(backendError);
+        updateProfileBackendSpy.mockImplementation(updateProfileMockImplementation);
+
+        const action = userRedux.actions.updateProfileAsyncAction(userID, inputUserData, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            appRedux.actions.error(backendError),
+            appRedux.actions.loaded(),
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(onSuccess).not.toBeCalled();
+        expect(onErrors).toBeCalled();
+        expect(updateProfileBackendSpy.mock.calls[0][0]).toEqual(userID);
+        expect(updateProfileBackendSpy.mock.calls[0][1]).toEqual(inputUserData);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
 })

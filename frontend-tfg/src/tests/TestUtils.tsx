@@ -7,6 +7,9 @@ import {Provider} from "react-redux";
 import {Router, useLocation} from "react-router-dom";
 import {configureStore} from "@reduxjs/toolkit";
 
+export const USER_ID : string = "00000000-0000-4000-8000-000000000000";
+export const NICKNAME: string = "Foo";
+
 /** Genera datos de un usuario en función de su ID (si es administrador o no) */
 export const generateValidUser = (userID: string, nickname: string) : User => {
     const password: string = "password";

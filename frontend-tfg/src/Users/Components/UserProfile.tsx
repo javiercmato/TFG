@@ -1,5 +1,5 @@
 import {useAppDispatch} from "../../store";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
@@ -12,6 +12,7 @@ import {FormattedMessage} from "react-intl";
 
 const UserProfile = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     let {nickname} = useParams();
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
@@ -79,7 +80,10 @@ const UserProfile = () => {
                             <Col style={userActionsCol}>
                                 <Row>
                                     {(isCurrentUserProfile) &&
-                                        <Button variant="secondary">
+                                        <Button
+                                            variant="secondary"
+                                            onClick={() => navigate("/profile")}
+                                        >
                                             <FormattedMessage id="common.buttons.edit"/>
                                         </Button>
                                     }
