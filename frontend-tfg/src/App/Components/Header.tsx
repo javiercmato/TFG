@@ -13,6 +13,39 @@ import {headerLink, navItem} from "./styles/header";
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
 
+    // Elementos del desplegable para acciones del usuario registrado
+    const loggedUserActions = [
+        {
+            link: `/users/${nickname}`,
+            i18nID: 'seeProfile',
+            isDivided: false,
+        },
+        {
+            link: `/changePassword`,
+            i18nID: 'changePassword',
+            isDivided: false,
+        },
+        {
+            link: `/logout`,
+            i18nID: 'logout',
+            isDivided: true,
+        }
+    ];
+
+    // Elementos del desplegable para acciones del usuario registrado
+    const nonLoggedUserActions = [
+        {
+            link: `/signUp`,
+            i18nID: 'signUp',
+        },
+        {
+            link: `/login`,
+            i18nID: 'login',
+        },
+    ];
+
+
+
     return (
         <Navbar expand="lg"
             bg="dark"
@@ -39,37 +72,28 @@ const Header = () => {
                     {nickname ?
                         <Nav className="ms-auto">
                             <NavDropdown id="basic-nav-dropdown" title={nickname} align={"end"}>
-                                <NavDropdown.Item>
-                                    <Link to={`/users/${nickname}`} style={headerLink}>
-                                        <FormattedMessage id="app.components.Header.userActions.seeProfile" />
-                                    </Link>
-                                </NavDropdown.Item>
-                                <NavDropdown.Item>
-                                    <Link to="/changePassword" style={headerLink}>
-                                        <FormattedMessage id="app.components.Header.userActions.changePassword" />
-                                    </Link>
-                                </NavDropdown.Item>
-                                <Dropdown.Divider />
-                                <NavDropdown.Item>
-                                    <Link to="/logout" style={headerLink}>
-                                        <FormattedMessage id="app.components.Header.userActions.logout" />
-                                    </Link>
-                                </NavDropdown.Item>
+                                {loggedUserActions.map( (action) => (
+                                    <>
+                                        {(action.isDivided) ? <Dropdown.Divider/> : null}
+                                        <NavDropdown.Item>
+                                            <Link to={action.link} style={headerLink}>
+                                                <FormattedMessage id={`app.components.Header.userActions.${action.i18nID}`} />
+                                            </Link>
+                                        </NavDropdown.Item>
+                                    </>
+                                ))}
                             </NavDropdown>
                         </Nav>
                         :
                         // Elementos a mostrar para un usuario no registrado
                         <Nav className="ms-auto">
-                            <Nav.Item style={navItem}>
-                                <Link to="/login" style={headerLink}>
-                                    <FormattedMessage id="app.components.Header.login" />
-                                </Link>
-                            </Nav.Item>
-                            <Nav.Item style={navItem}>
-                                <Link to="/signUp" style={headerLink}>
-                                    <FormattedMessage id="app.components.Header.signUp" />
-                                </Link>
-                            </Nav.Item>
+                            {nonLoggedUserActions.map( (action) => (
+                                <Nav.Item style={navItem}>
+                                    <Link to={action.link} style={headerLink}>
+                                        <FormattedMessage id={`app.components.Header.${action.i18nID}`} />
+                                    </Link>
+                                </Nav.Item>
+                            ))}
                         </Nav>
                     }
                 </NavbarCollapse>

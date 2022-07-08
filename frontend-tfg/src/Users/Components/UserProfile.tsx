@@ -11,20 +11,19 @@ import {userDataCol} from './styles/userProfile';
 
 const UserProfile = () => {
     const dispatch = useAppDispatch();
-    const {nickname} = useParams();
-    let userDetails = useSelector(userRedux.selectors.selectUserSearch);
+    let {nickname} = useParams();
+    let searchedUser = useSelector(userRedux.selectors.selectUserSearch);
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
 
-    //let userDetails = {name: "Javier", surname: "Cancela", nickname: "JavierCM", email: "javier@email.es", avatar: ""}
 
-
-    // Solicita los datos del usuario cada vez que cambie el nickname de la búsqueda
+    // Solicita los datos del usuario cada vez que cambie el nickname en la URL
     useEffect( () => {
         let onSuccess = () => {};
 
         let onError = (error: ErrorDto) => {
             setBackendErrors(error);
         }
+
         dispatch(userRedux.actions.findUserByNicknameAsyncAction(nickname!, onSuccess, onError));
     }, [nickname]);
 
@@ -35,7 +34,7 @@ const UserProfile = () => {
                 error={backendErrors}
                 onCloseCallback={() => setBackendErrors(null)}
             />
-            {(userDetails) &&
+            {(searchedUser) &&
                 <Card
                     bg="light"
                     border="light"
@@ -45,10 +44,10 @@ const UserProfile = () => {
                         <Row>
                             {/* Avatar */}
                             <Col>
-                                {(userDetails) &&
+                                {(searchedUser) &&
                                     <UserAvatar
-                                        imageB64={userDetails.avatar}
-                                        userNickname={userDetails.nickname!}
+                                        imageB64={searchedUser.avatar}
+                                        userNickname={searchedUser.nickname!}
                                         isThumbnail={false}
                                     />
                                 }
@@ -58,17 +57,17 @@ const UserProfile = () => {
                             <Col style={userDataCol}>
                                 {/* Nombre */}
                                 <Row>
-                                    <h3>{userDetails.name + ' ' + userDetails.surname}</h3>
+                                    <h3>{searchedUser.name + ' ' + searchedUser.surname}</h3>
                                 </Row>
 
                                 {/* Nickname */}
                                 <Row>
-                                    <h4>{userDetails.nickname}</h4>
+                                    <h4>{searchedUser.nickname}</h4>
                                 </Row>
 
                                 {/* Email */}
                                 <Row>
-                                    <div>{userDetails.email}</div>
+                                    <div>{searchedUser.email}</div>
                                 </Row>
                             </Col>
 

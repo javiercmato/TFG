@@ -12,6 +12,8 @@ const getUserSearchModule = (state: RootState) : Nullable<User> => getModuleStat
 
 export const isLoggedIn = (state: RootState) : boolean => getUserModule(state) != null;
 
+export const selectCurrentUser = (state: RootState) : Nullable<User> => getUserModule(state);
+
 export const selectNickname = (state: RootState) : string => getUserModule(state)?.nickname!;
 
 export const selectUserID = (state: RootState) : string => getUserModule(state)?.userID!;
