@@ -1,6 +1,12 @@
-import {AuthenticatedUser} from "../../Users";
+import {AuthenticatedUser, User} from "../../Users";
 import {UserDispatchType} from "../../Users/Application/state/actionTypes";
-import {loginAction, logoutAction, signUpAction} from "../../Users/Application/state/actions";
+import {
+    changePasswordAction,
+    findUserByNicknameAction,
+    loginAction,
+    logoutAction,
+    signUpAction
+} from "../../Users/Application/state/actions";
 import rootReducer, {RootStateType} from "../../store/rootReducer";
 import {initialState} from "../../store";
 import {generateValidUser} from "../TestUtils";
@@ -55,4 +61,28 @@ describe("User reducer tests: ", () => {
         /* ******************** COMPROBAR ******************** */
         expect(state.users.user).toEqual(null);
     })
+
+    test('User -> dispatch changePassword', () => {
+        const action: UserDispatchType = changePasswordAction();
+        const state: RootStateType = rootReducer(initialState, action);
+
+        /* ******************** COMPROBAR ******************** */
+        expect(state.users.user).toEqual(state.users.user);
+    });
+
+    test('UserSearch -> dispatch findUserByNickname', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        const userID: string = '00000000-0000-4000-8000-000000000000';
+        const nickname: string = 'Foo';
+        // Respuesta esperada por el backend
+        const result : User = generateValidUser(userID, nickname);
+
+        /* ******************** EJECUTAR ******************** */
+        const action: UserDispatchType = findUserByNicknameAction(result);
+        const state: RootStateType = rootReducer(initialState, action);
+
+        /* ******************** COMPROBAR ******************** */
+        expect(state.users.userSearch).toBe(result);
+    });
+
 });

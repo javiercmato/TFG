@@ -7,7 +7,6 @@ export const SIGN_UP : string = 'users/signUp';
 export const LOGIN : string = 'users/login';
 export const LOGOUT : string = 'users/logout';
 export const CHANGE_PASSWORD : string = 'users/changePassword';
-export const FIND_USER : string = 'users/findUser';
 export const FIND_USER_BY_NICKNAME : string = 'users/findUserByNickname';
 
 /* ******************** Tipos de datos ******************** */
