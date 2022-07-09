@@ -29,6 +29,9 @@ const user = (state: Nullable<User> = initialState.user,
         case actionTypes.UPDATE_PROFILE:
             return (action as UpdateProfileActionType).payload;
 
+        case actionTypes.DELETE_USER:
+            return initialState.user;
+
         default:
             return state;
     }

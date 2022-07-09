@@ -17,6 +17,7 @@ describe("User actions tests: ", () => {
     const findUserByNicknameBackendSpy = jest.spyOn(userService, 'findUserByNickname');
     const updateProfileBackendSpy = jest.spyOn(userService, 'updateProfile');
     const banUserBackendSpy = jest.spyOn(userService, 'banUser');
+    const deleteUserBackendSpy = jest.spyOn(userService, 'deleteUser');
 
 /* ******************** CONFIGURACIÓN PREVIA ******************** */
     afterAll(() => jest.restoreAllMocks());
@@ -602,7 +603,6 @@ describe("User actions tests: ", () => {
         let result: boolean = true;
         const onSuccess = jest.fn();
         const onErrors = jest.fn();
-        const onReauthenticate = jest.fn();
 
         // Reimplementación del backend para que se pasen por defecto los argumentos a testear
         let banUserMockImplementation = (_targetUserID: string,
@@ -636,7 +636,6 @@ describe("User actions tests: ", () => {
         };
         const onSuccess = jest.fn();
         const onErrors = jest.fn();
-        const onReauthenticate = jest.fn();
 
         // Reimplementación del backend para que se pasen por defecto los argumentos a testear
         let banUserMockImplementation = (_targetUserID: string,
@@ -664,4 +663,67 @@ describe("User actions tests: ", () => {
         expect(store.getActions()).toEqual(expectedActions);
     });
 
+    test('Delete user action -> SUCCESS', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let deleteUserMockImplementation = (_userID: string,
+                                         _onSuccess: NoArgsCallbackFunction,
+                                         _onErrors: CallbackFunction) => _onSuccess();
+        deleteUserBackendSpy.mockImplementation(deleteUserMockImplementation);
+
+        const action = userRedux.actions.deleteUserAsyncAction(USER_ID, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            userRedux.actions.deleteUserAction(),
+            appRedux.actions.loaded()
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(deleteUserBackendSpy.mock.calls[0][0]).toEqual(USER_ID);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
+
+    test('Delete user action -> FAILURE', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        // Respuesta esperada por el backend
+        let backendError: ErrorDto = {
+            globalError: 'Error al realizar operación'
+        };
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let deleteUserMockImplementation = (_userID: string,
+                                            _onSuccess: NoArgsCallbackFunction,
+                                            _onErrors: CallbackFunction) => _onErrors(backendError);
+        deleteUserBackendSpy.mockImplementation(deleteUserMockImplementation);
+
+        const action = userRedux.actions.deleteUserAsyncAction(USER_ID, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            appRedux.actions.error(backendError),
+            appRedux.actions.loaded()
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(onSuccess).not.toBeCalled();
+        expect(onErrors).toBeCalled();
+        expect(deleteUserBackendSpy.mock.calls[0][0]).toEqual(USER_ID);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
 })

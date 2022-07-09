@@ -40,6 +40,10 @@ export const banUserAction = (isBanned: boolean) : UserDispatchType => ({
     payload: isBanned,
 })
 
+export const deleteUserAction = () : UserDispatchType => ({
+    type: actionTypes.DELETE_USER,
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
@@ -236,4 +240,34 @@ export const banUserAsyncAction = (targetUserID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     userService.banUser(targetUserID, onSuccess, onError);
+}
+
+export const deleteUserAsyncAction = (userID: string,
+                                      onSuccessCallback: NoArgsCallbackFunction,
+                                      onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = () : void => {
+        // Actualiza estado de aplicación
+        dispatch(deleteUserAction());
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.deleteUser(userID, onSuccess, onError);
 }

@@ -143,6 +143,17 @@ export const banUser = (targetUserID: string,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const deleteUser = (userID: string,
+                           onSuccessCallback: NoArgsCallbackFunction,
+                           onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
 const processAuthenticatedUser = (authUser: AuthenticatedUser,
