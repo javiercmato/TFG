@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
-import {useEffect, useState} from "react";
+import React, {MouseEventHandler, useEffect, useState} from "react";
 import {Alert, Button, Card, Col, Row} from "react-bootstrap";
 import UserAvatar from "./UserAvatar";
 import {cardHeaderRow, userActionsCol, userDataCol} from './styles/userProfile';
@@ -19,10 +19,24 @@ const UserProfile = () => {
     const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
+    let currentUserID = useSelector(userRedux.selectors.selectUserID);
     let searchedUser = useSelector(userRedux.selectors.selectUserSearch);
     let isAdmin = useSelector(userRedux.selectors.selectIsAdmin);
     let isSearchedUserBannedByAdmin = useSelector(userRedux.selectors.isUserSearchBannedByAdmin);
     const isCurrentUserProfile : boolean = (isUserLoggedIn && (nickname === loggedUser?.nickname));
+
+
+    const handleClickDeleteUser : MouseEventHandler<HTMLButtonElement> = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+
+        let onSuccess: NoArgsCallbackFunction = () => {
+            dispatch(userRedux.actions.logoutAsyncAction());
+            navigate("/");
+        };
+        let onErrors: CallbackFunction = (err) => {setBackendErrors(err)};
+
+        dispatch(userRedux.actions.deleteUserAsyncAction(currentUserID, onSuccess, onErrors));
+    }
 
 
     // Solicita los datos del usuario cada vez que cambie el nickname en la URL
@@ -101,6 +115,18 @@ const UserProfile = () => {
                                             onClick={() => navigate("/profile")}
                                         >
                                             <FormattedMessage id="common.buttons.edit"/>
+                                        </Button>
+                                    }
+                                </Row>
+
+                                {/* Botón para borrar cuenta */}
+                                <Row>
+                                    {(isCurrentUserProfile) &&
+                                        <Button
+                                            variant="danger"
+                                            onClick={handleClickDeleteUser}
+                                        >
+                                            <FormattedMessage id="users.components.UserProfile.deleteUser"/>
                                         </Button>
                                     }
                                 </Row>

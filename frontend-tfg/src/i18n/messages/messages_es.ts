@@ -51,6 +51,7 @@ const translations = {
     'users.components.BanUserButton.banButton': 'Inhabillitar usuario',
     'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
     'users.warning.UserIsBannedByAdmin': 'El usuario ha sido inhabilitado por el administrador',
+    'users.components.UserProfile.deleteUser': 'Eliminar usuario',
 
 }
 
