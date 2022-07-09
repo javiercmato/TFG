@@ -48,7 +48,9 @@ const translations = {
     'users.components.ChangePassword.changePassword': 'Cambiar contraseña',
     'users.components.UpdateProfile.title': 'Actualizar perfil',
     'users.components.UpdateProfile.updateButton': 'Actualizar perfil',
-
+    'users.components.BanUserButton.banButton': 'Inhabillitar usuario',
+    'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
+    'users.warning.UserIsBannedByAdmin': 'El usuario ha sido inhabilitado por el administrador',
 
 }
 

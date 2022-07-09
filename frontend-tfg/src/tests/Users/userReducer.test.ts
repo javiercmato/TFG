@@ -1,6 +1,7 @@
 import {AuthenticatedUser, User} from "../../Users";
 import {UserDispatchType} from "../../Users/Application/state/actionTypes";
 import {
+    banUserAction,
     changePasswordAction,
     findUserByNicknameAction,
     loginAction,
@@ -97,6 +98,21 @@ describe("User reducer tests: ", () => {
 
         /* ******************** COMPROBAR ******************** */
         expect(state.users.userSearch).toBe(result);
+    });
+
+    test('UserSearch -> dispatch banUser', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        const mockInitialState = initialState;
+        mockInitialState.users.userSearch = generateValidUser(USER_ID, NICKNAME);
+        // Respuesta esperada por el backend
+        const result : boolean = true;
+
+        /* ******************** EJECUTAR ******************** */
+        const action: UserDispatchType = banUserAction(result);
+        const state: RootStateType = rootReducer(mockInitialState, action);
+
+        /* ******************** COMPROBAR ******************** */
+        expect(state.users.userSearch?.isBannedByAdmin).toBeTruthy();
     });
 
 });

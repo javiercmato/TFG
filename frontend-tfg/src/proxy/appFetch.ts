@@ -5,7 +5,7 @@ import {handle2xxResponse, handle4xxResponse} from './responseHandlers';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const SERVICE_TOKEN_NAME = process.env.REACT_APP_SERVICE_TOKEN_NAME!;
 
-let onReauthenticationCallback : CallbackFunction;
+let onReauthenticationCallback : NoArgsCallbackFunction;
 let onNetworkErrorCallback : CallbackFunction;
 
 /* ****************************************** SERVICIOS ***************************************** */
@@ -39,10 +39,10 @@ export const configFetchParameters = (method: string, body?: Record<string, any>
     if (serviceToken) {
         // Si hay cabeceras, añade el token. Sino, crea las cabeceras y añade el token
         if (configuration.headers) {
-            configuration.headers.append('Authorization', `Bearer ${serviceToken}`);
+            configuration.headers.append("Authorization", `Bearer ${serviceToken}`);
         } else {
             configuration.headers = new Headers();
-            configuration.headers.append('Authorization', `Bearer ${serviceToken}`);
+            configuration.headers.append("Authorization", `Bearer ${serviceToken}`);
         }
     }
 
@@ -92,7 +92,7 @@ export const removeServiceToken = () : void => {
     sessionStorage.removeItem(SERVICE_TOKEN_NAME);
 }
 
-export const setOnReauthenticationCallback = (callback: CallbackFunction) : void => {
+export const setOnReauthenticationCallback = (callback: NoArgsCallbackFunction) : void => {
     onReauthenticationCallback = callback;
 }
 
@@ -113,7 +113,7 @@ export const initializeBackend = (callback: CallbackFunction) : void => {
  const _handleResponse = (response: Response, onSuccessCallback: CallbackFunction, onErrorCallback?: CallbackFunction): void => {
     if (handle2xxResponse(response, onSuccessCallback)) return;
     
-    if (handle4xxResponse(response, onErrorCallback)) return;
+    if (handle4xxResponse(response, onErrorCallback, onReauthenticationCallback)) return;
     
     throw new NetworkErrorException();
 };

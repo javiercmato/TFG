@@ -1,6 +1,12 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {FindUserActionType, SignUpUserActionType, UpdateProfileActionType, UserDispatchType} from './actionTypes';
+import {
+    BanUserActionType,
+    FindUserActionType,
+    SignUpUserActionType,
+    UpdateProfileActionType,
+    UserDispatchType
+} from './actionTypes';
 import {initialState, IUserState} from "./IUserState";
 import {User} from "../../Domain";
 
@@ -33,6 +39,13 @@ const userSearch = (state: Nullable<User> = initialState.userSearch,
     switch (action.type) {
         case actionTypes.FIND_USER_BY_NICKNAME:
             return (action as FindUserActionType).payload;
+
+        case actionTypes.BAN_USER:
+            let payload: boolean = (action as BanUserActionType).payload;
+            return {
+                ...state,
+                isBannedByAdmin: payload
+            }
 
         default:
             return state;

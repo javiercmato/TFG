@@ -9,6 +9,7 @@ export const LOGOUT : string = 'users/logout';
 export const CHANGE_PASSWORD : string = 'users/changePassword';
 export const FIND_USER_BY_NICKNAME : string = 'users/findUserByNickname';
 export const UPDATE_PROFILE : string = 'users/updateProfile';
+export const BAN_USER : string = 'users/banUser';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -42,6 +43,11 @@ export interface UpdateProfileActionType {
     payload: User
 }
 
+export interface BanUserActionType {
+    type: string,
+    payload: boolean
+}
+
 
 export type UserDispatchType = SignUpUserActionType
     | LoginActionType
@@ -49,4 +55,5 @@ export type UserDispatchType = SignUpUserActionType
     | ChangePasswordActionType
     | FindUserActionType
     | UpdateProfileActionType
+    | BanUserActionType
 ;
