@@ -16,6 +16,7 @@ describe("User actions tests: ", () => {
     const changePasswordBackendSpy = jest.spyOn(userService, 'changePassword');
     const findUserByNicknameBackendSpy = jest.spyOn(userService, 'findUserByNickname');
     const updateProfileBackendSpy = jest.spyOn(userService, 'updateProfile');
+    const banUserBackendSpy = jest.spyOn(userService, 'banUser');
 
 /* ******************** CONFIGURACIÓN PREVIA ******************** */
     afterAll(() => jest.restoreAllMocks());
@@ -594,4 +595,73 @@ describe("User actions tests: ", () => {
         expect(updateProfileBackendSpy.mock.calls[0][1]).toEqual(inputUserData);
         expect(store.getActions()).toEqual(expectedActions);
     });
+
+    test('Ban User action -> SUCCESS', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        // Respuesta esperada por el backend
+        let result: boolean = true;
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+        const onReauthenticate = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let banUserMockImplementation = (_targetUserID: string,
+                                       _onSuccess: CallbackFunction,
+                                       _onErrors: CallbackFunction) => _onSuccess(result);
+        banUserBackendSpy.mockImplementation(banUserMockImplementation);
+
+        const action = userRedux.actions.banUserAsyncAction(USER_ID, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            userRedux.actions.banUserAction(result),
+            appRedux.actions.loaded()
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(banUserBackendSpy.mock.calls[0][0]).toEqual(USER_ID);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
+
+    test('Ban User action -> FAILURE', () => {
+        /* ******************** PREPARAR DATOS ******************** */
+        // Respuesta esperada por el backend
+        let backendError: ErrorDto = {
+            globalError: 'Error al realizar operación'
+        };
+        const onSuccess = jest.fn();
+        const onErrors = jest.fn();
+        const onReauthenticate = jest.fn();
+
+        // Reimplementación del backend para que se pasen por defecto los argumentos a testear
+        let banUserMockImplementation = (_targetUserID: string,
+                                         _onSuccess: CallbackFunction,
+                                         _onErrors: CallbackFunction) => _onErrors(backendError);
+        banUserBackendSpy.mockImplementation(banUserMockImplementation);
+
+        const action = userRedux.actions.banUserAsyncAction(USER_ID, onSuccess, onErrors);
+        const expectedActions = [
+            appRedux.actions.loading(),
+            appRedux.actions.error(backendError),
+            appRedux.actions.loaded()
+        ];
+
+
+        /* ******************** EJECUTAR ******************** */
+        const store = mockStore(initialState);
+        store.dispatch<any>(action);
+
+
+        /* ******************** COMPROBAR ******************** */
+        expect(onSuccess).not.toBeCalled();
+        expect(onErrors).toBeCalled();
+        expect(banUserBackendSpy.mock.calls[0][0]).toEqual(USER_ID);
+        expect(store.getActions()).toEqual(expectedActions);
+    });
+
 })

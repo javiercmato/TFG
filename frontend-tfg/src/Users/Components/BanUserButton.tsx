@@ -11,7 +11,6 @@ interface Props {
 
 const BanUserButton = ({onErrorCallback}: Props) => {
     const dispatch = useAppDispatch();
-    const adminID = useSelector(userRedux.selectors.selectUserID);
     const targetUser = useSelector(userRedux.selectors.selectUserSearch);
     const isCurrentUserAdmin = useSelector(userRedux.selectors.selectIsAdmin);
     const isTargetUserAdmin = useSelector(userRedux.selectors.isUserSearchAdmin);
@@ -24,7 +23,7 @@ const BanUserButton = ({onErrorCallback}: Props) => {
         let onSuccess: CallbackFunction = () => {};
         let onErrors: CallbackFunction = (err) => {onErrorCallback(err)};
 
-        dispatch(userRedux.actions.banUserAsyncAction(adminID, targetUser?.userID!, onSuccess, onErrors));
+        dispatch(userRedux.actions.banUserAsyncAction(targetUser?.userID!, onSuccess, onErrors));
     }
 
     // Solo un usuario administrador puede banear usuarios
