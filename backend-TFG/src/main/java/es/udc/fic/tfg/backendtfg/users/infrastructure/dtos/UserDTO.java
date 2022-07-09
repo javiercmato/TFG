@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -57,6 +58,7 @@ public class UserDTO {
     
     private String role;
     
+    @JsonProperty(value = "isBannedByAdmin")
     private boolean isBannedByAdmin;
     
 }

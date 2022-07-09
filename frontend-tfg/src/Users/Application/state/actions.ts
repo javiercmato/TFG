@@ -35,13 +35,18 @@ export const updateProfileAction = (user: User) : UserDispatchType => ({
     payload: user,
 })
 
+export const banUserAction = (isBanned: boolean) : UserDispatchType => ({
+    type: actionTypes.BAN_USER,
+    payload: isBanned,
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
     user: User,
     onSuccessCallback: CallbackFunction,
     onErrorCallback: CallbackFunction,
-    onReauthenticateCallback: CallbackFunction): AppThunk => dispatch => {
+    onReauthenticateCallback: NoArgsCallbackFunction): AppThunk => dispatch => {
 
     // Función a ejecutar en caso de éxito
     const onSuccess: CallbackFunction = (authUser: AuthenticatedUser) : void => {
@@ -76,7 +81,7 @@ export const loginAsyncAction = (
     password: string,
     onSuccessCallback: CallbackFunction,
     onErrorCallback: CallbackFunction,
-    onReauthenticateCallback: CallbackFunction) : AppThunk => dispatch => {
+    onReauthenticateCallback: NoArgsCallbackFunction) : AppThunk => dispatch => {
 
     // Función a ejecutar en caso de éxito
     const onSuccess: CallbackFunction = (authUser: AuthenticatedUser) : void => {
@@ -106,7 +111,7 @@ export const loginAsyncAction = (
 }
 
 export const loginWithServiceTokenAsyncAction = (
-    onReauthenticateCallback: CallbackFunction): AppThunk => dispatch => {
+    onReauthenticateCallback: NoArgsCallbackFunction): AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
     const onSuccess: CallbackFunction = (authUser: AuthenticatedUser) : void => {
         // Actualiza estado de la aplicación
@@ -201,4 +206,34 @@ export const updateProfileAsyncAction = (userID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     userService.updateProfile(userID, updatedUser, onSuccess, onError);
+}
+
+export const banUserAsyncAction = (targetUserID: string,
+                                   onSuccessCallback: CallbackFunction,
+                                   onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (isBanned: boolean) : void => {
+        // Actualiza estado de aplicación
+        dispatch(banUserAction(isBanned));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(isBanned);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.banUser(targetUserID, onSuccess, onError);
 }

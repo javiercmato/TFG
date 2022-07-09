@@ -29,13 +29,19 @@ export const handle2xxResponse = (response: Response, onSuccessCallback: Callbac
  * @returns {boolean} Booleano indicando si esta función es capaz de manejar la respuesta
  * @throws {ServiceException} Contenido de la respuesta no está en formato JSON
  */
-export const handle4xxResponse = (response: Response, onErrorCallback?: CallbackFunction) : boolean => {
+export const handle4xxResponse = (response: Response, onErrorCallback?: CallbackFunction, onReauthenticateCallback?: NoArgsCallbackFunction) : boolean => {
     // Si no se recibe respuesta, no se gestiona
     if (!response) return false;
 
     // Comprobar si el error es ajeno al servidor (no es error del tipo 4xx)
     if (response.status < 400 || response.status > 499) return false;
 
+    // Si no está autorizado pero tiene un callback, lo ejecuta
+    if ((response.status === 401) && onReauthenticateCallback) {
+        onReauthenticateCallback();
+
+        return true;
+    }
 
     // Comprobar si respuesta contiene información del error para procesarlo
     if (!_isJsonRespone(response))

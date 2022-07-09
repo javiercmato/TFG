@@ -5,3 +5,4 @@ export {default as ChangePassword} from './ChangePassword';
 export {default as UserAvatar} from './UserAvatar';
 export {default as UserProfile} from './UserProfile';
 export {default as UpdateProfile} from './UpdateProfile';
+export {default as BanUserButton} from './BanUserButton';

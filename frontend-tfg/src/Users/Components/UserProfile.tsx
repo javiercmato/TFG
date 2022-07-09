@@ -4,22 +4,26 @@ import {useSelector} from "react-redux";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
 import {useEffect, useState} from "react";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Alert, Button, Card, Col, Row} from "react-bootstrap";
 import UserAvatar from "./UserAvatar";
 import {cardHeaderRow, userActionsCol, userDataCol} from './styles/userProfile';
 import {FormattedMessage} from "react-intl";
+import BanUserButton from "./BanUserButton";
 
 
 const UserProfile = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     let {nickname} = useParams();
+    const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
+    const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
-    let profileData = useSelector(userRedux.selectors.selectUserSearch);
-    const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
+    let searchedUser = useSelector(userRedux.selectors.selectUserSearch);
+    let isAdmin = useSelector(userRedux.selectors.selectIsAdmin);
+    let isSearchedUserBannedByAdmin = useSelector(userRedux.selectors.isUserSearchBannedByAdmin);
+    const isCurrentUserProfile : boolean = (isUserLoggedIn && (nickname === loggedUser?.nickname));
 
-    const isCurrentUserProfile = (isUserLoggedIn && (nickname ==loggedUser?.nickname));
 
     // Solicita los datos del usuario cada vez que cambie el nickname en la URL
     useEffect( () => {
@@ -39,20 +43,31 @@ const UserProfile = () => {
                 error={backendErrors}
                 onCloseCallback={() => setBackendErrors(null)}
             />
-            {(profileData) &&
+
+            {(searchedUser) &&
                 <Card
                     bg="light"
                     border="light"
                 >
+                    {/* Mostrar alerta si usuario está baneado */}
+                    {(isSearchedUserBannedByAdmin && shouldBannedUserAlert) &&
+                        <Alert variant="warning"
+                            dismissible
+                            onClose={() => setShowBannedUserAlert(false)}
+                        >
+                            <FormattedMessage id="users.warning.UserIsBannedByAdmin"/>
+                        </Alert>
+                    }
+
                     {/* Datos del usuario */}
                     <Card.Header>
                         <Row style={cardHeaderRow}>
                             {/* Avatar */}
                             <Col>
-                                {(profileData) &&
+                                {(searchedUser) &&
                                     <UserAvatar
-                                        imageB64={profileData.avatar}
-                                        userNickname={profileData.nickname!}
+                                        imageB64={searchedUser.avatar}
+                                        userNickname={searchedUser.nickname!}
                                         isThumbnail={false}
                                     />
                                 }
@@ -62,22 +77,23 @@ const UserProfile = () => {
                             <Col style={userDataCol}>
                                 {/* Nombre */}
                                 <Row>
-                                    <h3>{profileData.name + ' ' + profileData.surname}</h3>
+                                    <h3>{searchedUser.name + ' ' + searchedUser.surname}</h3>
                                 </Row>
 
                                 {/* Nickname */}
                                 <Row>
-                                    <h4>{profileData.nickname}</h4>
+                                    <h4>{searchedUser.nickname}</h4>
                                 </Row>
 
                                 {/* Email */}
                                 <Row>
-                                    <div>{profileData.email}</div>
+                                    <div>{searchedUser.email}</div>
                                 </Row>
                             </Col>
 
                             {/* Seguidores y botones */}
                             <Col style={userActionsCol}>
+                                {/* Botón para editar perfil */}
                                 <Row>
                                     {(isCurrentUserProfile) &&
                                         <Button
@@ -86,6 +102,15 @@ const UserProfile = () => {
                                         >
                                             <FormattedMessage id="common.buttons.edit"/>
                                         </Button>
+                                    }
+                                </Row>
+
+                                {/* Botón para banear usuario (solo visible para administradores) */}
+                                <Row>
+                                    {(isAdmin && !isCurrentUserProfile) &&
+                                        <BanUserButton
+                                            onErrorCallback={setBackendErrors}
+                                        />
                                     }
                                 </Row>
                             </Col>

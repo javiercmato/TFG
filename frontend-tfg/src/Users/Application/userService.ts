@@ -13,7 +13,7 @@ const USERS_ENDPOINT = '/users';
 export const signUp = (user: User,
                        onSuccessCallback: CallbackFunction,
                        onErrorCallback: CallbackFunction,
-                       onReauthenticationCallback: CallbackFunction) : void => {
+                       onReauthenticationCallback: NoArgsCallbackFunction) : void => {
     // Callback para cuando se registra con éxito al usuario
     let onSuccess = (authUser: AuthenticatedUser) : void => {
         processAuthenticatedUser(authUser, onSuccessCallback, onReauthenticationCallback)
@@ -32,7 +32,7 @@ export const login = (nickname: string,
                       password: string,
                       onSuccessCallback: CallbackFunction,
                       onErrorCallback: CallbackFunction,
-                      onReauthenticationCallback: CallbackFunction) : void => {
+                      onReauthenticationCallback: NoArgsCallbackFunction) : void => {
     // Callback para cuando se inicia sesión con éxito
     let onSuccess = (authUser: AuthenticatedUser) : void => {
         processAuthenticatedUser(authUser, onSuccessCallback, onReauthenticationCallback);
@@ -48,7 +48,7 @@ export const login = (nickname: string,
 }
 
 export const loginWithServiceToken = (onSuccessCallback: CallbackFunction,
-                                      onReauthenticateCallback: CallbackFunction) : void => {
+                                      onReauthenticateCallback: NoArgsCallbackFunction) : void => {
     const serviceToken: string = getServiceToken();
     // Si hay token, se ejecuta el callback de éxito
     if (!serviceToken) {
@@ -127,12 +127,27 @@ export const updateProfile = (userID: string,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const banUser = (targetUserID: string,
+                        onSuccessCallback: CallbackFunction,
+                        onErrorCallback: CallbackFunction) : void => {
+    // Callback para cuando se banea al usuario con éxito
+    let onSuccess = (isBanned: boolean) : void => {
+        onSuccessCallback(isBanned);
+    };
+
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/admin/ban/${targetUserID}`;
+    const requestConfig = configFetchParameters('PUT');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
 const processAuthenticatedUser = (authUser: AuthenticatedUser,
                                   onSuccessCallback: CallbackFunction,
-                                  onReauthenticateCallback: CallbackFunction) : void => {
+                                  onReauthenticateCallback: NoArgsCallbackFunction) : void => {
     setServiceToken(authUser.serviceToken);
     setOnReauthenticationCallback(onReauthenticateCallback);
     authUser.user = formatUserData(authUser.user);

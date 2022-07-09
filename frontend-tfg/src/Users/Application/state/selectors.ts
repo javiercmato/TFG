@@ -12,14 +12,21 @@ const getUserSearchModule = (state: RootState) : Nullable<User> => getModuleStat
 
 export const isLoggedIn = (state: RootState) : boolean => getUserModule(state) != null;
 
+export const selectIsAdmin = (state: RootState) : boolean => (getUserModule(state)?.role! === 'ADMIN');
+
 export const selectCurrentUser = (state: RootState) : Nullable<User> => getUserModule(state);
 
 export const selectNickname = (state: RootState) : string => getUserModule(state)?.nickname!;
 
 export const selectUserID = (state: RootState) : string => getUserModule(state)?.userID!;
 
+export const isBannedByAdmin = (state: RootState) : boolean => getUserModule(state)?.isBannedByAdmin!;
+
 
 /* ******************** DATOS DE BÚSQUEDA DE USUARIO ******************** */
 
 export const selectUserSearch = (state: RootState) : User => getUserSearchModule(state)!;
 
+export const isUserSearchAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.role! === 'ADMIN';
+
+export const isUserSearchBannedByAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.isBannedByAdmin!;
