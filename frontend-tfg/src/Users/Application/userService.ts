@@ -144,7 +144,7 @@ export const banUser = (targetUserID: string,
 }
 
 export const deleteUser = (userID: string,
-                           onSuccessCallback: CallbackFunction,
+                           onSuccessCallback: NoArgsCallbackFunction,
                            onErrorCallback: CallbackFunction) : void => {
     // Configurar petición al servicio
     const endpoint = USERS_ENDPOINT + `/${userID}`;
