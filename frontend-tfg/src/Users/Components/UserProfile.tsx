@@ -1,20 +1,25 @@
 import {useAppDispatch} from "../../store";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
 import {useEffect, useState} from "react";
-import {Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Row} from "react-bootstrap";
 import UserAvatar from "./UserAvatar";
-import {userDataCol} from './styles/userProfile';
+import {cardHeaderRow, userActionsCol, userDataCol} from './styles/userProfile';
+import {FormattedMessage} from "react-intl";
 
 
 const UserProfile = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     let {nickname} = useParams();
-    let searchedUser = useSelector(userRedux.selectors.selectUserSearch);
+    let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
+    let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
+    let profileData = useSelector(userRedux.selectors.selectUserSearch);
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
 
+    const isCurrentUserProfile = (isUserLoggedIn && (nickname ==loggedUser?.nickname));
 
     // Solicita los datos del usuario cada vez que cambie el nickname en la URL
     useEffect( () => {
@@ -34,20 +39,20 @@ const UserProfile = () => {
                 error={backendErrors}
                 onCloseCallback={() => setBackendErrors(null)}
             />
-            {(searchedUser) &&
+            {(profileData) &&
                 <Card
                     bg="light"
                     border="light"
                 >
                     {/* Datos del usuario */}
                     <Card.Header>
-                        <Row>
+                        <Row style={cardHeaderRow}>
                             {/* Avatar */}
                             <Col>
-                                {(searchedUser) &&
+                                {(profileData) &&
                                     <UserAvatar
-                                        imageB64={searchedUser.avatar}
-                                        userNickname={searchedUser.nickname!}
+                                        imageB64={profileData.avatar}
+                                        userNickname={profileData.nickname!}
                                         isThumbnail={false}
                                     />
                                 }
@@ -57,22 +62,33 @@ const UserProfile = () => {
                             <Col style={userDataCol}>
                                 {/* Nombre */}
                                 <Row>
-                                    <h3>{searchedUser.name + ' ' + searchedUser.surname}</h3>
+                                    <h3>{profileData.name + ' ' + profileData.surname}</h3>
                                 </Row>
 
                                 {/* Nickname */}
                                 <Row>
-                                    <h4>{searchedUser.nickname}</h4>
+                                    <h4>{profileData.nickname}</h4>
                                 </Row>
 
                                 {/* Email */}
                                 <Row>
-                                    <div>{searchedUser.email}</div>
+                                    <div>{profileData.email}</div>
                                 </Row>
                             </Col>
 
                             {/* Seguidores y botones */}
-                            <Col></Col>
+                            <Col style={userActionsCol}>
+                                <Row>
+                                    {(isCurrentUserProfile) &&
+                                        <Button
+                                            variant="secondary"
+                                            onClick={() => navigate("/profile")}
+                                        >
+                                            <FormattedMessage id="common.buttons.edit"/>
+                                        </Button>
+                                    }
+                                </Row>
+                            </Col>
                         </Row>
                     </Card.Header>
 

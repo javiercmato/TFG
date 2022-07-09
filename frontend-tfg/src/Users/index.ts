@@ -13,4 +13,4 @@ export {userService} from './Application';
 
 
 /* ********** Components ********** */
-export {SignUp, Login, Logout, ChangePassword, UserAvatar, UserProfile} from './Components';
+export {SignUp, Login, Logout, ChangePassword, UserAvatar, UserProfile, UpdateProfile} from './Components';

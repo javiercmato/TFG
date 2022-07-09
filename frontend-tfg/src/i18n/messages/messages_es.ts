@@ -7,6 +7,7 @@ const translations = {
 
     /* ******************** common ******************** */
     'common.buttons.close': 'Cerrar',
+    'common.buttons.edit': 'Editar',
     'common.buttons.uploadFile': 'Subir fichero',
 
     'common.validation.mandatoryField': 'Campo obligatorio',
@@ -30,6 +31,7 @@ const translations = {
     'app.components.Header.userActions.logout': 'Cerrar sesión',
     'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
     'app.components.Header.userActions.seeProfile': 'Ver perfil',
+    'app.components.Header.userActions.editProfile': 'Editar perfil',
 
 
     /* ******************** Users ******************** */
@@ -44,6 +46,8 @@ const translations = {
     'users.components.ChangePassword.newPassword': 'Nueva contraseña',
     'users.components.ChangePassword.confirmNewPassword': 'Repite la nueva contraseña',
     'users.components.ChangePassword.changePassword': 'Cambiar contraseña',
+    'users.components.UpdateProfile.title': 'Actualizar perfil',
+    'users.components.UpdateProfile.updateButton': 'Actualizar perfil',
 
 
 }
