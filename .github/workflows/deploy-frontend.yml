@@ -1,19 +1,19 @@
-# Acción para desplegar el código del backend a Heroku
+# Acción para desplegar el código del frontend a Heroku
 # TUTORIAL: https://medium.com/swlh/auto-deploying-a-monorepo-to-heroku-with-github-actions-da62e8ae172c
 
-name: Desplegar backend a Heroku
+name: Desplegar frontend a Heroku
 on:
-  # Ejecutar cuando se haga push a _main_ y hayan sido modificados ficheros del backend
+  # Ejecutar cuando se haga push a _main_ y hayan sido modificados ficheros del frontend
   push:
     branches:
       - main
     paths:
-      - "backend-TFG/**"
-      - ".github/workflows/deploy-backend.yml"
+      - "frontend-tfg/**"
+      - ".github/workflows/deploy-frontend.yml"
 jobs:
   # Desplegar código
   deploy:
-    name: Deploy backend to Heroku repository
+    name: Deploy frontend to Heroku repository
     runs-on: ubuntu-20.04
     steps:
       # Clonar repositorio en máquina remota
@@ -24,8 +24,8 @@ jobs:
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
-        run: git remote add heroku-backend https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}.git
+        run: git remote add heroku-frontend https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_FRONTEND_APP_NAME }}.git
 
       # Pushear código al remoto de heroku para despliegue automático
       - name: Deploy backend to Heroku
-        run: git push heroku-backend `git subtree split --prefix backend main`:refs/heads/master --force
+        run: git push heroku-frontend `git subtree split --prefix frontend main`:refs/heads/master --force

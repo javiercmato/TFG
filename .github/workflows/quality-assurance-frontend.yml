@@ -7,7 +7,6 @@ on:
     branches:
       - features/frontend/**
       - develop
-      - release
       - main
   # O al abrir una nueva PR
   pull_request:
