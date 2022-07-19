@@ -2,16 +2,16 @@
 
 name: Escanear cálidad del frontend en SonarCloud
 on:
-  # Al pushear a ramas relevantes (desarrollo, despliegue y rama principal)
+  # Al pushear a la rama de la feature
   push:
     branches:
       - features/frontend/**
-      - develop
-      - main
-  # O al abrir una nueva PR
+  # O al abrir una nueva PR a la rama de desarrollo
   pull_request:
     types:
       - opened
+    branches:
+      - develop
 jobs:
   # Analizar el código del frontend en servidores de SonarCloud
   analyze_frontend:
