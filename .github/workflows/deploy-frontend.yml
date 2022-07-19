@@ -28,4 +28,4 @@ jobs:
 
       # Pushear código al remoto de heroku para despliegue automático
       - name: Deploy backend to Heroku
-        run: git push heroku-frontend `git subtree split --prefix frontend main`:refs/heads/master --force
+        run: git push heroku-frontend `git subtree split --prefix frontend-tfg main`:refs/heads/master --force
