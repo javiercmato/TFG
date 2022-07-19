@@ -24,7 +24,7 @@ jobs:
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
-        run: git remote add heroku-frontend https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_FRONTEND_APP_NAME }}.git
+        run: git remote add heroku-frontend https://heroku:${{ secrets.HEROKU_FRONTEND_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_FRONTEND_APP_NAME }}.git
 
       # Pushear código al remoto de heroku para despliegue automático
       - name: Deploy backend to Heroku
