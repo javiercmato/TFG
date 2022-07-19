@@ -6,6 +6,7 @@
 .project
 .settings
 **.iml
+.run
 
 # Ficheros de VSCode
 .vscode

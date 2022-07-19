@@ -3,18 +3,17 @@ logging:
   level:
     org:
       hibernate:
-        SQL: DEBUG
-        type: TRACE
-
+        SQL: info
+      springframework: info
 spring:
   jpa:
-    show-sql: true      # Mostrar consultas SQL ejecutadas por Hibernate
+    show-sql: false      # Mostrar consultas SQL ejecutadas por Hibernate
   datasource:
     tomcat:
       max-active: 4
       max-idle: 2
       remove-abandoned: true
       remove-abandoned-timeout: 5
-    url: jdbc:postgresql://localhost:${POSTGRES_DB_PORT:5431}/${POSTGRES_DB:tfg-test}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:secretPassword}
+    url: jdbc:postgresql://localhost:5431/tfg-test
+    username: postgres
+    password: password
