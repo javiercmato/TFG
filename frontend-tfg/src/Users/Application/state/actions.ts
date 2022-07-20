@@ -246,7 +246,7 @@ export const deleteUserAsyncAction = (userID: string,
                                       onSuccessCallback: NoArgsCallbackFunction,
                                       onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
-    const onSuccess: CallbackFunction = () : void => {
+    const onSuccess: NoArgsCallbackFunction = () : void => {
         // Actualiza estado de aplicación
         dispatch(deleteUserAction());
         dispatch(app.actions.loaded());         // Indica operación ya finalizada
