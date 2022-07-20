@@ -13,7 +13,6 @@ interface FooterLink {
 const Footer = () => {
     const footerLinks : Array<FooterLink> =  [
         {name: "Github", link: "https://github.com/javiercmato/TFG", icon: <FaGithub/>},
-        {name: "SonarCloud (frontend)", link: "https://sonarcloud.io/project/overview?id=javiercmato_TFG", icon: <FaCloud />},
         {name: "SonarCloud (backend)", link: "https://sonarcloud.io/project/overview?id=javiercmato_TFG", icon: <FaCloud />},
     ]
 
