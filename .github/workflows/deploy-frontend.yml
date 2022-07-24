@@ -22,21 +22,14 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout to frontend directory
-        run: cd ./frontend-tfg/
-
       # Configurar NodeJS para poder usar NPM
       - name: Configure NodeJS-16
         uses: actions/setup-node@v3
         with:
           node-version: 16
 
-
       # Crear imagen de la aplicación con NPM
-      - run: ls -la
-      - run: npm install
-      - run: npm run build
-
+      - run: cd ./frontend-tfg/ && npm install && npm run build
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
