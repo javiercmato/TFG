@@ -31,6 +31,8 @@ jobs:
       # Crear imagen de la aplicación con NPM
       - name: Install dependencies and build
         run: cd ./frontend-tfg/ && npm install && npm run build
+        with:
+          - CI: false
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
