@@ -22,6 +22,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Configurar NodeJS para poder usar NPM
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+
+
+      # Crear imagen de la aplicación con NPM
+      - run: npm ci
+      - run: npm run build
+
+
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
         run: git remote add heroku-frontend https://heroku:${{ secrets.HEROKU_FRONTEND_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_FRONTEND_APP_NAME }}.git
