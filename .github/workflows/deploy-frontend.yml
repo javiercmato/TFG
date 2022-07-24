@@ -22,15 +22,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Checkout to frontend directory
+        run: cd ./frontend-tfg/
+
       # Configurar NodeJS para poder usar NPM
-      - uses: actions/setup-node@v3
+      - name: Configure NodeJS-16
+        uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: 'npm'
 
 
       # Crear imagen de la aplicación con NPM
-      - run: cd ./frontend-tfg/
       - run: npm ci
       - run: npm run build
 
