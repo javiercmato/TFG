@@ -23,14 +23,14 @@ jobs:
           fetch-depth: 0
 
       # Configurar NodeJS para poder usar NPM
-      - name: Configure NodeJS-16
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
+      # - name: Configure NodeJS-16
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 16
 
       # Crear imagen de la aplicación con NPM
-      - name: Install dependencies and build
-        run: cd ./frontend-tfg/ && npm install && CI=false npm run build
+      #- name: Install dependencies and build
+      #  run: cd ./frontend-tfg/ && npm install && CI=false npm run build
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend
