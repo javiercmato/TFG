@@ -29,7 +29,8 @@ jobs:
           node-version: 16
 
       # Crear imagen de la aplicación con NPM
-      - run: cd ./frontend-tfg/ && npm install && npm run build
+      - name: Install dependencies and build
+        run: cd ./frontend-tfg/ && npm install && npm run build
 
       # Añadir remoto de heroku al repositorio
       - name: Add Heroku remote repository for backend

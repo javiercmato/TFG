@@ -88,9 +88,5 @@
       "src/index.tsx",
       "src/i18n"
     ]
-  },
-  "engines": {
-    "node": "17.9.0",
-    "npm": "8.5.5"
   }
 }
