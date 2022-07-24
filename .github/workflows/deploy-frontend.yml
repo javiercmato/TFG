@@ -33,6 +33,7 @@ jobs:
 
 
       # Crear imagen de la aplicación con NPM
+      - run: ls -la
       - run: npm install
       - run: npm run build
 
