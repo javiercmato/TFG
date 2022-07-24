@@ -15,9 +15,6 @@ jobs:
   deploy:
     name: Deploy frontend to Heroku repository
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: ./frontend-tfg/
     steps:
       # Clonar repositorio en máquina remota
       - name: Checkout code.
@@ -33,6 +30,7 @@ jobs:
 
 
       # Crear imagen de la aplicación con NPM
+      - run: cd ./frontend-tfg/
       - run: npm ci
       - run: npm run build
 
