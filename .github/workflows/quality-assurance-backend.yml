@@ -3,9 +3,9 @@
 name: Escanear cálidad del backend en SonarCloud
 on:
   # Al pushear a la rama de la feature
-  push:
-    branches:
-      - features/backend/**
+  # push:
+  #  branches:
+  #    - features/backend/**
   # O al abrir una nueva PR a la rama de desarrollo
   pull_request:
     types:
