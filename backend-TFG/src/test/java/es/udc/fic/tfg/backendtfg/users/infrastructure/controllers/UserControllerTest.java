@@ -32,7 +32,7 @@ import java.util.*;
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
-import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
+import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -133,9 +133,7 @@ class UserControllerTest {
         );
         // Añadir el mensaje traducido al principio del array de argumentos a traducir
         Object[] values = new Object[args.length + 1];
-        for (int i = 1; i <= args.length; i++) {
-            values[i] = args[i-1];
-        }
+        System.arraycopy(args, 0, values, 1, args.length);
         return messageSource.getMessage(
                 propertyName,
                 args,

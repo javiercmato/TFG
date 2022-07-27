@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
-import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
+import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
