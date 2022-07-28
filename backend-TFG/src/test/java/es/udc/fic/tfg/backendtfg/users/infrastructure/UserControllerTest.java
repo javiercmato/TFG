@@ -6,7 +6,6 @@ import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
-import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -58,8 +57,6 @@ class UserControllerTest {
     private UserService userService;
     @Autowired
     private UserController userController;
-    @Autowired
-    private UserUtils userUtils;
     @Autowired
     private MessageSource messageSource;
     
