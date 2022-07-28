@@ -1,0 +1,14 @@
+# Fichero con la configuración para el entorno de despliegue
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: error
+
+
+# Es necesario ejecutar 'docker-compose up -d' sobre el fichero src/main/docker/docker-compose.dev.yml
+spring:
+  datasource:
+    url: jdbc:postgresql://ec2-44-206-214-233.compute-1.amazonaws.com:5432/d9uarajnqds1ul
+    username: audxdtfkmigukc
+    password: 4de25c37c77f59442dcf1c5cdd048da68447375c3d0b00787c3e8b8484b79c87

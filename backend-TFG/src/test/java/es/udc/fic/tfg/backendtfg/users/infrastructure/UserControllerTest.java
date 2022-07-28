@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
+package es.udc.fic.tfg.backendtfg.users.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
@@ -6,11 +6,11 @@ import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
-import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
@@ -32,7 +32,7 @@ import java.util.*;
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
-import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
+import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,8 +57,6 @@ class UserControllerTest {
     private UserService userService;
     @Autowired
     private UserController userController;
-    @Autowired
-    private UserUtils userUtils;
     @Autowired
     private MessageSource messageSource;
     
@@ -133,9 +131,7 @@ class UserControllerTest {
         );
         // Añadir el mensaje traducido al principio del array de argumentos a traducir
         Object[] values = new Object[args.length + 1];
-        for (int i = 1; i <= args.length; i++) {
-            values[i] = args[i-1];
-        }
+        System.arraycopy(args, 0, values, 1, args.length);
         return messageSource.getMessage(
                 propertyName,
                 args,

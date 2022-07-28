@@ -2,17 +2,16 @@
 
 name: Escanear cálidad del backend en SonarCloud
 on:
-  # Al pushear a ramas relevantes (desarrollo, despliegue y rama principal)
-  push:
-    branches:
-      - features/backend/**
-      - develop
-      - release
-      - main
-  # O al abrir una nueva PR
+  # Al pushear a la rama de la feature
+  # push:
+  #  branches:
+  #    - features/backend/**
+  # O al abrir una nueva PR a la rama de desarrollo
   pull_request:
     types:
       - opened
+    branches:
+      - develop
 jobs:
   # Analizar el código del backend en los servidores de SonarCloud
   analyze_backend:
@@ -33,7 +32,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-          distribution: 'adopt'
 
       # Copiar código a la caché de SonarCloud
       - name: Cache SonarCloud packages.
