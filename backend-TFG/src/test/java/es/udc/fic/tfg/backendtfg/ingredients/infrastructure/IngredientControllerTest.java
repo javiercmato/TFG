@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class IngredientControllerTest {
+class IngredientControllerTest {
     private static final String API_ENDPOINT = "/api/ingredients";
     private final ObjectMapper jsonMapper = new ObjectMapper();
     private final Locale locale = Locale.getDefault();

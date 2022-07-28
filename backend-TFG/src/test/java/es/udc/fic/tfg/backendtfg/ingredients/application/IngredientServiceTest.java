@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class IngredientServiceTest {
+class IngredientServiceTest {
     @Autowired
     private IngredientService ingredientService;
     
@@ -79,7 +79,7 @@ public class IngredientServiceTest {
     /* ************************* CASOS DE PRUEBA ************************* */
     
     @Test
-    public void whenCreateIngredient_thenNewIngredientIsCreated()
+    void whenCreateIngredient_thenNewIngredientIsCreated()
             throws EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba
         User user = generateValidUser();
@@ -107,7 +107,7 @@ public class IngredientServiceTest {
     }
     
     @Test
-    public void whenCreateIngredientTwice_thenEntityAlreadyExistsException()
+    void whenCreateIngredientTwice_thenEntityAlreadyExistsException()
             throws EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba
         User user = generateValidUser();
@@ -137,7 +137,7 @@ public class IngredientServiceTest {
     }
     
     @Test
-    public void whenCreateIngredient_andTypeDoesNotExist_thenEntityNotFoundException() {
+    void whenCreateIngredient_andTypeDoesNotExist_thenEntityNotFoundException() {
         // Crear datos de prueba
         User user = generateValidUser();
         Ingredient validIngredient = generateValidIngredient(DEFAULT_INGREDIENT_NAME);
