@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 import java.util.UUID;
 
-@Transactional
 @Service
+@Transactional
 public class IngredientServiceImpl implements IngredientService {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
@@ -53,7 +53,7 @@ public class IngredientServiceImpl implements IngredientService {
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
-    IngredientType fetchIngredientTypeByID(UUID ingredientTypeID) throws EntityNotFoundException {
+    private IngredientType fetchIngredientTypeByID(UUID ingredientTypeID) throws EntityNotFoundException {
         Optional<IngredientType> optionalIngredientType = ingredientTypeRepository.findById(ingredientTypeID);
         
         if ( optionalIngredientType.isEmpty())

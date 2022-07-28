@@ -1,6 +1,7 @@
-package es.udc.fic.tfg.backendtfg.users.application.services;
+package es.udc.fic.tfg.backendtfg.users.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -30,7 +31,6 @@ class UserServiceTest {
     
     @Autowired
     private UserRepository userRepository;
-    
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
     

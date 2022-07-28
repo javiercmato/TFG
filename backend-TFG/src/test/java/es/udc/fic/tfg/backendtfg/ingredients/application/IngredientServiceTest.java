@@ -10,7 +10,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeR
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class IngredientServiceTest {
+public class IngredientServiceTest {
     @Autowired
     private IngredientService ingredientService;
     
@@ -65,7 +65,7 @@ class IngredientServiceTest {
         ingredient.setId(UUID.randomUUID());
         ingredient.setName(ingredientName);
         
-        return ingredientRepository.save(ingredient);
+        return ingredient;
     }
     
     /** Genera datos de un tipo de ingrediente válido. */
@@ -73,25 +73,26 @@ class IngredientServiceTest {
         IngredientType ingredientType = new IngredientType();
         ingredientType.setName(ingredientTypeName);
         
-        return ingredientTypeRepository.save(ingredientType);
+        return ingredientType;
     }
     
     /* ************************* CASOS DE PRUEBA ************************* */
     
     @Test
-    void whenCreateIngredient_thenNewIngredientIsCreated()
+    public void whenCreateIngredient_thenNewIngredientIsCreated()
             throws EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba
         User user = generateValidUser();
         Ingredient validIngredient = generateValidIngredient(DEFAULT_INGREDIENT_NAME);
-        IngredientType validIngredientType = generateValidIngredientType(DEFAULT_INGREDIENTTYPE_NAME);
+        IngredientType validIngredientType = ingredientTypeRepository.save(generateValidIngredientType(DEFAULT_INGREDIENTTYPE_NAME));
         validIngredient.setIngredientType(validIngredientType);
+        validIngredient.setCreator(user);
         
         // Ejecutar funcionalidades
         Ingredient createdIngredient = ingredientService.createIngredient(
             DEFAULT_INGREDIENT_NAME,
-            validIngredient.getId(),
-            validIngredientType.getId()
+            validIngredientType.getId(),
+            user.getId()
         );
         
         // Comprobar resultados
@@ -100,9 +101,54 @@ class IngredientServiceTest {
             () -> assertNotNull(createdIngredient),
             // Datos son los mismos
             () -> assertEquals(validIngredient.getName(), createdIngredient.getName()),
-            () -> assertEquals(validIngredient.getCreator(), user),
-            () -> assertEquals(validIngredient.getIngredientType(), validIngredientType)
+            () -> assertEquals(user, createdIngredient.getCreator()),
+            () -> assertEquals(validIngredientType, validIngredient.getIngredientType())
+        );
+    }
+    
+    @Test
+    public void whenCreateIngredientTwice_thenEntityAlreadyExistsException()
+            throws EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        User user = generateValidUser();
+        Ingredient validIngredient = generateValidIngredient(DEFAULT_INGREDIENT_NAME);
+        IngredientType validIngredientType = ingredientTypeRepository.save(generateValidIngredientType(DEFAULT_INGREDIENTTYPE_NAME));
+        validIngredient.setIngredientType(validIngredientType);
+        validIngredient.setCreator(user);
+        
+        // Ejecutar funcionalidades
+        Ingredient createdIngredient = ingredientService.createIngredient(
+                DEFAULT_INGREDIENT_NAME,
+                validIngredientType.getId(),
+                user.getId()
         );
         
+        // Comprobar resultados
+        assertAll(
+            // Ingrediente se ha registrado
+            () -> assertNotNull(createdIngredient),
+            // Datos son los mismos
+            () -> assertEquals(validIngredient.getName(), createdIngredient.getName()),
+            // Lanza excepción al crear ingrediente repetido
+            () -> assertThrows(EntityAlreadyExistsException.class,
+                () -> ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, validIngredientType.getId(), user.getId())
+            )
+        );
+    }
+    
+    @Test
+    public void whenCreateIngredient_andTypeDoesNotExist_thenEntityNotFoundException() {
+        // Crear datos de prueba
+        User user = generateValidUser();
+        Ingredient validIngredient = generateValidIngredient(DEFAULT_INGREDIENT_NAME);
+        validIngredient.setCreator(user);
+        
+        // Comprobar resultados
+        assertAll(
+            // Lanza excepción al crear ingrediente
+            () -> assertThrows(EntityNotFoundException.class,
+                () -> ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, NON_EXISTENT_UUID, user.getId())
+            )
+        );
     }
 }

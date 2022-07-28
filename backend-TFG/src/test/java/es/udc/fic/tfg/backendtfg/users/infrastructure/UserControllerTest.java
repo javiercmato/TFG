@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
+package es.udc.fic.tfg.backendtfg.users.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
@@ -11,6 +11,7 @@ import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
