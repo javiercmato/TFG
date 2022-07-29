@@ -52,13 +52,17 @@ public class IngredientServiceImpl implements IngredientService {
     
     @Override
     public IngredientType createIngredientTypeAsAdmin(String ingredientTypeName, UUID adminID)
-            throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException {
+            throws EntityAlreadyExistsException, PermissionException {
         // Commprobar si existe el administrador
         try {
             userUtils.fetchAdministrator(adminID);
         } catch ( EntityNotFoundException ex) {
             throw new PermissionException();
         }
+        
+        // Comprobar si ya existe el tipo
+        if (ingredientTypeRepository.existsByNameIgnoreCase(ingredientTypeName))
+            throw new EntityAlreadyExistsException(IngredientType.class.getSimpleName(), ingredientTypeName);
         
         // Crear tipo de ingrediente
         IngredientType type = new IngredientType();

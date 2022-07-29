@@ -8,4 +8,7 @@ import java.util.UUID;
 
 public interface IngredientTypeRepository extends CrudRepository<IngredientType, UUID> {
 
+    boolean existsByNameIgnoreCase(String name);
+    
+
 }
