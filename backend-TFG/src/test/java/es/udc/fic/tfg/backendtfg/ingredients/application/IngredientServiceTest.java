@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.ingredients.application.services.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;

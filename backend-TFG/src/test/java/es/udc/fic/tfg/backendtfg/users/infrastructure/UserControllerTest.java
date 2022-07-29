@@ -5,7 +5,7 @@ import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
-import es.udc.fic.tfg.backendtfg.users.application.services.UserService;
+import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;

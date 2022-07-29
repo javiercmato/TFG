@@ -6,7 +6,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsExc
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
-import es.udc.fic.tfg.backendtfg.ingredients.application.services.IngredientService;
+import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;

@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.ingredients.application.services;
+package es.udc.fic.tfg.backendtfg.ingredients.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
