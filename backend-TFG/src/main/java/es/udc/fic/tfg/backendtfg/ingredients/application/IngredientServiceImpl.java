@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
@@ -8,21 +9,22 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeR
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
 public class IngredientServiceImpl implements IngredientService {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
-    private IngredientTypeRepository ingredientTypeRepository;
+    private IngredientTypeRepository ingredientTypeRepo;
     
     @Autowired
-    private IngredientRepository ingredientRepository;
+    private IngredientRepository ingredientRepo;
     
     @Autowired
     private UserUtils userUtils;
@@ -35,7 +37,7 @@ public class IngredientServiceImpl implements IngredientService {
         User creator = userUtils.fetchUserByID(userID);
         
         // Comprobar si existe algún ingrediente con el mismo nombre
-        if (ingredientRepository.existsByNameLikeIgnoreCase(ingredientName))
+        if ( ingredientRepo.existsByNameLikeIgnoreCase(ingredientName))
             throw new EntityAlreadyExistsException(Ingredient.class.getSimpleName(), ingredientName);
         
         
@@ -47,7 +49,7 @@ public class IngredientServiceImpl implements IngredientService {
         ingredient.setCreator(creator);
         
         // Guardar datos y devolver instancia
-        return ingredientRepository.save(ingredient);
+        return ingredientRepo.save(ingredient);
     }
     
     @Override
@@ -61,7 +63,7 @@ public class IngredientServiceImpl implements IngredientService {
         }
         
         // Comprobar si ya existe el tipo
-        if (ingredientTypeRepository.existsByNameIgnoreCase(ingredientTypeName))
+        if ( ingredientTypeRepo.existsByNameIgnoreCase(ingredientTypeName))
             throw new EntityAlreadyExistsException(IngredientType.class.getSimpleName(), ingredientTypeName);
         
         // Crear tipo de ingrediente
@@ -69,12 +71,43 @@ public class IngredientServiceImpl implements IngredientService {
         type.setName(ingredientTypeName);
         
         // Guardar datos y devolver instancia
-        return ingredientTypeRepository.save(type);
+        return ingredientTypeRepo.save(type);
+    }
+    
+    @Override
+    public List<IngredientType> getIngredientTypes() {
+        List<IngredientType> results = new ArrayList<>();
+        
+        // Busca los tipos por orden alfabetico ascendente
+        Sort ascNameSort = Sort.by(Direction.ASC, "name");
+        Iterable<IngredientType> typesIterable = ingredientTypeRepo.findAll(ascNameSort);
+        // Crea una lista de resultados
+        typesIterable.forEach( (t) -> results.add(t));
+        
+        return results;
+    }
+    
+    @Override
+    public Block<Ingredient> findIngredientsByName(String name, int page, int pageSize) {
+        // Busca los ingredientes por nombre en orden alfabético ascendente
+        Slice<Ingredient> ingredientSlice = ingredientRepo.findByNameContainsIgnoreCaseOrderByNameAsc(name, PageRequest.of(page, pageSize));
+        
+        // Devuelve resultados
+        return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
+    }
+    
+    @Override
+    public Block<Ingredient> findIngredientsByType(UUID ingredientTypeID, int page, int pageSize) {
+        // Busca los ingredientes por tipo en orden alfabético ascendente
+        Slice<Ingredient> ingredientSlice = ingredientRepo.findByIngredientType_IdOrderByNameAsc(ingredientTypeID, PageRequest.of(page, pageSize));
+    
+        // Devuelve resultados
+        return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private IngredientType fetchIngredientTypeByID(UUID ingredientTypeID) throws EntityNotFoundException {
-        Optional<IngredientType> optionalIngredientType = ingredientTypeRepository.findById(ingredientTypeID);
+        Optional<IngredientType> optionalIngredientType = ingredientTypeRepo.findById(ingredientTypeID);
         
         if ( optionalIngredientType.isEmpty())
             throw new EntityNotFoundException(IngredientType.class.getSimpleName(), ingredientTypeID);

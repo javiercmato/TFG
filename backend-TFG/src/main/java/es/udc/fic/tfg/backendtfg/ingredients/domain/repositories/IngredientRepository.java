@@ -1,6 +1,8 @@
 package es.udc.fic.tfg.backendtfg.ingredients.domain.repositories;
 
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
@@ -14,5 +16,8 @@ public interface IngredientRepository extends CrudRepository<Ingredient, UUID> {
     
     Optional<Ingredient> findByNameLikeIgnoreCase(String name);
     
+    Slice<Ingredient> findByNameContainsIgnoreCaseOrderByNameAsc(String name, Pageable pageable);
+    
+    Slice<Ingredient> findByIngredientType_IdOrderByNameAsc(UUID id, Pageable pageable);
     
 }
