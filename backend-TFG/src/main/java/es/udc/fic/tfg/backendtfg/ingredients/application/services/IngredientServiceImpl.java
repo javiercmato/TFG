@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.application.services;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
@@ -51,6 +50,23 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientRepository.save(ingredient);
     }
     
+    @Override
+    public IngredientType createIngredientTypeAsAdmin(String ingredientTypeName, UUID adminID)
+            throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException {
+        // Commprobar si existe el administrador
+        try {
+            userUtils.fetchAdministrator(adminID);
+        } catch ( EntityNotFoundException ex) {
+            throw new PermissionException();
+        }
+        
+        // Crear tipo de ingrediente
+        IngredientType type = new IngredientType();
+        type.setName(ingredientTypeName);
+        
+        // Guardar datos y devolver instancia
+        return ingredientTypeRepository.save(type);
+    }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private IngredientType fetchIngredientTypeByID(UUID ingredientTypeID) throws EntityNotFoundException {
