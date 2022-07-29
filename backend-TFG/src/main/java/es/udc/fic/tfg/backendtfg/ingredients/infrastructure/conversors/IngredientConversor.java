@@ -2,9 +2,7 @@ package es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientDTO;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public class IngredientConversor {
     /* ******************** Convertir a DTO ******************** */
     public static IngredientDTO toIngredientDTO(Ingredient entity) {

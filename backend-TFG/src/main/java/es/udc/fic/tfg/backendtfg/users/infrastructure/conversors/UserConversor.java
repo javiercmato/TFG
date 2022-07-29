@@ -2,11 +2,9 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
-import lombok.experimental.UtilityClass;
 
 import java.util.Base64;
 
-@UtilityClass
 public class UserConversor {
     /* ******************** Convertir a DTO ******************** */
     public static UserDTO toUserDTO(User entity) {

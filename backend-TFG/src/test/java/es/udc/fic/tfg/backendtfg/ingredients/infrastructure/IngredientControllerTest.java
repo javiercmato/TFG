@@ -14,11 +14,13 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeR
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.controllers.IngredientController;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.CreateIngredientParamsDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.CreateIngredientTypeParamsDTO;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
+import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
-import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.AuthenticatedUserDTO;
-import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.SignUpParamsDTO;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -26,6 +28,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -61,11 +64,15 @@ class IngredientControllerTest {
     @Autowired
     private IngredientTypeRepository ingredientTypeRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private IngredientService ingredientService;
     @Autowired
     private IngredientController ingredientController;
     @Autowired
     private MessageSource messageSource;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -93,6 +100,17 @@ class IngredientControllerTest {
         
         // Registrar usuario
         return userController.signUp(signUpParamsDTO).getBody();
+    }
+    
+    /** Inicia sesión como administrador y devuelve sus datos y el token de acceso */
+    private AuthenticatedUserDTO loginAsAdmin() throws IncorrectLoginException {
+        // Generar el DTO con los datos del usuario recién creado
+        LoginParamsDTO loginParamsDTO = new LoginParamsDTO();
+        loginParamsDTO.setNickname(ADMIN_NICKNAME);
+        loginParamsDTO.setPassword(ADMIN_PASSWORD);
+        
+        // Iniciar sesión para obtener los datos del usuario y el token
+        return userController.login(loginParamsDTO);
     }
     
     /** Registra un tipo de ingrediente válido. */
@@ -198,5 +216,35 @@ class IngredientControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenCreateIngredientType_thenIngredientTypeIsCreated() throws Exception {
+        // Crear datos de prueba
+        User admin = userRepository.findByNicknameIgnoreCase(ADMIN_NICKNAME).get();
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        CreateIngredientTypeParamsDTO paramsDTO = new CreateIngredientTypeParamsDTO();
+        paramsDTO.setName(DEFAULT_INGREDIENTTYPE_NAME);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/types";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        
+        // Comprobar resultados
+        IngredientType expectedType = ingredientTypeRepository.findIngredientTypeByNameIgnoreCase(DEFAULT_INGREDIENTTYPE_NAME).get();
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedType);
+        action.andExpect(status().isCreated())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+        
+    }
     
 }
