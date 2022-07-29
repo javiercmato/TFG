@@ -5,6 +5,7 @@ import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 
 import java.util.Base64;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserConversor {
     /* ******************** Convertir a DTO ******************** */
     public static UserDTO toUserDTO(User entity) {
