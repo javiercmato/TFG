@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
@@ -15,8 +16,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
@@ -27,6 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @Transactional
 class IngredientServiceTest {
+    private final int INITIAL_PAGE = 0;
+    private final int PAGE_SIZE = 10;
+    
     @Autowired
     private IngredientService ingredientService;
     
@@ -211,6 +215,106 @@ class IngredientServiceTest {
         // Comprobar resultados
         assertThrows(PermissionException.class,
             () -> ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, fakeAdmin.getId())
+        );
+    }
+    
+    @Test
+    void whenFindAllIngredientTypes_ThenAllTypesAreFound()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        int ITEMS_AMMOUNT = 10;
+        User admin = findAdmin();
+        List<IngredientType> expectedTypes = new ArrayList<>(ITEMS_AMMOUNT);
+        for (int i=0; i < ITEMS_AMMOUNT; i++) {
+            IngredientType type = ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME + i, admin.getId());
+            expectedTypes.add(type);
+        }
+        
+        // Ejecutar funcionalidades
+        List<IngredientType> types = ingredientService.getIngredientTypes();
+        
+        // Comprobar resultados
+        assertAll(
+            // Se han obtenido resultados
+            () -> assertNotNull(types),
+            // Hay exactamente la cantidad de resultados esperada
+            () -> assertEquals(ITEMS_AMMOUNT, types.size()),
+            // Los elementos recibidos son los esperados
+            () -> assertEquals(expectedTypes, types)
+        );
+    }
+    
+    @Test
+    void whenFindIngredientsByName_ThenIngredientsAreFound()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        User admin = findAdmin();
+        User creator = generateValidUser();
+        IngredientType type = ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, admin.getId());
+        // Crear los ingredientes
+        Ingredient panMolde = ingredientService.createIngredient("Pan de molde", type.getId(), creator.getId());
+        Ingredient panBarra = ingredientService.createIngredient("Pan de barra", type.getId(), creator.getId());
+        Ingredient platano = ingredientService.createIngredient("Plátano", type.getId(), creator.getId());
+        Ingredient empanada = ingredientService.createIngredient("Empanada", type.getId(), creator.getId());
+        // Lista de ingredientes esperada
+        List<Ingredient> expectedIngredients = new ArrayList<>();
+        expectedIngredients.add(empanada);
+        expectedIngredients.add(panBarra);
+        expectedIngredients.add(panMolde);
+        
+        // Ejecutar funcionalidades
+        String keyword = "pan";
+        Block<Ingredient> ingredientBlock = ingredientService.findIngredientsByName(keyword, INITIAL_PAGE, PAGE_SIZE);
+        
+        // Comprobar resultados
+        assertAll(
+                // Se han obtenido resultados
+                () -> assertNotNull(ingredientBlock),
+                // Hay exactamente la cantidad de resultados esperada (buscamos los elementos de evenType)
+                () -> assertEquals(expectedIngredients.size(), ingredientBlock.getItemsCount()),
+                // Los elementos recibidos son los esperados
+                () -> assertEquals(expectedIngredients, ingredientBlock.getItems()),
+                // No hay más elementos por cargar
+                () -> assertFalse(ingredientBlock.hasMoreItems())
+        );
+    }
+    
+    @Test
+    void whenFindIngredientsByType_ThenIngredientsAreFound()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        int ITEMS_AMMOUNT = 2*PAGE_SIZE;
+        User admin = findAdmin();
+        User creator = generateValidUser();
+        IngredientType evenType = ingredientService.createIngredientTypeAsAdmin("Even Type", admin.getId());
+        IngredientType oddType = ingredientService.createIngredientTypeAsAdmin("Odd Type", admin.getId());
+        List<Ingredient> createdIngredients = new ArrayList<>(PAGE_SIZE);
+        for (int i=0; i < ITEMS_AMMOUNT; i++) {
+            // Mete los ingredientes en un tipo u otro según el índice actual
+            IngredientType type = ((i % 2) == 0) ? evenType : oddType;
+            String name = String.format(DEFAULT_INGREDIENT_NAME + "%02d", i);       // Dar formato al nombre para evitar problemas del estilo Ing1 > Ing11
+            Ingredient ingredient = ingredientService.createIngredient(name, type.getId(), creator.getId());
+            createdIngredients.add(ingredient);
+        }
+        // Lista de ingredientes esperada: evenType (pares)
+        List<Ingredient> expectedIngredients = createdIngredients
+                .stream()
+                .filter((ingredient -> ingredient.getIngredientType().equals(evenType)))
+                .collect(Collectors.toList());
+        
+        // Ejecutar funcionalidades
+        Block<Ingredient> ingredientBlock = ingredientService.findIngredientsByType(evenType.getId(), INITIAL_PAGE, PAGE_SIZE);
+        
+        // Comprobar resultados
+        assertAll(
+                // Se han obtenido resultados
+                () -> assertNotNull(ingredientBlock),
+                // Hay exactamente la cantidad de resultados esperada (buscamos los elementos de evenType)
+                () -> assertEquals(PAGE_SIZE, ingredientBlock.getItemsCount()),
+                // Los elementos recibidos son los esperados
+                () -> assertEquals(expectedIngredients, ingredientBlock.getItems()),
+                // Hay más elementos por cargar
+                () -> assertFalse(ingredientBlock.hasMoreItems())
         );
     }
     

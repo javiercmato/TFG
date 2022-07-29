@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.common.domain.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.List;
 
@@ -12,8 +11,14 @@ public class Block<T> {
     private List<T> items;
     
     /** Indica si hay más elementos */
-    private boolean existMoreItems;
+    @Getter(AccessLevel.NONE)
+    private boolean hasMoreItems;
     
     /** Cantidad de elementos contenidos */
     private int itemsCount;
+    
+    
+    public boolean hasMoreItems() {
+        return this.hasMoreItems;
+    }
 }
