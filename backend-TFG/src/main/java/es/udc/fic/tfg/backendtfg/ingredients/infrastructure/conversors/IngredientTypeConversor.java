@@ -1,17 +1,15 @@
 package es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors;
 
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientTypeDTO;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class IngredientConversor {
+public class IngredientTypeConversor {
     /* ******************** Convertir a DTO ******************** */
-    public static IngredientDTO toIngredientDTO(Ingredient entity) {
-        IngredientDTO dto = new IngredientDTO();
+    public static IngredientTypeDTO toIngredientTypeDTO(IngredientType entity) {
+        IngredientTypeDTO dto = new IngredientTypeDTO();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setIngredientTypeID(entity.getIngredientType().getId());
-        dto.setCreatorID(entity.getCreator().getId());
         
         return dto;
     }

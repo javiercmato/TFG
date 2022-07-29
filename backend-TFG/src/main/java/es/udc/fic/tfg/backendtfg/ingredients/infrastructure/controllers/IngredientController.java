@@ -1,11 +1,12 @@
 package es.udc.fic.tfg.backendtfg.ingredients.infrastructure.controllers;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.ingredients.application.services.IngredientService;
+import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.CreateIngredientParamsDTO;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientTypeConversor;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,5 +53,19 @@ public class IngredientController {
         return IngredientConversor.toIngredientDTO(ingredient);
     }
     
+    @PostMapping(path = "/types",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    public IngredientTypeDTO createIngredientTypeAsAdmin(@Validated @RequestBody CreateIngredientTypeParamsDTO params,
+                                                         @RequestAttribute("userID") UUID adminID)
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Llamada al servicio
+        IngredientType type = ingredientService.createIngredientTypeAsAdmin(params.getName(), adminID);
+        
+        // Generar respuesta
+        return IngredientTypeConversor.toIngredientTypeDTO(type);
+    }
     
 }
