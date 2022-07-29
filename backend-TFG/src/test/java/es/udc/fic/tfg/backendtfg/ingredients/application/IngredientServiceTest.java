@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.application;
 
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
-import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.application.services.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
@@ -57,6 +56,21 @@ class IngredientServiceTest {
         user.setPrivateLists(Collections.emptySet());
         
         return userRepository.save(user);
+    }
+    
+    /** Recupera al administrador */
+    private User findAdmin() {
+        Iterable<User> iterableUsers = userRepository.findAll();
+        User admin = null;
+        // Recorre todos los usuarios
+        for (User user : iterableUsers) {
+            // Si el usuario es ADMIN, lo devuelve
+            if (user.getRole().equals(UserRole.ADMIN)) {
+                admin = user;
+            }
+        }
+        
+        return admin;
     }
     
     /** Genera datos de un ingrediente válido. */
@@ -151,4 +165,55 @@ class IngredientServiceTest {
             )
         );
     }
+    
+    @Test
+    void whenCreateIngredientType_thenNewIngredientTypeIsCreated()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        User admin = findAdmin();
+        
+        // Ejecutar funcionalidades
+        IngredientType createdType = ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, admin.getId());
+        
+        // Comprobar resultados
+        assertAll(
+            // Tipo de ingrediente se ha registrado
+            () -> assertNotNull(createdType),
+            // Datos son los mismos
+            () -> assertEquals(DEFAULT_INGREDIENTTYPE_NAME, createdType.getName())
+        );
+    }
+    
+    @Test
+    void whenCreateIngredientTypeTwice_thenEntityAlreadyExistsException()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        User admin = findAdmin();
+    
+        // Ejecutar funcionalidades
+        IngredientType createdType = ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, admin.getId());
+        
+        // Comprobar resultados
+        assertAll(
+            // Se crea el ingrediente una vez
+            () -> assertNotNull(createdType),
+            // No se puede crear dos veces
+            () -> assertThrows(EntityAlreadyExistsException.class,
+                () -> ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, admin.getId())
+            )
+        );
+    }
+    
+    @Test
+    void whenCreateIngredientType_AndUserIsNotAdmin_thenPermissionException() {
+        // Crear datos de prueba
+        User fakeAdmin = generateValidUser();
+        
+        // Comprobar resultados
+        assertThrows(PermissionException.class,
+            () -> ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, fakeAdmin.getId())
+        );
+    }
+    
+    
 }
