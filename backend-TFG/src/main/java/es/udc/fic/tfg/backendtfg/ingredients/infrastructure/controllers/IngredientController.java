@@ -22,6 +22,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/ingredients")
 public class IngredientController {
+    
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
     private IngredientService ingredientService;
@@ -72,8 +73,8 @@ public class IngredientController {
     }
     
     @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BlockDTO<IngredientSummaryDTO> findAllIngredients(@RequestParam("page") int page,
-                                                            @RequestParam("pageSize") int pageSize) {
+    public BlockDTO<IngredientSummaryDTO> findAllIngredients(@RequestParam(value = "page") int page,
+                                                             @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
         // Llamada al servicio
         Block<Ingredient> ingredientsBlock = ingredientService.findAllIngredients(page, pageSize);
     
@@ -83,10 +84,13 @@ public class IngredientController {
         return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
     }
     
-    @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/find",
+            params = "name",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
     public BlockDTO<IngredientSummaryDTO> findIngredientsByName(@RequestParam("name") String name,
                                                                 @RequestParam("page") int page,
-                                                                @RequestParam("pageSize") int pageSize) {
+                                                                @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
         // Llamada al servicio
         Block<Ingredient> ingredientsBlock = ingredientService.findIngredientsByName(name, page, pageSize);
         
@@ -96,10 +100,13 @@ public class IngredientController {
         return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
     }
     
-    @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
-    public BlockDTO<IngredientSummaryDTO> findIngredientsByName(@RequestParam("type") UUID typeID,
+    @GetMapping(value = "/find",
+            params = "typeID",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<IngredientSummaryDTO> findIngredientsByType(@RequestParam("typeID") UUID typeID,
                                                                 @RequestParam("page") int page,
-                                                                @RequestParam("pageSize") int pageSize) {
+                                                                @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
         // Llamada al servicio
         Block<Ingredient> ingredientsBlock = ingredientService.findIngredientsByType(typeID, page, pageSize);
         

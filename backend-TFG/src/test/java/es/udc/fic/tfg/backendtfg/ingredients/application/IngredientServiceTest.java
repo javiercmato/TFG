@@ -245,6 +245,39 @@ class IngredientServiceTest {
     }
     
     @Test
+    void whenFindAllIngredients_ThenIngredientsAreFound()
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Crear datos de prueba
+        int INGREDIENTS_AMMOUNT = PAGE_SIZE;
+        User admin = findAdmin();
+        User creator = generateValidUser();
+        IngredientType type = ingredientService.createIngredientTypeAsAdmin(DEFAULT_INGREDIENTTYPE_NAME, admin.getId());
+        // Crear los ingredientes
+        List<Ingredient> expectedIngredients = new ArrayList<>();
+        for ( int i=0; i < INGREDIENTS_AMMOUNT; i++ ) {
+            // Mete los ingredientes en un tipo u otro según el índice actual
+            String name = String.format(DEFAULT_INGREDIENT_NAME + "%02d", i);       // Dar formato al nombre para evitar problemas del estilo Ing1 > Ing11
+            Ingredient ingredient = ingredientService.createIngredient(name, type.getId(), creator.getId());
+            expectedIngredients.add(ingredient);
+        }
+        
+        // Ejecutar funcionalidades
+        Block<Ingredient> ingredientBlock = ingredientService.findAllIngredients(INITIAL_PAGE, PAGE_SIZE);
+        
+        // Comprobar resultados
+        assertAll(
+                // Se han obtenido resultados
+                () -> assertNotNull(ingredientBlock),
+                // Hay exactamente la cantidad de resultados esperada
+                () -> assertEquals(expectedIngredients.size(), ingredientBlock.getItemsCount()),
+                // Los elementos recibidos son los esperados
+                () -> assertEquals(expectedIngredients, ingredientBlock.getItems()),
+                // No hay más elementos por cargar
+                () -> assertFalse(ingredientBlock.hasMoreItems())
+        );
+    }
+    
+    @Test
     void whenFindIngredientsByName_ThenIngredientsAreFound()
             throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
         // Crear datos de prueba

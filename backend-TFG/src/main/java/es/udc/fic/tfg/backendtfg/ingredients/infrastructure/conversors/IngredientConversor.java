@@ -33,7 +33,7 @@ public class IngredientConversor {
     /* ******************** Convertir a conjunto de DTO ******************** */
     public static List<IngredientSummaryDTO> toIngredientSummaryListDTO(List<Ingredient> entityList) {
         return entityList.stream()
-                .map(IngredientConversor::toIngredientSummaryDTO)
+                .map(ingredient -> toIngredientSummaryDTO(ingredient))
                 .collect(Collectors.toList());
     }
     

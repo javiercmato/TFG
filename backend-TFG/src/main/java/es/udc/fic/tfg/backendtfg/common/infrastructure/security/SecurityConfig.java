@@ -44,6 +44,8 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.PUT,    "/api/users/admin/ban/*").hasRole(UserRole.ADMIN.toString())            // banUserAsAdmin
                 // USER ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/").permitAll()                                        // createIngredient
+                .antMatchers(HttpMethod.GET,    "/api/ingredients/").permitAll()                                        // findAllIngredients
+                .antMatchers(HttpMethod.GET,    "/api/ingredients/find").permitAll()                                    // findIngredientsByName, findIngredientsByType
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/types").permitAll()                                   // createIngredientTypeAsAdmin
                 
         
