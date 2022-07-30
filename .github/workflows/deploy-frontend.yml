@@ -17,25 +17,15 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Clonar repositorio en máquina remota
-      - name: Checkout code.
+      - name: 👍 Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      # Configurar NodeJS para poder usar NPM
-      # - name: Configure NodeJS-16
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 16
-
-      # Crear imagen de la aplicación con NPM
-      #- name: Install dependencies and build
-      #  run: cd ./frontend-tfg/ && npm install && CI=false npm run build
-
       # Añadir remoto de heroku al repositorio
-      - name: Add Heroku remote repository for backend
+      - name: ➕ Add Heroku remote repository for backend
         run: git remote add heroku-frontend https://heroku:${{ secrets.HEROKU_FRONTEND_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_FRONTEND_APP_NAME }}.git
 
       # Pushear código al remoto de heroku para despliegue automático
-      - name: Deploy frontend to Heroku
+      - name: 🚀 Deploy frontend to Heroku
         run: git push heroku-frontend `git subtree split --prefix frontend-tfg main`:refs/heads/master --force
