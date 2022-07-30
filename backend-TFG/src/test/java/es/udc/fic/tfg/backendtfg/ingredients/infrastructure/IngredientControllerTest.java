@@ -2,23 +2,22 @@ package es.udc.fic.tfg.backendtfg.ingredients.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.controllers.IngredientController;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.CreateIngredientParamsDTO;
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.CreateIngredientTypeParamsDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
-import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
@@ -28,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -39,6 +37,7 @@ import java.util.*;
 
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +51,8 @@ class IngredientControllerTest {
     private static final String API_ENDPOINT = "/api/ingredients";
     private final ObjectMapper jsonMapper = new ObjectMapper();
     private final Locale locale = Locale.getDefault();
+    private final int INITIAL_PAGE = 0;
+    private final int PAGE_SIZE = 5;
     
     @Autowired
     private MockMvc mockMvc;
@@ -64,15 +65,9 @@ class IngredientControllerTest {
     @Autowired
     private IngredientTypeRepository ingredientTypeRepository;
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private IngredientService ingredientService;
     @Autowired
-    private IngredientController ingredientController;
-    @Autowired
     private MessageSource messageSource;
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -127,22 +122,6 @@ class IngredientControllerTest {
         return messageSource.getMessage(
                 propertyName,
                 null,
-                propertyName,
-                locale
-        );
-    }
-    
-    /** Recupera el texto asociado a la propiedad recibida con los parámetros recibidos a partir del fichero de I18N en el idioma indicado. */
-    private String getI18NExceptionMessageWithParams(String propertyName, Locale locale, Object[] args, Class exceptionClass) {
-        String exceptionMessage = messageSource.getMessage(
-                exceptionClass.getSimpleName(), null, exceptionClass.getSimpleName(), locale
-        );
-        // Añadir el mensaje traducido al principio del array de argumentos a traducir
-        Object[] values = new Object[args.length + 1];
-        System.arraycopy(args, 0, values, 1, args.length);
-        return messageSource.getMessage(
-                propertyName,
-                args,
                 propertyName,
                 locale
         );
@@ -219,7 +198,6 @@ class IngredientControllerTest {
     @Test
     void whenCreateIngredientType_thenIngredientTypeIsCreated() throws Exception {
         // Crear datos de prueba
-        User admin = userRepository.findByNicknameIgnoreCase(ADMIN_NICKNAME).get();
         AuthenticatedUserDTO adminDTO = loginAsAdmin();
         JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
         CreateIngredientTypeParamsDTO paramsDTO = new CreateIngredientTypeParamsDTO();
@@ -244,7 +222,74 @@ class IngredientControllerTest {
         action.andExpect(status().isCreated())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindAllIngredients_thenIngredientBlockIsRetrieved() throws Exception {
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        ResultActions action = mockMvc.perform(
+            get(endpointAddress)
+                    .queryParam("page", String.valueOf(INITIAL_PAGE))
+                    .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
         
+        // Comprobar resultados
+        Block<Ingredient> ingredients = ingredientService.findAllIngredients(INITIAL_PAGE, PAGE_SIZE);
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
+        BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindIngredientsByName_thenIngredientBlockIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        String ingredientName = "pan";
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/find";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+                        .queryParam("name", ingredientName)
+        );
+        
+        // Comprobar resultados
+        Block<Ingredient> ingredients = ingredientService.findIngredientsByName(ingredientName, INITIAL_PAGE, PAGE_SIZE);
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
+        BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindIngredientsByType_thenIngredientBlockIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        IngredientType ingredientType = registerIngredientType();
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/find";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+                        .queryParam("typeID", ingredientType.getId().toString())
+        );
+        
+        // Comprobar resultados
+        Block<Ingredient> ingredients = ingredientService.findIngredientsByType(ingredientType.getId(), INITIAL_PAGE, PAGE_SIZE);
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
+        BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
     }
     
 }

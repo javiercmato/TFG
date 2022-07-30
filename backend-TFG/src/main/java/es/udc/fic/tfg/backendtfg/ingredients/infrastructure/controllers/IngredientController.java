@@ -1,6 +1,8 @@
 package es.udc.fic.tfg.backendtfg.ingredients.infrastructure.controllers;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
@@ -14,11 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/ingredients")
 public class IngredientController {
+    
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
     private IngredientService ingredientService;
@@ -68,4 +72,59 @@ public class IngredientController {
         return IngredientTypeConversor.toIngredientTypeDTO(type);
     }
     
+    @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    public BlockDTO<IngredientSummaryDTO> findAllIngredients(@RequestParam(value = "page") int page,
+                                                             @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
+        // Llamada al servicio
+        Block<Ingredient> ingredientsBlock = ingredientService.findAllIngredients(page, pageSize);
+    
+        // Generar respuesta
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredientsBlock.getItems());
+    
+        return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
+    }
+    
+    @GetMapping(value = "/find",
+            params = "name",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<IngredientSummaryDTO> findIngredientsByName(@RequestParam("name") String name,
+                                                                @RequestParam("page") int page,
+                                                                @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
+        // Llamada al servicio
+        Block<Ingredient> ingredientsBlock = ingredientService.findIngredientsByName(name, page, pageSize);
+        
+        // Generar respuesta
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredientsBlock.getItems());
+    
+        return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
+    }
+    
+    @GetMapping(value = "/find",
+            params = "typeID",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<IngredientSummaryDTO> findIngredientsByType(@RequestParam("typeID") UUID typeID,
+                                                                @RequestParam("page") int page,
+                                                                @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
+        // Llamada al servicio
+        Block<Ingredient> ingredientsBlock = ingredientService.findIngredientsByType(typeID, page, pageSize);
+        
+        // Generar respuesta
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredientsBlock.getItems());
+        
+        return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
+    }
+    
+    
+    
+    /* ******************** FUNCIONES AUXILIARES ******************** */
+    private <T> BlockDTO<T> createBlock(List<T> items, boolean hasMoreItems, int itemsCount) {
+        BlockDTO<T> block = new BlockDTO<>();
+        block.setItems(items);
+        block.setItemsCount(itemsCount);
+        block.setHasMoreItems(hasMoreItems);
+        
+        return block;
+    }
 }
