@@ -41,6 +41,14 @@ public interface IngredientService {
     List<IngredientType> getIngredientTypes();
     
     /**
+     * Recupera todos los ingredientes paginados
+     * @param page Número de página a cargar
+     * @param pageSize Tamaño de la página
+     * @return Bloque con los ingredientes
+     */
+    Block<Ingredient> findAllIngredients(int page, int pageSize);
+    
+    /**
      * Recupera todos los ingredientes que contengan el nombre recibido
      * @param name Nombre del ingrediente a buscar
      * @param page Número de página a cargar

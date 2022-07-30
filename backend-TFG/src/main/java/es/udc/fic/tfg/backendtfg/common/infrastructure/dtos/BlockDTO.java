@@ -1,7 +1,6 @@
 package es.udc.fic.tfg.backendtfg.common.infrastructure.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
@@ -9,6 +8,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class BlockDTO<T> {
     @NotNull
     private List<T> items;

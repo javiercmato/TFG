@@ -88,6 +88,15 @@ public class IngredientServiceImpl implements IngredientService {
     }
     
     @Override
+    public Block<Ingredient> findAllIngredients(int page, int pageSize) {
+        // Buscar los ingredientes
+        Slice<Ingredient> ingredientSlice = ingredientRepo.findByOrderByNameAsc(PageRequest.of(page, pageSize));
+        
+        // Devuelve los resultados
+        return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
+    }
+    
+    @Override
     public Block<Ingredient> findIngredientsByName(String name, int page, int pageSize) {
         // Busca los ingredientes por nombre en orden alfabético ascendente
         Slice<Ingredient> ingredientSlice = ingredientRepo.findByNameContainsIgnoreCaseOrderByNameAsc(name, PageRequest.of(page, pageSize));

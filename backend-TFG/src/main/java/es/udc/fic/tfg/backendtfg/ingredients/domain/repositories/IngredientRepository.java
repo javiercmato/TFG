@@ -14,6 +14,8 @@ public interface IngredientRepository extends CrudRepository<Ingredient, UUID> {
     @Query("select (count(i) > 0) from Ingredient i where upper(i.name) like upper(?1)")
     boolean existsByNameLikeIgnoreCase(String name);
     
+    Slice<Ingredient> findByOrderByNameAsc(Pageable pageable);
+    
     Optional<Ingredient> findByNameLikeIgnoreCase(String name);
     
     Slice<Ingredient> findByNameContainsIgnoreCaseOrderByNameAsc(String name, Pageable pageable);
