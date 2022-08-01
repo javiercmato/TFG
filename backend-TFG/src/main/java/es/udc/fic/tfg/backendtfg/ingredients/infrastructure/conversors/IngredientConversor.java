@@ -2,6 +2,8 @@ package es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientDTO;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IngredientConversor {

@@ -39,6 +39,7 @@ import java.util.*;
 
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -219,7 +220,6 @@ class IngredientControllerTest {
     @Test
     void whenCreateIngredientType_thenIngredientTypeIsCreated() throws Exception {
         // Crear datos de prueba
-        User admin = userRepository.findByNicknameIgnoreCase(ADMIN_NICKNAME).get();
         AuthenticatedUserDTO adminDTO = loginAsAdmin();
         JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
         CreateIngredientTypeParamsDTO paramsDTO = new CreateIngredientTypeParamsDTO();
@@ -244,7 +244,26 @@ class IngredientControllerTest {
         action.andExpect(status().isCreated())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
+    }
+
+    @Test
+    void whenGetAllIngredientTypes_thenIngredientTypeListIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        registerIngredientType();
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/types";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+        );
+    
+        // Comprobar resultados
+        List<IngredientType> expectedTypes = ingredientTypeRepository.findByOrderByNameAsc();
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedTypes);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+        
         
     }
-    
 }

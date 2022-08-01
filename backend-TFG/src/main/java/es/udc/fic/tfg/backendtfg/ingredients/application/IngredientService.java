@@ -4,6 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IngredientService {
@@ -32,4 +33,10 @@ public interface IngredientService {
     IngredientType createIngredientTypeAsAdmin(String ingredientTypeName, UUID adminID) throws EntityAlreadyExistsException,
                                                                                                EntityNotFoundException,
                                                                                                PermissionException;
+    
+    /**
+     * Obtiene todos los tipos de ingredientes.
+     * @return Lista de tipos de ingredientes
+     */
+    List<IngredientType> getIngredientTypes();
 }

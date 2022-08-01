@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -66,6 +67,17 @@ public class IngredientController {
         
         // Generar respuesta
         return IngredientTypeConversor.toIngredientTypeDTO(type);
+    }
+    
+    @GetMapping(path = "/types",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<IngredientTypeDTO> getIngredientTypes() {
+        // Llamada al servicio
+        List<IngredientType> types = ingredientService.getIngredientTypes();
+        
+        // Generar respuesta
+        return IngredientTypeConversor.toIngredientTypeDTOList(types);
     }
     
 }
