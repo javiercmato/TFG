@@ -8,10 +8,14 @@ export const headerLink: CSSProperties = {
 export const headerUserAccessLinks: CSSProperties = {
     display: 'block',
     flexDirection: 'row',
-    
 }
 
 export const navItem: CSSProperties = {
     marginLeft: "1em",
     marginRight: "1em"
+}
+
+export const navGlobalItem: CSSProperties = {
+    ...navItem,
+    justifyContent: "space-between"
 }

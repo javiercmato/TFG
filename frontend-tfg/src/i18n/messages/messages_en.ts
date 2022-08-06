@@ -28,6 +28,7 @@ const translations = {
     'app.components.ErrorDialog.title' : 'Error',
     'app.components.Header.signUp': 'Sign up',
     'app.components.Header.login': 'Login',
+    'app.components.Header.globalLinks.ingredients': 'Ingredients',
     'app.components.Header.userActions.logout': 'Logout',
     'app.components.Header.userActions.changePassword': 'Change password',
     'app.components.Header.userActions.seeProfile': 'See profile',
@@ -50,9 +51,12 @@ const translations = {
     'users.components.UpdateProfile.updateButton': 'Update profile',
     'users.components.BanUserButton.banButton': 'Ban user',
     'users.components.BanUserButton.unbanButton': 'Unban user',
-    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
     'users.components.UserProfile.deleteUser': 'Delete user',
+    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
 
+    /* ******************** Ingredients ******************** */
+    'ingredients.components.CreateIngredientType.title': 'Create new ingredient type',
+    'ingredients.components.CreateIngredientType.placeholder': 'For examploe: "Vegetables"',
 }
 
 export default translations;

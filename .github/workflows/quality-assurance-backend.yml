@@ -14,6 +14,8 @@ on:
       - opened
     branches:
       - develop
+    paths:
+      - ./backend-TFG/
 
 jobs:
   # Analizar el código del backend en los servidores de SonarCloud

@@ -3,10 +3,12 @@ import {RootState} from "./RootState";
 
 import {appRedux} from "../App";
 import {userRedux} from '../Users';
+import {ingredientsRedux} from '../Ingredients';
 
 const rootReducer = combineReducers<RootState>({
     app: appRedux.reducer,
     users: userRedux.reducer,
+    ingredients: ingredientsRedux.reducer,
 })
 
 
