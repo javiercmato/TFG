@@ -1,6 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {FindAllIngredientTypesActionType, IngredientDispatchType} from './actionTypes';
+import {CreateIngredientTypeActionType, FindAllIngredientTypesActionType, IngredientDispatchType} from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
 import {IngredientType} from "../../Domain";
 
@@ -9,6 +9,11 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
     switch (action.type) {
         case actionTypes.FIND_ALL_INGREDIENT_TYPES:
             return (action as FindAllIngredientTypesActionType).payload;
+
+        case actionTypes.CREATE_INGREDIENT_TYPE:
+            let payload: IngredientType = (action as CreateIngredientTypeActionType).payload;
+
+            return [...state, payload]
 
 
         default:

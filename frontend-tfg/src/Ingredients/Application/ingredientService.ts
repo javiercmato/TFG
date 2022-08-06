@@ -1,4 +1,3 @@
-import {IngredientType} from "../Domain";
 import {appFetch, configFetchParameters} from "../../proxy";
 
 
@@ -14,12 +13,15 @@ export const getIngredientTypes = (onSuccessCallback: CallbackFunction,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
-export const createIngredientType = (ingredientType: IngredientType,
+export const createIngredientType = (name: string,
                                      onSuccessCallback: CallbackFunction,
                                      onErrorCallback: CallbackFunction) : void => {
     // Configurar petición al servicio
     const endpoint = INGREDIENTS_ENDPOINT + '/types';
-    const requestConfig = configFetchParameters('POST', ingredientType);
+    const body = {
+        name: name
+    }
+    const requestConfig = configFetchParameters('POST', body);
 
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);

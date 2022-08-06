@@ -42,7 +42,7 @@ export const findAllIngredientTypesAsyncAction = (onSuccessCallback: CallbackFun
     ingredientService.getIngredientTypes(onSuccess, onError);
 }
 
-export const createIngredientTypeAsyncAction = (intgredientType: IngredientType,
+export const createIngredientTypeAsyncAction = (name: string,
                                                 onSuccessCallback: CallbackFunction,
                                                 onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
@@ -69,5 +69,5 @@ export const createIngredientTypeAsyncAction = (intgredientType: IngredientType,
     dispatch(app.actions.loading());
 
     // Llamar al servicio y ejecutar los callbacks
-    ingredientService.createIngredientType(intgredientType, onSuccess, onError);
+    ingredientService.createIngredientType(name, onSuccess, onError);
 }

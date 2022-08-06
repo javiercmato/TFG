@@ -10,4 +10,4 @@ export type {IIngredientState} from './Application';
 
 
 /* ********** Components ********** */
-
+export {IngredientsPage} from './Components';
