@@ -1,13 +1,15 @@
 import {Col, Row} from "react-bootstrap";
 import CreateIngredientType from "./CreateIngredientType";
+import IngredientTypesList from "./IngredientTypesList";
 
 const IngredientsPage = () => {
 
     return (
         <Row>
-            {/* Columna para mostrar lista de ingredientes y botón para crear nuevo tipo */}
+            {/* Formulario para crear y mostrar los tipos de ingredientes */}
             <Col md={4}>
                 <CreateIngredientType />
+                <IngredientTypesList />
             </Col>
 
             {/* Columna para buscar ingredientes */}

@@ -22,6 +22,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirmar contraseña',
     'common.fields.avatar': 'Foto de perfil',
 
+    'common.alerts.noResults': 'Sin resultados',
 
 
     /* ******************** App ******************** */

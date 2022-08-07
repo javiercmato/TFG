@@ -22,6 +22,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirm password',
     'common.fields.avatar': 'Avatar',
 
+    'common.alerts.noResults': 'No results found',
 
 
     /* ******************** App ******************** */
@@ -56,7 +57,7 @@ const translations = {
 
     /* ******************** Ingredients ******************** */
     'ingredients.components.CreateIngredientType.title': 'Create new ingredient type',
-    'ingredients.components.CreateIngredientType.placeholder': 'For examploe: "Vegetables"',
+    'ingredients.components.CreateIngredientType.placeholder': 'For example: "Vegetables"',
 }
 
 export default translations;
