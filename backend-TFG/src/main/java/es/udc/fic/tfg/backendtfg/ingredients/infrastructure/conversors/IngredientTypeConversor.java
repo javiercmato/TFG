@@ -5,6 +5,9 @@ import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientTypeD
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IngredientTypeConversor {
     /* ******************** Convertir a DTO ******************** */
@@ -17,7 +20,11 @@ public class IngredientTypeConversor {
     }
     
     /* ******************** Convertir a conjunto de DTO ******************** */
-    
+    public static List<IngredientTypeDTO> toIngredientTypeListDTO(List<IngredientType> entityList){
+        return entityList.stream()
+                         .map(type -> toIngredientTypeDTO(type))
+                         .collect(Collectors.toList());
+    }
     
     /* ******************** Convertir a Entidad ******************** */
     
