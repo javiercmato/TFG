@@ -2,7 +2,9 @@ import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
 import {CreateIngredientTypeActionType, FindAllIngredientTypesActionType, IngredientDispatchType} from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
-import {IngredientType} from "../../Domain";
+import {Ingredient, IngredientType} from "../../Domain";
+import {Search} from "../../../App";
+
 
 const ingredientTypes = (state: Array<IngredientType> = initialState.types,
                          action: IngredientDispatchType): Array<IngredientType> => {
@@ -15,6 +17,17 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 
             return [...state, payload]
 
+        default:
+            return state;
+    }
+}
+
+
+const ingredientsSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
+                          action: IngredientDispatchType): Nullable<Search<Ingredient>> => {
+    switch (action.type) {
+        case actionTypes.CREATE_INGREDIENT:
+            return state;
 
         default:
             return state;
@@ -22,9 +35,9 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 }
 
 
-
 const ingredientsReducer = combineReducers<IIngredientState>({
-    types: ingredientTypes
+    types: ingredientTypes,
+    ingredientSearch: ingredientsSearch,
 });
 
 

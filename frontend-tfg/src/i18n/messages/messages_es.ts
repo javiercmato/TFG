@@ -9,6 +9,8 @@ const translations = {
     'common.buttons.close': 'Cerrar',
     'common.buttons.edit': 'Editar',
     'common.buttons.uploadFile': 'Subir fichero',
+    'common.buttons.create': 'Crear',
+
 
     'common.validation.mandatoryField': 'Campo obligatorio',
     'common.validation.email': 'Introduzca un correo electrónico válido',
@@ -21,6 +23,7 @@ const translations = {
     'common.fields.password': 'Contraseña',
     'common.fields.confirmPassword': 'Confirmar contraseña',
     'common.fields.avatar': 'Foto de perfil',
+    'common.fields.ingredientType': 'Tipo de ingrediente',
 
     'common.alerts.noResults': 'Sin resultados',
 
@@ -57,7 +60,9 @@ const translations = {
 
     /* ******************** Ingredients ******************** */
     'ingredients.components.CreateIngredientType.title': 'Crear nuevo tipo de ingrediente',
-    'ingredients.components.CreateIngredientType.placeholder': 'Por ejemplo: "Verdura"',
+    'ingredients.components.CreateIngredientType.placeholder': 'P. ej.: "Verdura"',
+    'ingredients.components.CreateIngredient.title': 'Crear nuevo ingrediente',
+    'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
 }
 
 export default translations;

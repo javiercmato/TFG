@@ -5,6 +5,7 @@ import {useState} from "react";
 import {IngredientType} from "../Domain";
 import {useAppSelector} from "../../store";
 import {ingredientsRedux} from "../Application";
+import CreateIngredient, {CreateIngredientProps} from "./CreateIngredient";
 
 const IngredientsPage = () => {
     const ingredientTypes: IngredientType[] = useAppSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
@@ -16,28 +17,27 @@ const IngredientsPage = () => {
         setSelectedItemIndex(index);
     }
 
-    let props: IngredientTypesListProps = {
+    let ingredientTypesListProps: IngredientTypesListProps = {
         list: ingredientTypes,
         onClickCallback: handleIngredientTypeClick,
         selectedIndex: selectedItemIndex
     }
 
+    let createIngredientProps: CreateIngredientProps = {
+        ingredientTypes: ingredientTypes
+    }
+
     return (
         <Row>
-            {/* Formulario para crear y mostrar los tipos de ingredientes */}
+            {/* Formulario para crear y mostrar los tipos y los ingredientes */}
             <Col md={4}>
                 <CreateIngredientType />
-                <IngredientTypesList {...props}/>
+                <CreateIngredient {...createIngredientProps} />
+                <IngredientTypesList {...ingredientTypesListProps}/>
             </Col>
 
             {/* Columna para buscar ingredientes */}
             <Col>
-                <div>
-                {(selectedItemIndex) >= 0 ?
-                    ingredientTypes.at(selectedItemIndex)!.name
-                    : <h2>NINGÚN TIPO SELECCIONADO</h2>
-                }
-                </div>
             </Col>
         </Row>
     )

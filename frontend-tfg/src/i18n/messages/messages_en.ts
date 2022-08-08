@@ -9,6 +9,7 @@ const translations = {
     'common.buttons.close': 'Close',
     'common.buttons.edit': 'Edit',
     'common.buttons.uploadFile': 'Upload file',
+    'common.buttons.create': 'Create',
 
     'common.validation.mandatoryField': 'Mandatory field',
     'common.validation.email': 'Invalid email',
@@ -21,6 +22,7 @@ const translations = {
     'common.fields.password': 'Password',
     'common.fields.confirmPassword': 'Confirm password',
     'common.fields.avatar': 'Avatar',
+    'common.fields.ingredientType': 'Ingredient type',
 
     'common.alerts.noResults': 'No results found',
 
@@ -57,7 +59,9 @@ const translations = {
 
     /* ******************** Ingredients ******************** */
     'ingredients.components.CreateIngredientType.title': 'Create new ingredient type',
-    'ingredients.components.CreateIngredientType.placeholder': 'For example: "Vegetables"',
+    'ingredients.components.CreateIngredientType.placeholder': 'E.g.: "Vegetables"',
+    'ingredients.components.CreateIngredient.title': 'Create new ingredient',
+    'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
 }
 
 export default translations;

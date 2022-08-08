@@ -26,3 +26,21 @@ export const createIngredientType = (name: string,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const createIngredient = (name: string,
+                                 ingredientTypeID: string,
+                                 userID: string,
+                                 onSuccessCallback: CallbackFunction,
+                                 onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = INGREDIENTS_ENDPOINT + '/';
+    const body = {
+        name,
+        ingredientTypeID,
+        creatorID: userID
+    }
+    const requestConfig = configFetchParameters('POST', body);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
