@@ -1,27 +1,21 @@
-import {useAppSelector} from "../../store";
-import {ingredientsRedux} from "../Application";
 import {IngredientType} from "../Domain";
 import {Alert, ListGroup} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import IngredientTypesListItem from "./IngredientTypesListItem";
-import {useState} from "react";
 
-const IngredientTypesList = () => {
-    const ingredientTypes: IngredientType[] = useAppSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
-    const [selectedItemIndex, setSelectedItemIndex] = useState<number>();
+interface Props {
+    list: Array<IngredientType>,
+    onClickCallback: any,
+    selectedIndex: number,
+}
 
-    const handleClick = (event: MouseEvent, index: number) => {
-        event.preventDefault();
-
-
-        setSelectedItemIndex(index);
-    }
+const IngredientTypesList = ({list, onClickCallback, selectedIndex}: Props) => {
 
     // Si no hay resultados, no se muestra nada
-    if (!ingredientTypes) return null;
+    if (!list) return null;
 
     // Si no hay ninguna coincidencia, se muestra una alerta
-    if (ingredientTypes.length === 0) {
+    if (list.length === 0) {
         return (
             <Alert variant="info">
                 <FormattedMessage id="common.alerts.noResults" />
@@ -32,15 +26,15 @@ const IngredientTypesList = () => {
     return (
         <div>
             <ListGroup>
-                {ingredientTypes.map( (i, index: number) => {
-                    let isActive = (selectedItemIndex === index);
+                {list.map( (i, index: number) => {
+                    let isActive = (selectedIndex === index);
                     return (
                         <IngredientTypesListItem
                             key={i.id}
                             item={i}
                             isActive={isActive}
                             index={index}
-                            onClickCallback={handleClick}
+                            onClickCallback={onClickCallback}
                         />
                     )}
                 )}
@@ -49,4 +43,5 @@ const IngredientTypesList = () => {
     )
 };
 
+export type {Props as IngredientTypesListProps};
 export default IngredientTypesList;

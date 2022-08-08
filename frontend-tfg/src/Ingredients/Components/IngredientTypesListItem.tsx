@@ -1,6 +1,5 @@
 import {IngredientType} from "../Domain";
 import {ListGroupItem} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
 
 interface Props {
     item: IngredientType,
@@ -10,12 +9,8 @@ interface Props {
 }
 
 const IngredientTypesListItem = ({item, isActive, index, onClickCallback}: Props) => {
-    const navigate = useNavigate();
-
     const handleClick = (e: any) => {
         onClickCallback(e, index);
-
-        navigate(`/ingredients/${item.id}`);
     }
 
     return (
