@@ -3,7 +3,7 @@ import {IngredientDispatchType} from './actionTypes';
 import * as ingredientService from '../ingredientService';
 import {Ingredient, IngredientType} from "../../Domain";
 import {AppThunk} from "../../../store";
-import {appRedux as app, ErrorDto} from "../../../App";
+import {appRedux as app, Block, ErrorDto, Search, SearchCriteria} from "../../../App";
 
 
 /* ************************* DISPATCHABLE ACTIONS ******************** */
@@ -21,6 +21,21 @@ export const createIngredientTypeAction = (ingredientType: IngredientType) : Ing
 export const createIngredientAction = (ingredient: Ingredient) : IngredientDispatchType => ({
     type: actionTypes.CREATE_INGREDIENT_TYPE,
     payload: ingredient
+})
+
+export const findAllIngredientsAction = (ingredientsSearch: Search<Ingredient>) : IngredientDispatchType => ({
+    type: actionTypes.FIND_ALL_INGREDIENTS,
+    payload: ingredientsSearch
+})
+
+export const findIngredientsByTypeAction = (ingredientsSearch: Search<Ingredient>) : IngredientDispatchType => ({
+    type: actionTypes.FIND_INGREDIENTS_BY_TYPE,
+    payload: ingredientsSearch
+})
+
+export const findIngredientsByNameAction = (ingredientsSearch: Search<Ingredient>) : IngredientDispatchType => ({
+    type: actionTypes.FIND_INGREDIENTS_BY_NAME,
+    payload: ingredientsSearch
 })
 
 
@@ -108,4 +123,81 @@ export const createIngredientAsyncAction = (name: string,
 
     // Llamar al servicio y ejecutar los callbacks
     ingredientService.createIngredient(name, ingredientTypeID, userID, onSuccess, onError);
+}
+
+export const findAllIngredientsAsyncAction = (onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (types: Array<IngredientType>) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(findAllIngredientTypes(types));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(types);
+    };
+
+    // Función a ejecutar en caso de error (buscar elementos no produce errores, por eso una función vacía
+    const onError = () => {};
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    ingredientService.findAllIngredients(onSuccess, onError);
+}
+
+export const findIngredientsByNameAsyncAction = (criteria: SearchCriteria, onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (block: Block<Ingredient>) : void => {
+        // Encapsula la respuesta
+        const search: Search<Ingredient> = {
+            criteria: criteria,
+            result: block
+        }
+
+        // Actualiza estado de la aplicación
+        dispatch(findIngredientsByNameAction(search));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(block);
+    };
+
+    // Función a ejecutar en caso de error (buscar elementos no produce errores, por eso una función vacía
+    const onError = () => {};
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    const {name, page, pageSize} = criteria;
+    ingredientService.findIngredientsByName(name!, page, pageSize, onSuccess, onError);
+}
+
+export const findIngredientsByTypeAsyncAction = (criteria: SearchCriteria, onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (block: Block<Ingredient>) : void => {
+        // Encapsula la respuesta
+        const search: Search<Ingredient> = {
+            criteria: criteria,
+            result: block
+        }
+
+        // Actualiza estado de la aplicación
+        dispatch(findIngredientsByTypeAction(search));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(block);
+    };
+
+    // Función a ejecutar en caso de error (buscar elementos no produce errores, por eso una función vacía
+    const onError = () => {};
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    const {type, page, pageSize} = criteria;
+    ingredientService.findIngredientsByType(type!, page, pageSize, onSuccess, onError);
 }

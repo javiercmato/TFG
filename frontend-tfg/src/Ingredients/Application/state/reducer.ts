@@ -1,6 +1,13 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {CreateIngredientTypeActionType, FindAllIngredientTypesActionType, IngredientDispatchType} from './actionTypes';
+import {
+    CreateIngredientTypeActionType,
+    FindAllIngredientsActionType,
+    FindAllIngredientTypesActionType,
+    FindIngredientsByNameActionType,
+    FindIngredientsByTypeActionType,
+    IngredientDispatchType
+} from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
 import {Ingredient, IngredientType} from "../../Domain";
 import {Search} from "../../../App";
@@ -23,11 +30,29 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 }
 
 
-const ingredientsSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
+const ingredientSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
                           action: IngredientDispatchType): Nullable<Search<Ingredient>> => {
     switch (action.type) {
         case actionTypes.CREATE_INGREDIENT:
             return state;
+
+        case actionTypes.FIND_ALL_INGREDIENTS : {
+            let search: Search<Ingredient> = (action as FindAllIngredientsActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.FIND_INGREDIENTS_BY_TYPE : {
+            let search: Search<Ingredient> = (action as FindIngredientsByTypeActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.FIND_INGREDIENTS_BY_NAME : {
+            let search: Search<Ingredient> = (action as FindIngredientsByNameActionType).payload;
+
+            return search;
+        }
 
         default:
             return state;
@@ -37,7 +62,7 @@ const ingredientsSearch = (state: Nullable<Search<Ingredient>> = initialState.in
 
 const ingredientsReducer = combineReducers<IIngredientState>({
     types: ingredientTypes,
-    ingredientSearch: ingredientsSearch,
+    ingredientSearch: ingredientSearch,
 });
 
 
