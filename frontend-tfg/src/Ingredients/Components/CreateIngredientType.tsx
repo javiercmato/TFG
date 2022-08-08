@@ -38,7 +38,7 @@ const CreateIngredientType = () => {
 
             <Card.Body>
                 <Form
-                    onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e)}
+                    onSubmit={handleSubmit}
                 >
                     <FormGroup>
                         <InputGroup>

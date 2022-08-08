@@ -1,6 +1,6 @@
 /* ********** Domain ********** */
 export type {FieldErrorDto, ErrorDto} from './Domain'
-
+export type {Search, SearchCriteria, Block} from './Domain';
 
 /* ********** Application ********** */
 export {appRedux} from './Application';

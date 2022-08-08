@@ -37,6 +37,31 @@ public class IngredientController {
     
     
     /* ******************** ENDPOINTS ******************** */
+    
+    @PostMapping(path = "/types",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    public IngredientTypeDTO createIngredientTypeAsAdmin(@Validated @RequestBody CreateIngredientTypeParamsDTO params,
+                                                         @RequestAttribute("userID") UUID adminID)
+            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
+        // Llamada al servicio
+        IngredientType type = ingredientService.createIngredientTypeAsAdmin(params.getName(), adminID);
+        
+        // Generar respuesta
+        return IngredientTypeConversor.toIngredientTypeDTO(type);
+    }
+    
+    @GetMapping(path = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<IngredientTypeDTO> getAllIngredientTypes() {
+        // Llamada al servicio
+        List<IngredientType> types = ingredientService.getIngredientTypes();
+        
+        // Generar respuesta
+        return IngredientTypeConversor.toIngredientTypeListDTO(types);
+    }
+    
     @PostMapping(path = "/",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -55,21 +80,6 @@ public class IngredientController {
         
         // Generar respuesta
         return IngredientConversor.toIngredientDTO(ingredient);
-    }
-    
-    @PostMapping(path = "/types",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ResponseStatus(HttpStatus.CREATED)
-    public IngredientTypeDTO createIngredientTypeAsAdmin(@Validated @RequestBody CreateIngredientTypeParamsDTO params,
-                                                         @RequestAttribute("userID") UUID adminID)
-            throws PermissionException, EntityAlreadyExistsException, EntityNotFoundException {
-        // Llamada al servicio
-        IngredientType type = ingredientService.createIngredientTypeAsAdmin(params.getName(), adminID);
-        
-        // Generar respuesta
-        return IngredientTypeConversor.toIngredientTypeDTO(type);
     }
     
     @GetMapping(path = "/", produces = MediaType.APPLICATION_JSON_VALUE)
