@@ -1,21 +1,22 @@
-import {IngredientType} from "../Domain";
 import {Alert, ListGroup} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import IngredientTypesListItem from "./IngredientTypesListItem";
+import {useSelector} from "react-redux";
+import {ingredientsRedux} from "../Application";
 
 interface Props {
-    list: Array<IngredientType>,
     onClickCallback: any,
     selectedIndex: number,
 }
 
-const IngredientTypesList = ({list, onClickCallback, selectedIndex}: Props) => {
+const IngredientTypesList = ({onClickCallback, selectedIndex}: Props) => {
+    const ingredientTypes = useSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
 
     // Si no hay resultados, no se muestra nada
-    if (!list) return null;
+    if (!ingredientTypes) return null;
 
     // Si no hay ninguna coincidencia, se muestra una alerta
-    if (list.length === 0) {
+    if (ingredientTypes.length === 0) {
         return (
             <Alert variant="info">
                 <FormattedMessage id="common.alerts.noResults" />
@@ -26,7 +27,7 @@ const IngredientTypesList = ({list, onClickCallback, selectedIndex}: Props) => {
     return (
         <div>
             <ListGroup>
-                {list.map( (i, index: number) => {
+                {ingredientTypes.map( (i, index: number) => {
                     let isActive = (selectedIndex === index);
                     return (
                         <IngredientTypesListItem

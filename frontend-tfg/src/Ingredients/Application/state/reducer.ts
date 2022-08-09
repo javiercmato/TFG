@@ -5,6 +5,7 @@ import {
     FindAllIngredientsActionType,
     FindAllIngredientTypesActionType,
     FindIngredientsByNameActionType,
+    FindIngredientsByNameAndTypeActionType,
     FindIngredientsByTypeActionType,
     IngredientDispatchType
 } from './actionTypes';
@@ -33,9 +34,6 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 const ingredientSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
                           action: IngredientDispatchType): Nullable<Search<Ingredient>> => {
     switch (action.type) {
-        case actionTypes.CREATE_INGREDIENT:
-            return state;
-
         case actionTypes.FIND_ALL_INGREDIENTS : {
             let search: Search<Ingredient> = (action as FindAllIngredientsActionType).payload;
 
@@ -50,6 +48,12 @@ const ingredientSearch = (state: Nullable<Search<Ingredient>> = initialState.ing
 
         case actionTypes.FIND_INGREDIENTS_BY_NAME : {
             let search: Search<Ingredient> = (action as FindIngredientsByNameActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.FIND_INGREDIENTS_BY_NAME_AND_TYPE : {
+            let search: Search<Ingredient> = (action as FindIngredientsByNameAndTypeActionType).payload;
 
             return search;
         }

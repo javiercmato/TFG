@@ -130,7 +130,7 @@ public class IngredientController {
             params = {"name", "typeID"},
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public BlockDTO<IngredientSummaryDTO> findIngredientsByNameAndType(@RequestParam("typeID") UUID typeID,
+    public BlockDTO<IngredientSummaryDTO> findIngredientsByNameAndType(@RequestParam(value = "typeID", required = false) UUID typeID,
                                                                        @RequestParam("name") String name,
                                                                        @RequestParam("page") int page,
                                                                        @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {

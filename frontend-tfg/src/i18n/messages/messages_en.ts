@@ -10,6 +10,8 @@ const translations = {
     'common.buttons.edit': 'Edit',
     'common.buttons.uploadFile': 'Upload file',
     'common.buttons.create': 'Create',
+    'common.buttons.search': 'Search',
+
 
     'common.validation.mandatoryField': 'Mandatory field',
     'common.validation.email': 'Invalid email',
@@ -62,6 +64,7 @@ const translations = {
     'ingredients.components.CreateIngredientType.placeholder': 'E.g.: "Vegetables"',
     'ingredients.components.CreateIngredient.title': 'Create new ingredient',
     'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
+    'ingredients.components.FindIngredients.findIngredients': 'Find ingredients',
 }
 
 export default translations;

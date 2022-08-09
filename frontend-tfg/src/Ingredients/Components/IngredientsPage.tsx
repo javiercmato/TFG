@@ -2,13 +2,10 @@ import {Col, Row} from "react-bootstrap";
 import CreateIngredientType from "./CreateIngredientType";
 import IngredientTypesList, {IngredientTypesListProps} from "./IngredientTypesList";
 import {useState} from "react";
-import {IngredientType} from "../Domain";
-import {useAppSelector} from "../../store";
-import {ingredientsRedux} from "../Application";
-import CreateIngredient, {CreateIngredientProps} from "./CreateIngredient";
+import CreateIngredient from "./CreateIngredient";
+import FindIngredients from "./FindIngredients";
 
 const IngredientsPage = () => {
-    const ingredientTypes: IngredientType[] = useAppSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
     const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
 
     const handleIngredientTypeClick = (event: MouseEvent, index: number) => {
@@ -18,26 +15,23 @@ const IngredientsPage = () => {
     }
 
     let ingredientTypesListProps: IngredientTypesListProps = {
-        list: ingredientTypes,
         onClickCallback: handleIngredientTypeClick,
         selectedIndex: selectedItemIndex
     }
 
-    let createIngredientProps: CreateIngredientProps = {
-        ingredientTypes: ingredientTypes
-    }
 
     return (
         <Row>
             {/* Formulario para crear y mostrar los tipos y los ingredientes */}
             <Col md={4}>
                 <CreateIngredientType />
-                <CreateIngredient {...createIngredientProps} />
+                <CreateIngredient />
                 <IngredientTypesList {...ingredientTypesListProps}/>
             </Col>
 
             {/* Columna para buscar ingredientes */}
             <Col>
+                <FindIngredients />
             </Col>
         </Row>
     )

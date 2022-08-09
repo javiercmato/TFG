@@ -4,15 +4,12 @@ import {Button, Card, Col, Form, FormControl, Row} from "react-bootstrap";
 import {card, cardHeader} from "./styles/createIngredient";
 import {FormattedMessage, useIntl} from "react-intl";
 import {ChangeEvent, FormEvent, useState} from "react";
-import {IngredientType} from "../Domain";
 import {useAppDispatch} from "../../store";
 import {ingredientsRedux} from "../Application";
+import IngredientTypeSelector from "./IngredientTypeSelector";
 
-interface Props {
-    ingredientTypes: Array<IngredientType>,
-}
 
-const CreateIngredient = ({ingredientTypes}: Props) => {
+const CreateIngredient = () => {
     const intl = useIntl();
     const dispatch = useAppDispatch();
     const [name, setName] = useState<string>('');
@@ -61,25 +58,7 @@ const CreateIngredient = ({ingredientTypes}: Props) => {
                         <br/>
 
                         <Row>
-                            <Form.Select
-                                onChange={handleChangeType}
-                            >
-                                {/* Primera opción (índice 0) */}
-                                <option
-                                    value={''}
-                                >
-                                    <FormattedMessage id={'common.fields.ingredientType'} />
-                                </option>
-
-                                {ingredientTypes.map((t) =>
-                                    <option
-                                        key={t.id}
-                                        value={t.id}
-                                    >
-                                        {t.name.toUpperCase()}
-                                    </option>
-                                )}
-                            </Form.Select>
+                            <IngredientTypeSelector onChangeCallback={handleChangeType}/>
                         </Row>
 
                         <br/>
@@ -96,5 +75,4 @@ const CreateIngredient = ({ingredientTypes}: Props) => {
     )
 }
 
-export type {Props as CreateIngredientProps};
 export default CreateIngredient;

@@ -9,6 +9,7 @@ export const CREATE_INGREDIENT : string = 'ingredients/createIngredient';
 export const FIND_ALL_INGREDIENTS : string = 'ingredients/findAllIngredients';
 export const FIND_INGREDIENTS_BY_TYPE : string = 'ingredients/findIngredientsByType';
 export const FIND_INGREDIENTS_BY_NAME : string = 'ingredients/findIngredientsByName';
+export const FIND_INGREDIENTS_BY_NAME_AND_TYPE : string = 'ingredients/findIngredientsByNameAndType';
 
 
 
@@ -44,6 +45,11 @@ export interface FindIngredientsByNameActionType {
     payload: Search<Ingredient>
 }
 
+export interface FindIngredientsByNameAndTypeActionType {
+    type: string,
+    payload: Search<Ingredient>
+}
+
 
 export type IngredientDispatchType = CreateIngredientTypeActionType
     | FindAllIngredientTypesActionType
@@ -51,4 +57,5 @@ export type IngredientDispatchType = CreateIngredientTypeActionType
     | FindAllIngredientsActionType
     | FindIngredientsByTypeActionType
     | FindIngredientsByNameActionType
+    | FindIngredientsByNameAndTypeActionType
 ;
