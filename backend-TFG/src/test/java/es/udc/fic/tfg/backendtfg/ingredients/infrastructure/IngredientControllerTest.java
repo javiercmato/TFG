@@ -14,6 +14,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
+import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientTypeConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -225,6 +226,23 @@ class IngredientControllerTest {
     }
     
     @Test
+    void whenFindAllIngredientTypes_thenIngredientTypeListIsRetrieved() throws Exception {
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/types";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+        );
+        
+        // Comprobar resultados
+        List<IngredientType> ingredientTypes = ingredientService.getIngredientTypes();
+        List<IngredientTypeDTO> expectedResponse = IngredientTypeConversor.toIngredientTypeListDTO(ingredientTypes);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
     void whenFindAllIngredients_thenIngredientBlockIsRetrieved() throws Exception {
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/";
@@ -284,6 +302,35 @@ class IngredientControllerTest {
         
         // Comprobar resultados
         Block<Ingredient> ingredients = ingredientService.findIngredientsByType(ingredientType.getId(), INITIAL_PAGE, PAGE_SIZE);
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
+        BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindIngredientsByNameAndType_thenIngredientBlockIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        IngredientType ingredientType = registerIngredientType();
+        ingredientService.createIngredient("azucar blanco", ingredientType.getId(), jwtData.getUserID());
+        ingredientService.createIngredient("azucar moreno", ingredientType.getId(), jwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/find";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+                        .queryParam("name", "blanco")
+                        .queryParam("typeID", ingredientType.getId().toString())
+        );
+        
+        // Comprobar resultados
+        Block<Ingredient> ingredients = ingredientService.findIngredientsByNameAndType("blanco", ingredientType.getId(), INITIAL_PAGE, PAGE_SIZE);
         List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
         BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
