@@ -33,18 +33,6 @@ const IngredientsPage = () => {
         dispatch(ingredientsRedux.actions.findIngredientsByTypeAsyncAction(criteria, onSuccess));
     }
 
-    const handlePreviousResultsPage = (event: any) => {
-        event.preventDefault();
-
-        setCurrentPage((prevPage) => prevPage - 1);
-    }
-
-    const handleNextResultsPage = (event: any) => {
-        event.preventDefault();
-
-        setCurrentPage((prevPage) => prevPage + 1);
-    }
-
 
     let ingredientTypesListProps: IngredientTypesListProps = {
         onClickCallback: handleIngredientTypeClick,

@@ -1,9 +1,9 @@
 import {useAppDispatch, useAppSelector} from "../../store";
 import {ingredientsRedux} from "../Application";
 import {FormattedMessage} from "react-intl";
-import {Alert, Col, Row} from "react-bootstrap";
+import {Alert, Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import IngredientItem from "./IngredientItem";
-import {pagerRow, resultsRow, titleRow} from './styles/findIngredientsResults';
+import {pagerRow, resultItem, resultsRow, titleRow} from './styles/findIngredientsResults';
 
 
 const FindIngredientsResults = () => {
@@ -13,7 +13,7 @@ const FindIngredientsResults = () => {
     const searchResults = useAppSelector(ingredientsRedux.selectors.selectSearchResultBlock);
 
 
-    if (ingredientSearch.result === null) {
+    if (searchResults === null) {
         return (
             <Alert variant="info">
                 <FormattedMessage id="common.alerts.noResults" />
@@ -28,11 +28,13 @@ const FindIngredientsResults = () => {
             </Row>
 
             <Row style={resultsRow}>
-                {ingredientSearch.result!.items.map((ing) =>
-                    <Col xs={6}>
-                        <IngredientItem ingredient={ing} />
-                    </Col>
-                )}
+                <ListGroup>
+                    {searchResults!.items.map( (item) =>
+                        <ListGroupItem key={item.id} style={resultItem}>
+                            <IngredientItem ingredient={item} />
+                        </ListGroupItem>
+                    )}
+                </ListGroup>
             </Row>
 
             <Row style={pagerRow}>
