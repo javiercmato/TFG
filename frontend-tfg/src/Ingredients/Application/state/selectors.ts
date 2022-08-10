@@ -7,6 +7,7 @@ import {Block, Search, SearchCriteria} from "../../../App";
 const getModuleState = (state: RootState) : IIngredientState => state.ingredients;
 
 /* ******************** DATOS DE TIPOS DE INGREDIENTE ******************** */
+
 export const selectIngrediendtTypes = (state: RootState) : Array<IngredientType> => getModuleState(state).types;
 
 
@@ -21,8 +22,9 @@ export const getIngredientTypeName = (types: Array<IngredientType>, id: string) 
 
 
 /* ******************** DATOS DE BÚSQUEDAS DE INGREDIENTES ******************** */
-const getIngredientSearch = (state: RootState) : Nullable<Search<Ingredient>> => getModuleState(state).ingredientSearch;
 
-const selectSearchCriteria = (state: RootState) : SearchCriteria => getIngredientSearch(state)!.criteria!;
+export const getIngredientSearch = (state: RootState) : Search<Ingredient> => getModuleState(state).ingredientSearch;
 
-const selectSearchResultBlock = (state: RootState) : Block<Ingredient> => getIngredientSearch(state)!.result!;
+export const selectSearchCriteria = (state: RootState) : SearchCriteria => getIngredientSearch(state).criteria;
+
+export const selectSearchResultBlock = (state: RootState) : Nullable<Block<Ingredient>> => getIngredientSearch(state).result;

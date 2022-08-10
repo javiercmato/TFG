@@ -3,6 +3,7 @@ import {FormattedMessage} from "react-intl";
 import IngredientTypesListItem from "./IngredientTypesListItem";
 import {useSelector} from "react-redux";
 import {ingredientsRedux} from "../Application";
+import {listTitle} from "./styles/ingredientTypesList";
 
 interface Props {
     onClickCallback: any,
@@ -11,6 +12,7 @@ interface Props {
 
 const IngredientTypesList = ({onClickCallback, selectedIndex}: Props) => {
     const ingredientTypes = useSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
+
 
     // Si no hay resultados, no se muestra nada
     if (!ingredientTypes) return null;
@@ -26,6 +28,10 @@ const IngredientTypesList = ({onClickCallback, selectedIndex}: Props) => {
 
     return (
         <div>
+            <h4 style={listTitle}>
+                <FormattedMessage id="ingredients.components.IngredientTypesList.quickFilterByTypes" />
+            </h4>
+
             <ListGroup>
                 {ingredientTypes.map( (i, index: number) => {
                     let isActive = (selectedIndex === index);

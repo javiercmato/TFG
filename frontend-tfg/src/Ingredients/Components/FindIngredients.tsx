@@ -1,12 +1,14 @@
 import {useAppDispatch} from "../../store";
 import {ChangeEvent, FormEvent, useState} from "react";
-import {Button, Container, Form, FormControl, InputGroup, Row} from "react-bootstrap";
+import {Button, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {FormattedMessage, useIntl} from "react-intl";
 import {rowIngredientsSearch} from "./styles/findIngredients";
 import IngredientTypeSelector from "./IngredientTypeSelector";
 import {ingredientsRedux} from "../Application";
 import {SearchCriteria} from "../../App";
 
+
+const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
 const FindIngredients = () => {
     const intl = useIntl();
@@ -21,13 +23,21 @@ const FindIngredients = () => {
         setTypeIDQuery(e.target.value);
     }
 
+    const handleClearButtonClick = (e: any) => {
+        e.preventDefault();
+
+        setQueryName('');
+        setTypeIDQuery('');
+        dispatch(ingredientsRedux.actions.clearIngredientsSearchAction());
+    }
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let criteria: SearchCriteria = {
             name: queryName,
             type: typeIDQuery,
-            page: 0
+            page: 0,
+            pageSize: DEFAULT_PAGE_SIZE
         }
 
         let onSuccess = () => {};
@@ -39,7 +49,7 @@ const FindIngredients = () => {
     }
 
     return (
-        <Container>
+        <div>
             <Row style={rowIngredientsSearch}>
                 <h4><FormattedMessage id="ingredients.components.FindIngredients.findIngredients" /></h4>
                 <br/>
@@ -61,13 +71,16 @@ const FindIngredients = () => {
                             <Button type="submit">
                                 <FormattedMessage id="common.buttons.search" />
                             </Button>
+                            <Button variant="dark"
+                                onClick={handleClearButtonClick}
+                            >
+                                <FormattedMessage id="common.buttons.clear" />
+                            </Button>
                         </InputGroup>
                     </Row>
                 </Form>
             </Row>
-
-            <Row>FIND_INGREDIENTS_RESULTS</Row>
-        </Container>
+        </div>
     )
 }
 

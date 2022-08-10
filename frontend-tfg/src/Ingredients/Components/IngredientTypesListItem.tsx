@@ -10,7 +10,7 @@ interface Props {
 
 const IngredientTypesListItem = ({item, isActive, index, onClickCallback}: Props) => {
     const handleClick = (e: any) => {
-        onClickCallback(e, index);
+        onClickCallback(e, index, item.id);
     }
 
     return (

@@ -43,6 +43,10 @@ export const findIngredientsByNameAndTypeAction = (ingredientsSearch: Search<Ing
     payload: ingredientsSearch
 })
 
+export const clearIngredientsSearchAction = () : IngredientDispatchType => ({
+    type: actionTypes.CLEAR_INGREDIENTS_SEARCH,
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 
@@ -241,3 +245,4 @@ export const findIngredientsByNameAndTypeAsyncAction = (criteria: SearchCriteria
     const {type, name, page, pageSize} = criteria;
     ingredientService.findIngredientsByNameAndType(name!, type!, page, pageSize, onSuccess, onError);
 }
+

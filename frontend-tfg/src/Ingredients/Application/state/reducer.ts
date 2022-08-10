@@ -31,8 +31,8 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 }
 
 
-const ingredientSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
-                          action: IngredientDispatchType): Nullable<Search<Ingredient>> => {
+const ingredientSearch = (state: Search<Ingredient> = initialState.ingredientSearch,
+                          action: IngredientDispatchType): Search<Ingredient> => {
     switch (action.type) {
         case actionTypes.FIND_ALL_INGREDIENTS : {
             let search: Search<Ingredient> = (action as FindAllIngredientsActionType).payload;
@@ -57,6 +57,9 @@ const ingredientSearch = (state: Nullable<Search<Ingredient>> = initialState.ing
 
             return search;
         }
+
+        case actionTypes.CLEAR_INGREDIENTS_SEARCH:
+            return initialState.ingredientSearch;
 
         default:
             return state;
