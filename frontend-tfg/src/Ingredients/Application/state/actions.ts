@@ -33,6 +33,7 @@ export const findIngredientsAction = (ingredientsSearch: Search<Ingredient>) : I
     payload: ingredientsSearch
 })
 
+
 export const clearIngredientsSearchAction = () : IngredientDispatchType => ({
     type: actionTypes.CLEAR_INGREDIENTS_SEARCH,
 })

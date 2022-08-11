@@ -33,4 +33,5 @@ const IngredientTypeSelector = ({onChangeCallback} : Props) => {
     )
 }
 
+export type {Props as IngredientTypeSelectorProps};
 export default IngredientTypeSelector;

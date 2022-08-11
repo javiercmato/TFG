@@ -1,6 +1,6 @@
 import {Col, Row} from "react-bootstrap";
 import CreateIngredientType from "./CreateIngredientType";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import CreateIngredient from "./CreateIngredient";
 import FindIngredients from "./FindIngredients";
 import FindIngredientsResults from "./FindIngredientsResults";
@@ -15,11 +15,10 @@ const IngredientsPage = () => {
     const dispatch = useAppDispatch();
     const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
     const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
-    const [currentPage, setCurrentPage] = useState<number>(searchCriteria.page);
 
     useEffect( () => {
         let criteria: SearchCriteria = {
-            page: currentPage,
+            page: searchCriteria.page,
             pageSize: DEFAULT_PAGE_SIZE,
             type: null,
             name: null,

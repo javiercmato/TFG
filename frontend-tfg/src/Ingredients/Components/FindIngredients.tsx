@@ -3,7 +3,7 @@ import {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {FormattedMessage, useIntl} from "react-intl";
 import {rowIngredientsSearch} from "./styles/findIngredients";
-import IngredientTypeSelector from "./IngredientTypeSelector";
+import IngredientTypeSelector, {IngredientTypeSelectorProps} from "./IngredientTypeSelector";
 import {ingredientsRedux} from "../Application";
 import {SearchCriteria} from "../../App";
 
@@ -36,12 +36,21 @@ const FindIngredients = () => {
         let criteria: SearchCriteria = {
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
-            name: queryName,
-            type: typeIDQuery,
+            name: (queryName !== '') ? queryName : null,
+            type: (typeIDQuery !== '') ? typeIDQuery : null,
         }
 
         let onSuccess = () => {};
-        dispatch(ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess));
+        // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
+        let hasCriteria = (criteria.type === null) && (criteria.name === null);
+        let action = (hasCriteria) ?
+            ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess) :
+            ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess);
+        dispatch(action);
+    }
+
+    let typeSelectorProps: IngredientTypeSelectorProps = {
+        onChangeCallback: handleChangeType
     }
 
     return (
@@ -62,7 +71,7 @@ const FindIngredients = () => {
                                 onChange={(e: ChangeEvent<HTMLInputElement>) => setQueryName(e.target.value)}
                             />
 
-                            <IngredientTypeSelector onChangeCallback={handleChangeType}/>
+                            <IngredientTypeSelector {...typeSelectorProps}/>
 
                             <Button type="submit">
                                 <FormattedMessage id="common.buttons.search" />
