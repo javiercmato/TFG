@@ -65,4 +65,14 @@ public interface IngredientService {
      * @return Bloque de ingredientes que pertenezcan a la categoría
      */
     Block<Ingredient> findIngredientsByType(UUID ingredientTypeID, int page, int pageSize);
+    
+    /**
+     * Recupera todos los ingredientes que contengan el nombre recibido y pertenezcan a un tipo dado
+     * @param ingredientTypeID Tipo de ingrediente a filtrar
+     * @param name Nombre del ingrediente a buscar
+     * @param page Número de página a cargar
+     * @param pageSize Tamaño de la página
+     * @return Bloque de ingredientes que coincidan con la búsqueda
+     */
+    Block<Ingredient> findIngredientsByNameAndType(String name, UUID ingredientTypeID, int page, int pageSize);
 }

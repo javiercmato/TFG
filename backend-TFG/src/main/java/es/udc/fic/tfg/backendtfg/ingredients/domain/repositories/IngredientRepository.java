@@ -22,4 +22,8 @@ public interface IngredientRepository extends CrudRepository<Ingredient, UUID> {
     
     Slice<Ingredient> findByIngredientType_IdOrderByNameAsc(UUID id, Pageable pageable);
     
+    Slice<Ingredient> findByNameContainsIgnoreCaseAndIngredientType_IdOrderByNameAsc(String name, UUID id, Pageable pageable);
+    
+    
+    
 }

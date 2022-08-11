@@ -114,6 +114,16 @@ public class IngredientServiceImpl implements IngredientService {
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
     }
     
+    @Override
+    public Block<Ingredient> findIngredientsByNameAndType(String name, UUID ingredientTypeID, int page, int pageSize) {
+        // Busca los ingredientes por nombre y tipo en orden alfabético ascendente
+        Slice<Ingredient> ingredientSlice = ingredientRepo
+                .findByNameContainsIgnoreCaseAndIngredientType_IdOrderByNameAsc(name, ingredientTypeID, PageRequest.of(page, pageSize));
+    
+        // Devuelve resultados
+        return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
+    }
+    
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private IngredientType fetchIngredientTypeByID(UUID ingredientTypeID) throws EntityNotFoundException {
         Optional<IngredientType> optionalIngredientType = ingredientTypeRepo.findById(ingredientTypeID);

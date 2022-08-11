@@ -1,5 +1,8 @@
 import {CSSProperties} from "react";
 
+export const navbar: CSSProperties = {
+    alignItems: "center",
+}
 
 export const headerLink: CSSProperties = {
     textDecoration: 'none',

@@ -6,15 +6,23 @@ const translations = {
 
 
     /* ******************** common ******************** */
+    'common.results': 'Resultados',
+
+
     'common.buttons.close': 'Cerrar',
     'common.buttons.edit': 'Editar',
     'common.buttons.uploadFile': 'Subir fichero',
     'common.buttons.create': 'Crear',
+    'common.buttons.search': 'Buscar',
+    'common.buttons.clear': 'Limpiar',
+    'common.buttons.previous': 'Anterior',
+    'common.buttons.next': 'Siguiente',
 
 
     'common.validation.mandatoryField': 'Campo obligatorio',
     'common.validation.email': 'Introduzca un correo electrónico válido',
     'common.validation.passwordsDoNotMatch': 'Contraseñas no coinciden',
+
 
     'common.fields.name': 'Nombre',
     'common.fields.surname': 'Apellidos',
@@ -24,6 +32,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirmar contraseña',
     'common.fields.avatar': 'Foto de perfil',
     'common.fields.ingredientType': 'Tipo de ingrediente',
+
 
     'common.alerts.noResults': 'Sin resultados',
 
@@ -63,6 +72,9 @@ const translations = {
     'ingredients.components.CreateIngredientType.placeholder': 'P. ej.: "Verdura"',
     'ingredients.components.CreateIngredient.title': 'Crear nuevo ingrediente',
     'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
+    'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
+    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Filtrar rápido por tipos',
+
 }
 
 export default translations;

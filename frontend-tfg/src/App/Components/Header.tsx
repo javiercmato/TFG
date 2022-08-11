@@ -8,7 +8,7 @@ import {GiHamburgerMenu} from "react-icons/gi";
 import {FaHome} from "react-icons/fa";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
-import {headerLink, navGlobalItem, navItem} from "./styles/header";
+import {headerLink, navbar, navGlobalItem, navItem} from "./styles/header";
 
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
@@ -63,6 +63,7 @@ const Header = () => {
         <Navbar expand="lg"
             bg="dark"
             variant="dark"
+            style={navbar}
         >
             <Container>
                 <NavbarBrand>

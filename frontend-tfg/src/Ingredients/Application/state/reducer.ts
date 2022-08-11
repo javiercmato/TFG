@@ -1,6 +1,12 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
-import {CreateIngredientTypeActionType, FindAllIngredientTypesActionType, IngredientDispatchType} from './actionTypes';
+import {
+    CreateIngredientTypeActionType,
+    FindAllIngredientsActionType,
+    FindAllIngredientTypesActionType,
+    FindIngredientsActionType,
+    IngredientDispatchType
+} from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
 import {Ingredient, IngredientType} from "../../Domain";
 import {Search} from "../../../App";
@@ -23,11 +29,23 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
 }
 
 
-const ingredientsSearch = (state: Nullable<Search<Ingredient>> = initialState.ingredientSearch,
-                          action: IngredientDispatchType): Nullable<Search<Ingredient>> => {
+const ingredientSearch = (state: Search<Ingredient> = initialState.ingredientSearch,
+                          action: IngredientDispatchType): Search<Ingredient> => {
     switch (action.type) {
-        case actionTypes.CREATE_INGREDIENT:
-            return state;
+        case actionTypes.FIND_ALL_INGREDIENTS : {
+            let search: Search<Ingredient> = (action as FindAllIngredientsActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.FIND_INGREDIENTS : {
+            let search: Search<Ingredient> = (action as FindIngredientsActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.CLEAR_INGREDIENTS_SEARCH:
+            return initialState.ingredientSearch;
 
         default:
             return state;
@@ -37,7 +55,7 @@ const ingredientsSearch = (state: Nullable<Search<Ingredient>> = initialState.in
 
 const ingredientsReducer = combineReducers<IIngredientState>({
     types: ingredientTypes,
-    ingredientSearch: ingredientsSearch,
+    ingredientSearch: ingredientSearch,
 });
 
 

@@ -126,6 +126,23 @@ public class IngredientController {
         return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
     }
     
+    @GetMapping(value = "/find",
+            params = {"name", "typeID"},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<IngredientSummaryDTO> findIngredientsByNameAndType(@RequestParam(value = "typeID", required = false) UUID typeID,
+                                                                       @RequestParam("name") String name,
+                                                                       @RequestParam("page") int page,
+                                                                       @RequestParam(value = "pageSize", defaultValue="10") int pageSize) {
+        // Llamada al servicio
+        Block<Ingredient> ingredientsBlock = ingredientService.findIngredientsByNameAndType(name, typeID, page, pageSize);
+        
+        // Generar respuesta
+        List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredientsBlock.getItems());
+        
+        return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
+    }
+    
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

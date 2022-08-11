@@ -1,46 +1,53 @@
 import {Col, Row} from "react-bootstrap";
 import CreateIngredientType from "./CreateIngredientType";
-import IngredientTypesList, {IngredientTypesListProps} from "./IngredientTypesList";
-import {useState} from "react";
-import {IngredientType} from "../Domain";
-import {useAppSelector} from "../../store";
+import {useEffect} from "react";
+import CreateIngredient from "./CreateIngredient";
+import FindIngredients from "./FindIngredients";
+import FindIngredientsResults from "./FindIngredientsResults";
+import {useAppDispatch, useAppSelector} from "../../store";
+import {userRedux} from "../../Users";
 import {ingredientsRedux} from "../Application";
-import CreateIngredient, {CreateIngredientProps} from "./CreateIngredient";
+import {SearchCriteria} from "../../App";
+
+const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
 const IngredientsPage = () => {
-    const ingredientTypes: IngredientType[] = useAppSelector(ingredientsRedux.selectors.selectIngrediendtTypes);
-    const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
+    const dispatch = useAppDispatch();
+    const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
+    const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
 
-    const handleIngredientTypeClick = (event: MouseEvent, index: number) => {
-        event.preventDefault();
-
-        setSelectedItemIndex(index);
-    }
-
-    let ingredientTypesListProps: IngredientTypesListProps = {
-        list: ingredientTypes,
-        onClickCallback: handleIngredientTypeClick,
-        selectedIndex: selectedItemIndex
-    }
-
-    let createIngredientProps: CreateIngredientProps = {
-        ingredientTypes: ingredientTypes
-    }
+    useEffect( () => {
+        let criteria: SearchCriteria = {
+            page: searchCriteria.page,
+            pageSize: DEFAULT_PAGE_SIZE,
+            type: null,
+            name: null,
+        }
+        let onSuccess = () => {};
+        dispatch(ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess));
+    }, [dispatch, searchCriteria.page])
 
     return (
         <Row>
             {/* Formulario para crear y mostrar los tipos y los ingredientes */}
-            <Col md={4}>
-                <CreateIngredientType />
-                <CreateIngredient {...createIngredientProps} />
-                <IngredientTypesList {...ingredientTypesListProps}/>
-            </Col>
+            {(isAdminLoggedIn) &&
+                <Col md={4} >
+                    <Row className={"gy-3"}>
+                        <CreateIngredientType />
+                        <CreateIngredient />
+                    </Row>
+                </Col>
+            }
 
             {/* Columna para buscar ingredientes */}
             <Col>
+                <Row className={"gy-3"}>
+                    <FindIngredients />
+                    <FindIngredientsResults />
+                </Row>
             </Col>
         </Row>
     )
-};
+}
 
 export default IngredientsPage;
