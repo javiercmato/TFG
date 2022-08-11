@@ -48,7 +48,7 @@ const UserProfile = () => {
         }
 
         dispatch(userRedux.actions.findUserByNicknameAsyncAction(nickname!, onSuccess, onError));
-    }, [nickname]);
+    }, [nickname, dispatch]);
 
 
     return (

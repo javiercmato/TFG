@@ -17,15 +17,25 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Clonar repositorio en máquina remota
-      - name: Checkout code.
+      - name: 👍 Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
+      # Cachear dependencias de Maven
+      - name: 📦️ Cache Maven dependencies
+        uses: actions/cache@v3
+        id: cache
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
       # Añadir remoto de heroku al repositorio
-      - name: Add Heroku remote repository for backend
-        run: git remote add heroku-backend https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}.git
+      - name: ➕ Add Heroku remote repository for backend
+        run: git remote add heroku-backend https://heroku:${{ secrets.HEROKU_BACKEND_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_BACKEND_APP_NAME }}.git
 
       # Pushear código al remoto de heroku para despliegue automático
-      - name: Deploy backend to Heroku
-        run: git push heroku-backend `git subtree split --prefix backend main`:refs/heads/master --force
+      - name: 🚀 Deploy backend to Heroku
+        run: git push heroku-backend `git subtree split --prefix backend-TFG main`:refs/heads/master --force

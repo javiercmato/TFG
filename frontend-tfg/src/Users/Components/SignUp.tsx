@@ -8,7 +8,7 @@ import {useAppDispatch} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {userRedux} from "../Application";
 import {User} from "../Domain";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {FaEye, FaEyeSlash} from "react-icons/fa";
 
 
 const SignUp = () => {

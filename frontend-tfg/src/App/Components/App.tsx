@@ -12,8 +12,8 @@ const App = () => {
     document.title = "TFG";
     const dispatch = useAppDispatch();
 
-    // Al cargar la apliación, intentar iniciar sesión automáticamente con el token
     useEffect(() => {
+        // Al cargar la apliación, intentar iniciar sesión automáticamente con el token
         let onReauthenticate: NoArgsCallbackFunction = () => dispatch(userRedux.actions.logoutAsyncAction());
         dispatch(userRedux.actions.loginWithServiceTokenAsyncAction(onReauthenticate));
     });

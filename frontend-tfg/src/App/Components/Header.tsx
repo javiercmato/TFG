@@ -8,10 +8,18 @@ import {GiHamburgerMenu} from "react-icons/gi";
 import {FaHome} from "react-icons/fa";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
-import {headerLink, navItem} from "./styles/header";
+import {headerLink, navbar, navGlobalItem, navItem} from "./styles/header";
 
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
+
+    // Enlaces globales a los subsistemas
+    const globalLinks = [
+        {
+            link: '/ingredients',
+            i18nID: 'ingredients'
+        },
+    ]
 
     // Elementos del desplegable para acciones del usuario registrado
     const loggedUserActions = [
@@ -55,6 +63,7 @@ const Header = () => {
         <Navbar expand="lg"
             bg="dark"
             variant="dark"
+            style={navbar}
         >
             <Container>
                 <NavbarBrand>
@@ -71,6 +80,15 @@ const Header = () => {
                 <NavbarCollapse id="basic-navbar-nav">
                     {/* Elementos que se mostrarán siempre */}
                     <Nav>
+                        {globalLinks.map( (item) => (
+                            <Nav.Item style={navGlobalItem} key={item.link}>
+                                <Link to={item.link}>
+                                    <h4>
+                                        <FormattedMessage id={`app.components.Header.globalLinks.${item.i18nID}`} />
+                                    </h4>
+                                </Link>
+                            </Nav.Item>
+                        ))}
                     </Nav>
 
                     {/* Elementos a mostrar para un usuario registrado */}
@@ -80,7 +98,7 @@ const Header = () => {
                                 {loggedUserActions.map( (action, index) => (
                                     <>
                                         {(action.isDivided) ? <Dropdown.Divider/> : null}
-                                        <NavDropdown.Item>
+                                        <NavDropdown.Item id={action.link}>
                                             <Link to={action.link} style={headerLink} key={index}>
                                                 <FormattedMessage id={`app.components.Header.userActions.${action.i18nID}`} />
                                             </Link>
@@ -93,7 +111,7 @@ const Header = () => {
                         // Elementos a mostrar para un usuario no registrado
                         <Nav className="ms-auto">
                             {nonLoggedUserActions.map( (action, index) => (
-                                <Nav.Item style={navItem}>
+                                <Nav.Item style={navItem} id={action.link}>
                                     <Link to={action.link} style={headerLink} key={index}>
                                         <FormattedMessage id={`app.components.Header.${action.i18nID}`} />
                                     </Link>

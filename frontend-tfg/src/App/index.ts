@@ -1,6 +1,6 @@
 /* ********** Domain ********** */
 export type {FieldErrorDto, ErrorDto} from './Domain'
-
+export type {Search, SearchCriteria, Block} from './Domain';
 
 /* ********** Application ********** */
 export {appRedux} from './Application';
@@ -17,3 +17,5 @@ export {appInitialState} from './Application';
 export {App} from './Components';
 export {Errors} from './Components';
 export {UploadFileButton} from './Components';
+export {Pager} from './Components';
+export type {PagerProps} from './Components';

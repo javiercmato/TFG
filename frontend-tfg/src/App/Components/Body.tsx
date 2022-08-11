@@ -5,6 +5,7 @@ import Home from "./Home";
 import {ChangePassword, Login, Logout, SignUp, UpdateProfile, UserProfile, userRedux} from "../../Users";
 import {body} from './styles/body';
 import {useAppSelector} from "../../store";
+import {IngredientsPage} from "../../Ingredients";
 
 
 const Body = () => {
@@ -23,6 +24,11 @@ const Body = () => {
                 {isUserLogged && <Route path="/logout" element={<Logout />} />}
                 {isUserLogged && <Route path="/changePassword" element={<ChangePassword />} />}
                 {isUserLogged && <Route path="/profile" element={<UpdateProfile />} />}
+                {/* ****************************** INGREDIENTS ****************************** */}
+                <Route path="/ingredients" element={<IngredientsPage />} />
+
+
+                {/* ****************************** DEFAULT ROUTE ****************************** */}
                 <Route element={<Home />} />
             </Routes>
         </Container>

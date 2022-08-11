@@ -8,6 +8,7 @@ import {initializeBackend} from "./proxy";
 import {NetworkErrorException} from "./proxy/exceptions";
 import {initReactI18N} from "./i18n";
 import {IntlProvider} from "react-intl";
+import {ingredientsRedux} from "./Ingredients";
 
 
 /* Configurar I18N */
@@ -21,6 +22,9 @@ initializeBackend( () => {
         appRedux.actions.error(networkException)
     );
 });
+
+/* Acciones a ejecutar tan pronto arranque la aplicación */
+store.dispatch(ingredientsRedux.actions.findAllIngredientTypesAsyncAction(() => {}));
 
 
 const root = ReactDOM.createRoot(
