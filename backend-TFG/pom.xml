@@ -12,7 +12,7 @@
 
     <groupId>es.udc.fic.tfg</groupId>
     <artifactId>backend-tfg</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
     <name>backend-TFG</name>
     <description>Backend de una aplicación web para sugerir y compartir recetas de cocina basadas en ingredientes concretos.</description>
