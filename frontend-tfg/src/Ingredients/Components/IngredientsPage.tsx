@@ -48,6 +48,6 @@ const IngredientsPage = () => {
             </Col>
         </Row>
     )
-};
+}
 
 export default IngredientsPage;
