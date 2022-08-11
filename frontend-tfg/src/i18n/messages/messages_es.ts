@@ -6,13 +6,23 @@ const translations = {
 
 
     /* ******************** common ******************** */
+    'common.results': 'Resultados',
+
+
     'common.buttons.close': 'Cerrar',
     'common.buttons.edit': 'Editar',
     'common.buttons.uploadFile': 'Subir fichero',
+    'common.buttons.create': 'Crear',
+    'common.buttons.search': 'Buscar',
+    'common.buttons.clear': 'Limpiar',
+    'common.buttons.previous': 'Anterior',
+    'common.buttons.next': 'Siguiente',
+
 
     'common.validation.mandatoryField': 'Campo obligatorio',
     'common.validation.email': 'Introduzca un correo electrónico válido',
     'common.validation.passwordsDoNotMatch': 'Contraseñas no coinciden',
+
 
     'common.fields.name': 'Nombre',
     'common.fields.surname': 'Apellidos',
@@ -21,13 +31,17 @@ const translations = {
     'common.fields.password': 'Contraseña',
     'common.fields.confirmPassword': 'Confirmar contraseña',
     'common.fields.avatar': 'Foto de perfil',
+    'common.fields.ingredientType': 'Tipo de ingrediente',
 
+
+    'common.alerts.noResults': 'Sin resultados',
 
 
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
     'app.components.Header.signUp': 'Registrar',
     'app.components.Header.login': 'Acceder',
+    'app.components.Header.globalLinks.ingredients': 'Ingredientes',
     'app.components.Header.userActions.logout': 'Cerrar sesión',
     'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
     'app.components.Header.userActions.seeProfile': 'Ver perfil',
@@ -50,8 +64,16 @@ const translations = {
     'users.components.UpdateProfile.updateButton': 'Actualizar perfil',
     'users.components.BanUserButton.banButton': 'Inhabillitar usuario',
     'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
-    'users.warning.UserIsBannedByAdmin': 'El usuario ha sido inhabilitado por el administrador',
-    'users.components.UserProfile.deleteUser': 'Eliminar usuario',
+    'users.components.UserProfile.deleteUser': 'Delete user',
+    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
+
+    /* ******************** Ingredients ******************** */
+    'ingredients.components.CreateIngredientType.title': 'Crear nuevo tipo de ingrediente',
+    'ingredients.components.CreateIngredientType.placeholder': 'P. ej.: "Verdura"',
+    'ingredients.components.CreateIngredient.title': 'Crear nuevo ingrediente',
+    'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
+    'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
+    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Filtrar rápido por tipos',
 
 }
 

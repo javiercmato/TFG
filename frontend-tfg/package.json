@@ -1,6 +1,6 @@
 {
   "name": "frontend-tfg",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "proxy": "https://localhost:8080/backend/api",
   "dependencies": {
@@ -31,7 +31,7 @@
   },
   "scripts": {
     "start": "serve -s build",
-    "dev:start": "react-scripts start",
+    "dev:start": "REACT_APP_BACKEND_URL='http://localhost:8080/backend/api' react-scripts start",
     "build": "react-scripts build",
     "heroku-postbuild": "npm run build",
     "test": "react-scripts test --env=jsdom",

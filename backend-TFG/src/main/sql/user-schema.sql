@@ -1,16 +1,16 @@
 -- Evitar duplicados
 DROP SCHEMA IF EXISTS users CASCADE;
 
+-- Extensión para crear identificadores UUID
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Esquema del usuario
 CREATE SCHEMA users;
 
--- Extensión para crear identificadores UUID
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp" schema users;
 
 -- User es una palabra reservada.
--- Aprovechando que User es un interfaz, se le pone el prefijo I
 CREATE TABLE IF NOT EXISTS users.UserTable (
-    id              uuid            DEFAULT users.uuid_generate_v1(),
+    id              uuid            DEFAULT uuid_generate_v1(),
     nickname        VARCHAR(30)     NOT NULL,
     password        VARCHAR         NOT NULL,
     name            VARCHAR(50)     NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
 );
 
 CREATE TABLE IF NOT EXISTS users.PrivateList (
-    id                  uuid,
+    id                  uuid            DEFAULT uuid_generate_v1(),
     title               varchar(50)     NOT NULL,
     description         varchar(100),
     creatorID           uuid,

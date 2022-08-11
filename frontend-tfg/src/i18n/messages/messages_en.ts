@@ -6,9 +6,18 @@ const translations = {
 
 
     /* ******************** common ******************** */
+    'common.results': 'Results',
+
+
     'common.buttons.close': 'Close',
     'common.buttons.edit': 'Edit',
     'common.buttons.uploadFile': 'Upload file',
+    'common.buttons.create': 'Create',
+    'common.buttons.search': 'Search',
+    'common.buttons.clear': 'Clear',
+    'common.buttons.previous': 'Previous',
+    'common.buttons.next': 'Next',
+
 
     'common.validation.mandatoryField': 'Mandatory field',
     'common.validation.email': 'Invalid email',
@@ -21,13 +30,17 @@ const translations = {
     'common.fields.password': 'Password',
     'common.fields.confirmPassword': 'Confirm password',
     'common.fields.avatar': 'Avatar',
+    'common.fields.ingredientType': 'Ingredient type',
 
+
+    'common.alerts.noResults': 'No results found',
 
 
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
     'app.components.Header.signUp': 'Sign up',
     'app.components.Header.login': 'Login',
+    'app.components.Header.globalLinks.ingredients': 'Ingredients',
     'app.components.Header.userActions.logout': 'Logout',
     'app.components.Header.userActions.changePassword': 'Change password',
     'app.components.Header.userActions.seeProfile': 'See profile',
@@ -50,9 +63,16 @@ const translations = {
     'users.components.UpdateProfile.updateButton': 'Update profile',
     'users.components.BanUserButton.banButton': 'Ban user',
     'users.components.BanUserButton.unbanButton': 'Unban user',
-    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
     'users.components.UserProfile.deleteUser': 'Delete user',
+    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
 
+    /* ******************** Ingredients ******************** */
+    'ingredients.components.CreateIngredientType.title': 'Create new ingredient type',
+    'ingredients.components.CreateIngredientType.placeholder': 'E.g.: "Vegetables"',
+    'ingredients.components.CreateIngredient.title': 'Create new ingredient',
+    'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
+    'ingredients.components.FindIngredients.findIngredients': 'Find ingredients',
+    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Quick filter by types',
 }
 
 export default translations;

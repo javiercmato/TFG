@@ -4,7 +4,7 @@ import {ChangeEvent, FormEvent, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {userRedux} from "../Application";
 import {Button, Card, Form, FormGroup, InputGroup, Row,} from "react-bootstrap";
-import {cardHeader, form, formGroup, row, encouragementText} from "./styles/login";
+import {cardHeader, encouragementText, form, formGroup, row} from "./styles/login";
 import {FormattedMessage} from "react-intl";
 import {FaEye, FaEyeSlash} from "react-icons/fa";
 

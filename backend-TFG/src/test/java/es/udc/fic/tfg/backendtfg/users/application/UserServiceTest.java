@@ -1,4 +1,4 @@
-package es.udc.fic.tfg.backendtfg.users.application.services;
+package es.udc.fic.tfg.backendtfg.users.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
-import static es.udc.fic.tfg.backendtfg.utils.UserTestConstants.*;
+import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -30,7 +30,6 @@ class UserServiceTest {
     
     @Autowired
     private UserRepository userRepository;
-    
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
     
