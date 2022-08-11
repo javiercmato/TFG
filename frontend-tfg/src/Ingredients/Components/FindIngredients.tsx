@@ -14,7 +14,7 @@ const FindIngredients = () => {
     const intl = useIntl();
     const dispatch = useAppDispatch();
     const [queryName, setQueryName] = useState<string>('');         // Nombre que se usará para la búsqueda
-    const [typeIDQuery, setTypeIDQuery] = useState<any>('');     // Tipo de ingrediente que se usará para la búsqueda
+    const [typeIDQuery, setTypeIDQuery] = useState<string>('');     // Tipo de ingrediente que se usará para la búsqueda
 
 
     const handleChangeType = (e: any) => {
@@ -34,18 +34,14 @@ const FindIngredients = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let criteria: SearchCriteria = {
+            page: 0,
+            pageSize: DEFAULT_PAGE_SIZE,
             name: queryName,
             type: typeIDQuery,
-            page: 0,
-            pageSize: DEFAULT_PAGE_SIZE
         }
 
         let onSuccess = () => {};
-        // Si hay tipo seleccionado, se busca por nombre y tipo. Sino solo por nombre
-        let action = (criteria.type) ?
-            ingredientsRedux.actions.findIngredientsByNameAndTypeAsyncAction(criteria, onSuccess)
-            : ingredientsRedux.actions.findIngredientsByNameAsyncAction(criteria, onSuccess);
-        dispatch(action);
+        dispatch(ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess));
     }
 
     return (

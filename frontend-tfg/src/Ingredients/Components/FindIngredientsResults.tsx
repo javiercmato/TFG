@@ -1,4 +1,4 @@
-import {useAppDispatch, useAppSelector} from "../../store";
+import {useAppSelector} from "../../store";
 import {ingredientsRedux} from "../Application";
 import {FormattedMessage} from "react-intl";
 import {Alert, Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
@@ -7,8 +7,6 @@ import {pagerRow, resultItem, resultsRow, titleRow} from './styles/findIngredien
 
 
 const FindIngredientsResults = () => {
-    const dispatch = useAppDispatch();
-    const ingredientSearch = useAppSelector(ingredientsRedux.selectors.getIngredientSearch);
     const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
     const searchResults = useAppSelector(ingredientsRedux.selectors.selectSearchResultBlock);
 
@@ -29,7 +27,7 @@ const FindIngredientsResults = () => {
 
             <Row style={resultsRow}>
                 <ListGroup>
-                    {searchResults!.items.map( (item) =>
+                    {searchResults.items.map( (item) =>
                         <ListGroupItem key={item.id} style={resultItem}>
                             <IngredientItem ingredient={item} />
                         </ListGroupItem>
@@ -39,6 +37,9 @@ const FindIngredientsResults = () => {
 
             <Row style={pagerRow}>
                 <Col>
+                    <div className={"d-flex justify-content-center"}>
+                        PAGE: {searchCriteria.page}
+                    </div>
                 </Col>
             </Row>
         </Col>

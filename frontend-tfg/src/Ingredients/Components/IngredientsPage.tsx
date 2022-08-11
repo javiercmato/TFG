@@ -1,6 +1,5 @@
 import {Col, Row} from "react-bootstrap";
 import CreateIngredientType from "./CreateIngredientType";
-import IngredientTypesList, {IngredientTypesListProps} from "./IngredientTypesList";
 import {useEffect, useState} from "react";
 import CreateIngredient from "./CreateIngredient";
 import FindIngredients from "./FindIngredients";
@@ -15,38 +14,19 @@ const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE
 const IngredientsPage = () => {
     const dispatch = useAppDispatch();
     const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
-    const [selectedItemIndex, setSelectedItemIndex] = useState<number>(-1);
     const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
     const [currentPage, setCurrentPage] = useState<number>(searchCriteria.page);
-
-    const handleIngredientTypeClick = (event: any, index: number, typeID: string) => {
-        event.preventDefault();
-
-        setSelectedItemIndex(index);
-        let criteria: SearchCriteria = {
-            page: currentPage,
-            type: typeID,
-            pageSize: DEFAULT_PAGE_SIZE
-        }
-        let onSuccess = () => {};
-        console.log(event.target.value);
-        dispatch(ingredientsRedux.actions.findIngredientsByTypeAsyncAction(criteria, onSuccess));
-    }
-
-
-    let ingredientTypesListProps: IngredientTypesListProps = {
-        onClickCallback: handleIngredientTypeClick,
-        selectedIndex: selectedItemIndex
-    }
 
     useEffect( () => {
         let criteria: SearchCriteria = {
             page: currentPage,
-            pageSize: DEFAULT_PAGE_SIZE
+            pageSize: DEFAULT_PAGE_SIZE,
+            type: null,
+            name: null,
         }
         let onSuccess = () => {};
         dispatch(ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess));
-    }, [searchCriteria.page])
+    }, [dispatch, searchCriteria.page])
 
     return (
         <Row>
@@ -65,7 +45,6 @@ const IngredientsPage = () => {
                 <Row className={"gy-3"}>
                     <FindIngredients />
                     <FindIngredientsResults />
-                    <IngredientTypesList {...ingredientTypesListProps}/>
                 </Row>
             </Col>
         </Row>

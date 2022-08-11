@@ -4,9 +4,7 @@ import {
     CreateIngredientTypeActionType,
     FindAllIngredientsActionType,
     FindAllIngredientTypesActionType,
-    FindIngredientsByNameActionType,
-    FindIngredientsByNameAndTypeActionType,
-    FindIngredientsByTypeActionType,
+    FindIngredientsActionType,
     IngredientDispatchType
 } from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
@@ -40,20 +38,8 @@ const ingredientSearch = (state: Search<Ingredient> = initialState.ingredientSea
             return search;
         }
 
-        case actionTypes.FIND_INGREDIENTS_BY_TYPE : {
-            let search: Search<Ingredient> = (action as FindIngredientsByTypeActionType).payload;
-
-            return search;
-        }
-
-        case actionTypes.FIND_INGREDIENTS_BY_NAME : {
-            let search: Search<Ingredient> = (action as FindIngredientsByNameActionType).payload;
-
-            return search;
-        }
-
-        case actionTypes.FIND_INGREDIENTS_BY_NAME_AND_TYPE : {
-            let search: Search<Ingredient> = (action as FindIngredientsByNameAndTypeActionType).payload;
+        case actionTypes.FIND_INGREDIENTS : {
+            let search: Search<Ingredient> = (action as FindIngredientsActionType).payload;
 
             return search;
         }

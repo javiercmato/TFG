@@ -61,50 +61,20 @@ export const findAllIngredients = (page: number = 0,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
-export const findIngredientsByType = (typeID: string,
-                                      page: number = 0,
-                                      pageSize: number = DEFAULT_PAGE_SIZE,
-                                      onSuccessCallback: CallbackFunction,
-                                      onErrorCallback: CallbackFunction) : void => {
+export const findIngredients = (name: Nullable<string>,
+                                typeID: Nullable<string>,
+                                page: number = 0,
+                                pageSize: number = DEFAULT_PAGE_SIZE,
+                                onSuccessCallback: CallbackFunction,
+                                onErrorCallback: CallbackFunction) : void => {
     // Configurar petición al servicio
     let endpoint = INGREDIENTS_ENDPOINT + '/find' + '?';
     endpoint += `page=${page}`;
     endpoint += `&pageSize=${pageSize}`;
-    endpoint += `&typeID=${typeID}`;
-    const requestConfig = configFetchParameters('GET');
-
-    // Realizar la petición
-    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
-}
-
-export const findIngredientsByName = (name: string,
-                                      page: number = 0,
-                                      pageSize: number = DEFAULT_PAGE_SIZE,
-                                      onSuccessCallback: CallbackFunction,
-                                      onErrorCallback: CallbackFunction) : void => {
-    // Configurar petición al servicio
-    let endpoint = INGREDIENTS_ENDPOINT + '/find' + '?';
-    endpoint += `page=${page}`;
-    endpoint += `&pageSize=${pageSize}`;
-    endpoint += `&name=${name}`;
-    const requestConfig = configFetchParameters('GET');
-
-    // Realizar la petición
-    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
-}
-
-export const findIngredientsByNameAndType = (name: string,
-                                             typeID: string,
-                                             page: number = 0,
-                                             pageSize: number = DEFAULT_PAGE_SIZE,
-                                             onSuccessCallback: CallbackFunction,
-                                             onErrorCallback: CallbackFunction) : void => {
-    // Configurar petición al servicio
-    let endpoint = INGREDIENTS_ENDPOINT + '/find' + '?';
-    endpoint += `page=${page}`;
-    endpoint += `&pageSize=${pageSize}`;
-    endpoint += `&name=${name}`
-    endpoint += `&typeID=${typeID}`;
+    if (name != null)
+        endpoint += `&name=${name}`;
+    if (typeID != null)
+        endpoint += `&typeID=${typeID}`;
     const requestConfig = configFetchParameters('GET');
 
     // Realizar la petición
