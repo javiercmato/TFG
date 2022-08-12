@@ -3,6 +3,7 @@ package es.udc.fic.tfg.backendtfg.recipes.application;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface RecipeService {
@@ -20,6 +21,10 @@ public interface RecipeService {
     Category createCategoryAsAdmin(String categoryName, UUID adminID)
             throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException;
     
-    
+    /**
+     * Recupera todas las categorías de recetas.
+     * @return Lista de categorías
+     */
+    List<Category> getAllCategories();
     
 }

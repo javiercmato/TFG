@@ -5,10 +5,12 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
@@ -45,7 +47,18 @@ public class RecipeServiceImpl implements RecipeService {
         return categoryRepo.save(category);
     }
     
-    
+    @Override
+    public List<Category> getAllCategories( ) {
+        List<Category> results = new ArrayList<>();
+        
+        // Busca las categorías por orden alfabético ascendente
+        Sort ascNameSort = Sort.by(Direction.ASC, "name");
+        Iterable<Category> categoryIterable = categoryRepo.findAll(ascNameSort);
+        // Crea una lista de resultados
+        categoryIterable.forEach((c) -> results.add(c));
+        
+        return results;
+    }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     
