@@ -31,6 +31,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirm password',
     'common.fields.avatar': 'Avatar',
     'common.fields.ingredientType': 'Ingredient type',
+    'common.fields.category': 'Category',
 
 
     'common.alerts.noResults': 'No results found',
@@ -41,6 +42,7 @@ const translations = {
     'app.components.Header.signUp': 'Sign up',
     'app.components.Header.login': 'Login',
     'app.components.Header.globalLinks.ingredients': 'Ingredients',
+    'app.components.Header.globalLinks.recipes': 'Recipes',
     'app.components.Header.userActions.logout': 'Logout',
     'app.components.Header.userActions.changePassword': 'Change password',
     'app.components.Header.userActions.seeProfile': 'See profile',
@@ -72,7 +74,11 @@ const translations = {
     'ingredients.components.CreateIngredient.title': 'Create new ingredient',
     'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
     'ingredients.components.FindIngredients.findIngredients': 'Find ingredients',
-    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Quick filter by types',
+
+
+    /* ******************** Recipes ******************** */
+    'recipes.components.CreateCategory.title': 'Create new category',
+    'recipes.components.CreateCategory.placeholder': 'P. ej.: "Coctails"',
 }
 
 export default translations;

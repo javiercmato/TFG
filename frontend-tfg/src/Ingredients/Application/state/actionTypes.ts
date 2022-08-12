@@ -1,7 +1,7 @@
-/* ******************** Nombres de las acciones ******************** */
-
 import {Ingredient, IngredientType} from "../../Domain";
 import {Search} from "../../../App";
+
+/* ******************** Nombres de las acciones ******************** */
 
 export const FIND_ALL_INGREDIENT_TYPES: string = 'ingredients/findAllIngredientTypes';
 export const CREATE_INGREDIENT_TYPE : string = 'ingredients/createIngredientType';

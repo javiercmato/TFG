@@ -6,6 +6,7 @@ import {ChangePassword, Login, Logout, SignUp, UpdateProfile, UserProfile, userR
 import {body} from './styles/body';
 import {useAppSelector} from "../../store";
 import {IngredientsPage} from "../../Ingredients";
+import {RecipesPage} from "../../Recipes";
 
 
 const Body = () => {
@@ -26,6 +27,8 @@ const Body = () => {
                 {isUserLogged && <Route path="/profile" element={<UpdateProfile />} />}
                 {/* ****************************** INGREDIENTS ****************************** */}
                 <Route path="/ingredients" element={<IngredientsPage />} />
+                {/* ****************************** RECIPES ****************************** */}
+                <Route path="/recipes" element={<RecipesPage />} />
 
 
                 {/* ****************************** DEFAULT ROUTE ****************************** */}
