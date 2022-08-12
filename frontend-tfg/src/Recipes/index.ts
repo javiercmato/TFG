@@ -10,3 +10,4 @@ export {recipeService} from './Application';
 export type {CreateCategoryParamsDTO} from './Infrastructure';
 
 /* ********** Components ********** */
+export {RecipesPage} from './Components';

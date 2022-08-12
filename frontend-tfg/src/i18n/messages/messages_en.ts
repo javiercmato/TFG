@@ -41,6 +41,7 @@ const translations = {
     'app.components.Header.signUp': 'Sign up',
     'app.components.Header.login': 'Login',
     'app.components.Header.globalLinks.ingredients': 'Ingredients',
+    'app.components.Header.globalLinks.recipes': 'Recipes',
     'app.components.Header.userActions.logout': 'Logout',
     'app.components.Header.userActions.changePassword': 'Change password',
     'app.components.Header.userActions.seeProfile': 'See profile',

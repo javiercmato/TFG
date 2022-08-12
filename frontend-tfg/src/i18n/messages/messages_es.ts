@@ -42,6 +42,7 @@ const translations = {
     'app.components.Header.signUp': 'Registrar',
     'app.components.Header.login': 'Acceder',
     'app.components.Header.globalLinks.ingredients': 'Ingredientes',
+    'app.components.Header.globalLinks.recipes': 'Recetas',
     'app.components.Header.userActions.logout': 'Cerrar sesión',
     'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
     'app.components.Header.userActions.seeProfile': 'Ver perfil',
@@ -67,6 +68,7 @@ const translations = {
     'users.components.UserProfile.deleteUser': 'Delete user',
     'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
 
+
     /* ******************** Ingredients ******************** */
     'ingredients.components.CreateIngredientType.title': 'Crear nuevo tipo de ingrediente',
     'ingredients.components.CreateIngredientType.placeholder': 'P. ej.: "Verdura"',
@@ -74,6 +76,10 @@ const translations = {
     'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
     'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
     'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Filtrar rápido por tipos',
+
+
+    /* ******************** Recipes ******************** */
+
 
 }
 

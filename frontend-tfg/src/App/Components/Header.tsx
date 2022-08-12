@@ -19,6 +19,10 @@ const Header = () => {
             link: '/ingredients',
             i18nID: 'ingredients'
         },
+        {
+            link: '/recipes',
+            i18nID: 'recipes'
+        }
     ]
 
     // Elementos del desplegable para acciones del usuario registrado

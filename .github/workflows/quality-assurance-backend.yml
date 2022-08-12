@@ -10,8 +10,6 @@ on:
       - main
   # O al abrir una nueva PR a la rama de desarrollo
   pull_request:
-    types:
-      - opened
     branches:
       - develop
     paths:
