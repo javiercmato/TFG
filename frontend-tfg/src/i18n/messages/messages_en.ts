@@ -74,6 +74,11 @@ const translations = {
     'ingredients.components.CreateIngredient.title': 'Create new ingredient',
     'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
     'ingredients.components.FindIngredients.findIngredients': 'Find ingredients',
+
+
+    /* ******************** Recipes ******************** */
+    'recipes.components.CreateCategory.title': 'Create new category',
+    'recipes.components.CreateCategory.placeholder': 'P. ej.: "Coctails"',
 }
 
 export default translations;

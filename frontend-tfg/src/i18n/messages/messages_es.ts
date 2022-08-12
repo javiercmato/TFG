@@ -78,7 +78,8 @@ const translations = {
     'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
 
     /* ******************** Recipes ******************** */
-
+    'recipes.components.CreateCategory.title': 'Crear nueva categoría',
+    'recipes.components.CreateCategory.placeholder': 'P. ej.: "Cócteles"',
 
 }
 
