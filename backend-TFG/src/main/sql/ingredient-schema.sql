@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 CREATE TABLE IF NOT EXISTS ingredients.IngredientType (
-    id          uuid            DEFAULT uuid_generate_v1(),
+    id          uuid            DEFAULT public.uuid_generate_v1(),
     name        VARCHAR(50)     NOT NULL,
 
     CONSTRAINT PK_IngredientType PRIMARY KEY (id),
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS ingredients.IngredientType (
 
 
 CREATE TABLE IF NOT EXISTS ingredients.Ingredient (
-    id                  uuid        DEFAULT uuid_generate_v1(),
+    id                  uuid        DEFAULT public.uuid_generate_v1(),
     name                VARCHAR     NOT NULL,
     creator             uuid        NOT NULL,
     ingredientType      uuid,
