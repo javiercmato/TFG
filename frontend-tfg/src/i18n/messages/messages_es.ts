@@ -32,6 +32,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirmar contraseña',
     'common.fields.avatar': 'Foto de perfil',
     'common.fields.ingredientType': 'Tipo de ingrediente',
+    'common.fields.category': 'Categoría',
 
 
     'common.alerts.noResults': 'Sin resultados',
@@ -75,8 +76,6 @@ const translations = {
     'ingredients.components.CreateIngredient.title': 'Crear nuevo ingrediente',
     'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
     'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
-    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Filtrar rápido por tipos',
-
 
     /* ******************** Recipes ******************** */
 

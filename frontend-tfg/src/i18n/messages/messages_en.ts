@@ -31,6 +31,7 @@ const translations = {
     'common.fields.confirmPassword': 'Confirm password',
     'common.fields.avatar': 'Avatar',
     'common.fields.ingredientType': 'Ingredient type',
+    'common.fields.category': 'Category',
 
 
     'common.alerts.noResults': 'No results found',
@@ -73,7 +74,6 @@ const translations = {
     'ingredients.components.CreateIngredient.title': 'Create new ingredient',
     'ingredients.components.CreateIngredient.placeholder': 'E.g.: "Carrot"',
     'ingredients.components.FindIngredients.findIngredients': 'Find ingredients',
-    'ingredients.components.IngredientTypesList.quickFilterByTypes': 'Quick filter by types',
 }
 
 export default translations;
