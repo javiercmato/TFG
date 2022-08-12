@@ -8,7 +8,7 @@ import {appRedux as app, Block, ErrorDto, Search, SearchCriteria} from "../../..
 
 /* ************************* DISPATCHABLE ACTIONS ******************** */
 
-export const findAllIngredientTypes = (types: Array<IngredientType>) : IngredientDispatchType => ({
+export const findAllIngredientTypesAction = (types: Array<IngredientType>) : IngredientDispatchType => ({
     type: actionTypes.FIND_ALL_INGREDIENT_TYPES,
     payload: types
 })
@@ -45,7 +45,7 @@ export const findAllIngredientTypesAsyncAction = (onSuccessCallback: CallbackFun
     // Función a ejecutar en caso de éxito
     const onSuccess: CallbackFunction = (types: Array<IngredientType>) : void => {
         // Actualiza estado de la aplicación
-        dispatch(findAllIngredientTypes(types));
+        dispatch(findAllIngredientTypesAction(types));
         dispatch(app.actions.loaded());         // Indica operación ya finalizada
 
         // Ejecuta el callback recibido con el usuario recuperado
