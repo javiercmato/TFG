@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure;
 
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.CategoryDTO;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.CreateCategoryParamsDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,7 +35,7 @@ public class CategoryDTOUnitTest {
     @Test
     public void testCreateCategoryParamsDTO() {
         // Ejecutar código
-        CategoryDTO dto = new CategoryDTO();
+        CreateCategoryParamsDTO dto = new CreateCategoryParamsDTO();
         dto.setName(DEFAULT_CATEGORY_NAME);
         
         // Comprobar resultados
