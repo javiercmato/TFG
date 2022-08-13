@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS recipes.Category (
     CONSTRAINT UNIQUE_Category_Name UNIQUE (name)
 );
 
-
 CREATE TABLE IF NOT EXISTS recipes.Recipe (
     id                  uuid            DEFAULT public.uuid_generate_v1(),
     name                VARCHAR(100)    NOT NULL,
@@ -26,10 +25,15 @@ CREATE TABLE IF NOT EXISTS recipes.Recipe (
     diners              INT,
     author              uuid,
     isBannedByAdmin     bool            NOT NULL        DEFAULT false,
+    category            uuid,
 
     CONSTRAINT PK_Recipe PRIMARY KEY (id),
     CONSTRAINT FK_Recipe_TO_User
         FOREIGN KEY (author) REFERENCES users.usertable(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_Recipe_TO_Category
+        FOREIGN KEY (category) REFERENCES recipes.category(id)
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
@@ -37,10 +41,10 @@ CREATE TABLE IF NOT EXISTS recipes.Recipe (
 
 CREATE TABLE IF NOT EXISTS recipes.RecipePicture (
     recipe              uuid,
-    placement           INT,                                    -- Ordenación de la foto (order es palabra reservada)
+    pictureOrder        INT,                                    -- Ordenación de la foto (order es palabra reservada)
     pictureData         bytea           NOT NULL,
 
-    CONSTRAINT PK_RecipePicture PRIMARY KEY (recipe, placement),
+    CONSTRAINT PK_RecipePicture PRIMARY KEY (recipe, pictureOrder),
     CONSTRAINT FK_RecipePicture_TO_Recipe
         FOREIGN KEY (recipe) REFERENCES recipes.Recipe(id)
         ON DELETE CASCADE
@@ -82,12 +86,11 @@ CREATE TABLE IF NOT EXISTS recipes.RecipeIngredient (
 CREATE TABLE IF NOT EXISTS recipes.PrivateListRecipe (
     privateList         uuid,
     recipe              uuid,
-    quantity            VARCHAR,
-    measureUnit         VARCHAR         NOT NULL,
+    insertionDate       TIMESTAMP       NOT NULL        DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT PK_PrivateListRecipe PRIMARY KEY (privateList, recipe),
     CONSTRAINT FK_PrivateListRecipe_TO_PrivateList
-        FOREIGN KEY (privateList) REFERENCES users.usertable(id)
+        FOREIGN KEY (privateList) REFERENCES users.privatelist(id)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
     CONSTRAINT FK_PrivateListRecipe_TO_Recipe

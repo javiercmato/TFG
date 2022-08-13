@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.ingredients.domain.entities;
 
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.RecipeIngredient;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -7,7 +8,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -26,12 +27,14 @@ public class Ingredient {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
     
-    @ManyToOne(optional = true,
-            cascade = CascadeType.PERSIST,
+    
+    /* *************** Asociaciones con otras entidades *************** */
+    @ManyToOne(cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "ingredientType")
     private IngredientType ingredientType;
+    
     
     @ManyToOne(optional = false,
             cascade = CascadeType.PERSIST,
@@ -39,5 +42,8 @@ public class Ingredient {
     )
     @JoinColumn(name = "creator", nullable = false)
     private User creator;
+    
+    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
     
 }

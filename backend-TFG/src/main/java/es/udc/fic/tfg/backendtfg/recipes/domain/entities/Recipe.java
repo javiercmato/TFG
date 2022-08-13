@@ -8,7 +8,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -46,11 +46,42 @@ public class Recipe {
     private boolean isBannedByAdmin;
     
     
+    
     /* *************** Asociaciones con otras entidades *************** */
     @ManyToOne(cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "author")
     private User author;
+    
+    
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "category")
+    private Category category;
+    
+    
+    @OneToMany(mappedBy = "recipe",
+            fetch = FetchType.EAGER,
+            orphanRemoval = true
+    )
+    private List<RecipeStep> steps = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "recipe",
+            orphanRemoval = true
+    )
+    private List<RecipePicture> pictures = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "recipe",
+            orphanRemoval = true
+    )
+    private List<RecipeIngredient> ingredients = new ArrayList<>();
+    
+    
+    @OneToMany(mappedBy = "recipe",
+            orphanRemoval = true
+    )
+    private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
     
 }
