@@ -4,8 +4,6 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,7 +12,7 @@ import java.util.UUID;
 @Table(schema = "recipes", name = "recipepicture")
 public class RecipePicture {
     @EmbeddedId
-    private RecipePictureID id;
+    private RecipePictureID id = new RecipePictureID();
     
     @Lob
     @Type(type = "org.hibernate.type.BinaryType")
@@ -25,19 +23,4 @@ public class RecipePicture {
     @MapsId("recipeID")
     private Recipe recipe;
     
-    
-    /** Identificador de la entidad débil RecipePicture */
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    static class RecipePictureID implements Serializable {
-        @Column(table = "recipepicture", name = "recipe")
-        private UUID recipeID;
-        
-        @Column(table = "recipepicture", name = "pictureorder")
-        private Integer order;
-    }
 }

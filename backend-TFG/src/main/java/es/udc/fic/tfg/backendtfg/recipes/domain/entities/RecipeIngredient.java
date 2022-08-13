@@ -4,8 +4,6 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import lombok.*;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,7 +12,7 @@ import java.util.UUID;
 @Table(schema = "recipes", name = "recipeingredient")
 public class RecipeIngredient {
     @EmbeddedId
-    private RecipeIngredientID id;
+    private RecipeIngredientID id = new RecipeIngredientID();
     
     @Column(name = "quantity")
     private String quantity;
@@ -30,21 +28,5 @@ public class RecipeIngredient {
     @ManyToOne
     @MapsId("ingredientID")
     private Ingredient ingredient;
-    
-    
-    /** Identificador de la relación N:M entre Recipe e Ingredient */
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    static class RecipeIngredientID implements Serializable {
-        @Column(table = "recipeingredient", name = "recipe")
-        private UUID recipeID;
-        
-        @Column(table = "recipeingredient", name = "ingredient")
-        private UUID ingredientID;
-    }
 
 }

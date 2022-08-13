@@ -4,8 +4,6 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,7 +12,7 @@ import java.util.UUID;
 @Table(schema = "recipes", name = "recipestep")
 public class RecipeStep {
     @EmbeddedId
-    private RecipeStepID id;
+    private RecipeStepID id = new RecipeStepID();
     
     @Lob
     @Type(type = "org.hibernate.type.TextType")
@@ -25,19 +23,4 @@ public class RecipeStep {
     @MapsId("recipeID")                 // Indica qué columna de la clave primaria hace referencia a las recetas
     private Recipe recipe;
     
-    
-    /** Identificador de la entidad débil RecipeStep */
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    static class RecipeStepID implements Serializable {
-        @Column(table = "recipestep", name = "recipe")
-        private UUID recipeID;
-        
-        @Column(table = "recipestep", name = "step")
-        private Integer step;
-    }
 }

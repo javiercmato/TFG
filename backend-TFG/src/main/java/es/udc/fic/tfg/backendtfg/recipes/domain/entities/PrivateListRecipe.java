@@ -5,9 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,7 +14,7 @@ import java.util.UUID;
 @Table(schema = "recipes", name = "privatelistrecipe")
 public class PrivateListRecipe {
     @EmbeddedId
-    private PrivateListRecipeID id;
+    private PrivateListRecipeID id = new PrivateListRecipeID();
     
     @Type(type = "org.hibernate.type.LocalDateTimeType")
     @Column(name = "insertiondate", nullable = false)
@@ -29,20 +27,4 @@ public class PrivateListRecipe {
     @ManyToOne
     @MapsId("recipeID")
     private Recipe recipe;
-    
-    
-    /** Identificador de la relación N:M entre PrivateList y Recipe */
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @EqualsAndHashCode
-    @Embeddable
-    static class PrivateListRecipeID implements Serializable {
-        @Column(table = "privatelistrecipe", name = "privateList")
-        private UUID privateListID;
-    
-        @Column(table = "privatelistrecipe", name = "recipe")
-        private UUID recipeID;
-    }
 }
