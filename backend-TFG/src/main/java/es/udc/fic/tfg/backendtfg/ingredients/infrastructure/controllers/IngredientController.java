@@ -9,6 +9,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientTypeConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -143,6 +144,12 @@ public class IngredientController {
         return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
     }
     
+    @GetMapping(value = "/measures",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<MeasureUnit> getAllMeasureUnits() {
+        return ingredientService.getAllMeasureUnits();
+    }
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

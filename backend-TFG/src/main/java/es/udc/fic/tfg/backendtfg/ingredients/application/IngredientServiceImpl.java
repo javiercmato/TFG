@@ -6,6 +6,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -122,6 +124,13 @@ public class IngredientServiceImpl implements IngredientService {
     
         // Devuelve resultados
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
+    }
+    
+    @Override
+    public List<MeasureUnit> getAllMeasureUnits( ) {
+        return Arrays.stream(MeasureUnit.values())
+                     .sorted()
+                     .collect(Collectors.toList());
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

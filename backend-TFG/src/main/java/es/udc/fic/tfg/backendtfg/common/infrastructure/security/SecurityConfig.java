@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/find").permitAll()                                    // findIngredientsByName, findIngredientsByType
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/types").permitAll()                                   // createIngredientTypeAsAdmin
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/types").permitAll()                                   // getAllIngredientTypes
+                .antMatchers(HttpMethod.GET,    "/api/ingredients/measures").permitAll()                                // getAllMeasureUnits
                 // INGREDIENT ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/recipes/categories").permitAll()                                  // createCategoryAsAdmin
                 .antMatchers(HttpMethod.GET,    "/api/recipes/categories").permitAll()                                  // getAllCategories
