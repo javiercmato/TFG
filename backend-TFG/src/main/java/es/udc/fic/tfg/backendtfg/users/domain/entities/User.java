@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -64,7 +65,13 @@ public class User {
     /* *************** Asociaciones con otras entidades *************** */
     @OneToMany(mappedBy = "creator",
             cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY)
+            fetch = FetchType.LAZY,
+            orphanRemoval = true                // Borrar al usuario elimina también sus listas privadas
+    )
     private Set<PrivateList> privateLists = new HashSet<>();
+    
+    
+    @OneToMany(mappedBy = "author")
+    private Set<Recipe> recipes = new LinkedHashSet<>();
     
 }
