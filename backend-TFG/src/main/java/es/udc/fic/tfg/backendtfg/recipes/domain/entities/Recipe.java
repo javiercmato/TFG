@@ -46,7 +46,6 @@ public class Recipe {
     private boolean isBannedByAdmin;
     
     
-    
     /* *************** Asociaciones con otras entidades *************** */
     @ManyToOne(cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
