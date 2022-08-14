@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(schema = "recipes", name = "recipestep")
 public class RecipeStep {
@@ -20,7 +21,7 @@ public class RecipeStep {
     private String text;
     
     @ManyToOne(optional = false)
-    @MapsId("recipeID")                 // Indica qué columna de la clave primaria hace referencia a las recetas
+    @MapsId("recipeID")             // Columna de la clave primaria que referencia a las recetas
     private Recipe recipe;
     
 }

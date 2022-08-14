@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(schema = "recipes", name = "recipepicture")
 public class RecipePicture {

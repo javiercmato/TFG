@@ -15,9 +15,9 @@ import java.util.UUID;
 @EqualsAndHashCode
 @Embeddable
 public class RecipeStepID implements Serializable {
-    @Column(table = "recipestep", name = "recipe")
+    @Column(table = "recipestep", name = "recipe", nullable = false)
     private UUID recipeID;
     
-    @Column(table = "recipestep", name = "step")
+    @Column(table = "recipestep", name = "step", nullable = false)
     private Integer step;
 }
