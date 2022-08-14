@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.recipes.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import lombok.*;
 
 import javax.persistence.*;

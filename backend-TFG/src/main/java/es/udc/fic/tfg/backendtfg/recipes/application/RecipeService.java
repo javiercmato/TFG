@@ -18,11 +18,10 @@ public interface RecipeService {
      * @param adminID ID del administrador
      * @return Categoría creada
      * @throws EntityAlreadyExistsException Categoría ya existe
-     * @throws EntityNotFoundException Usuario no existe
      * @throws PermissionException Usuario no es administrador
      */
     Category createCategoryAsAdmin(String categoryName, UUID adminID)
-            throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException;
+            throws EntityAlreadyExistsException, PermissionException;
     
     /**
      * Recupera todas las categorías de recetas.

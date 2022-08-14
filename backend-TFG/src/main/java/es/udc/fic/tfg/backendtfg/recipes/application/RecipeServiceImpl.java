@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.recipes.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
@@ -48,7 +49,7 @@ public class RecipeServiceImpl implements RecipeService {
     
     @Override
     public Category createCategoryAsAdmin(String categoryName, UUID adminID)
-            throws EntityAlreadyExistsException, EntityNotFoundException, PermissionException {
+            throws EntityAlreadyExistsException, PermissionException {
         // Commprobar si existe el administrador
         try {
             userUtils.fetchAdministrator(adminID);

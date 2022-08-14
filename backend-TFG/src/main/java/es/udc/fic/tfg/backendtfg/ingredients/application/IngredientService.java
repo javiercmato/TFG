@@ -2,9 +2,7 @@ package es.udc.fic.tfg.backendtfg.ingredients.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.MeasureUnit;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 
 import java.util.List;
 import java.util.UUID;
