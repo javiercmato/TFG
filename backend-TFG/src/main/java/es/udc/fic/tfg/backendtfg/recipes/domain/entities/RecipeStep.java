@@ -21,7 +21,7 @@ public class RecipeStep {
     private String text;
     
     @ManyToOne(optional = false)
-    @MapsId("recipeID")             // Columna de la clave primaria que referencia a las recetas
+    @MapsId("recipeID")             // Atributo de la clave primaria que referencia a las recetas
     private Recipe recipe;
     
 }

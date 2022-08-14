@@ -52,6 +52,7 @@ public class SecurityConfig {
                 // RECIPE ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/recipes/categories").permitAll()                                  // createCategoryAsAdmin
                 .antMatchers(HttpMethod.GET,    "/api/recipes/categories").permitAll()                                  // getAllCategories
+                .antMatchers(HttpMethod.POST,   "/api/recipes/").permitAll()                                            // createRecipe
                 
         
         

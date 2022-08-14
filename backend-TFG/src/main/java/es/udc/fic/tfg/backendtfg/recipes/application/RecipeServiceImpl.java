@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -96,11 +97,12 @@ public class RecipeServiceImpl implements RecipeService {
         // Así se puede asignar el ID de la receta al resto de entidades que tengan una relación con ésta
         Recipe recipe = new Recipe();
         recipe.setName(params.getName());
-        recipe.setDescription(recipe.getDescription());
+        recipe.setDescription(params.getDescription());
         recipe.setDuration(params.getDuration());
         recipe.setDiners(params.getDiners());
         recipe.setAuthor(author);
         recipe.setCategory(category);
+        recipe.setCreationDate(LocalDateTime.now());
         recipe = recipeRepo.save(recipe);
         
         // Crear y asignar pasos a la receta
@@ -115,6 +117,9 @@ public class RecipeServiceImpl implements RecipeService {
         // Guardar datos y devolver instancia
         return recipeRepo.save(recipe);
     }
+    
+    
+    
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la categoría por el ID recibido */
@@ -138,44 +143,42 @@ public class RecipeServiceImpl implements RecipeService {
     }
     
     /** Registra una lista de pasos y se los asigna a la receta recibida */
-    private List<RecipeStep> createRecipeSteps(List<CreateRecipeStepParamsDTO> stepParams, Recipe recipe)
+    void createRecipeSteps(List<CreateRecipeStepParamsDTO> stepParams, Recipe recipe)
             throws EmptyRecipeStepsListException {
         // Si no se recibe ninǵun paso, se lanza EmptyRecipeStepsListException
         if (stepParams.isEmpty())
             throw new EmptyRecipeStepsListException();
         
         // Para cada item recibido, crea un paso con los datos recibidos
-        return stepParams.stream()
-                  .map((item) -> {
+        stepParams.stream()
+                  .forEach((item) -> {
                       RecipeStep step = new RecipeStep();
                       step.setId(new RecipeStepID(recipe.getId(), item.getStep()));
                       step.setText(item.getText());
                       step.setRecipe(recipe);
                       
-                      return stepRepo.save(step);
-                  })
-                  .collect(Collectors.toList());
+                      // Guardar paso y asignárselo a la receta
+                      step = stepRepo.save(step);
+                      recipe.addStep(step);
+                  });
     }
     
     /** Registra una lista de imágenes y se las asigna a la receta recibida */
-    private List<RecipePicture> createRecipePictures(List<CreateRecipePictureParamsDTO> pictureParams, Recipe recipe) {
-        // Si no se recibe ninguna imágen, se devuelve lista vacía
-        if ( pictureParams.isEmpty() )
-            return Collections.emptyList();
-        
+    private void createRecipePictures(List<CreateRecipePictureParamsDTO> pictureParams, Recipe recipe) {
         // Para cada item recibido, crea una imagen con los datos recibidos
-        return pictureParams.stream()
-                            .map((item) -> {
-                                RecipePicture picture = new RecipePicture();
-                                picture.setId(new RecipePictureID(recipe.getId(), item.getOrder()));
-                                picture.setRecipe(recipe);
-                                picture.setPictureData(
-                                    Base64.getDecoder().decode(item.getData())
-                                );
-                                
-                                return pictureRepo.save(picture);
-                            })
-                            .collect(Collectors.toList());
+        pictureParams.stream()
+                     .forEach((item) -> {
+                         RecipePicture picture = new RecipePicture();
+                         picture.setId(new RecipePictureID(recipe.getId(), item.getOrder()));
+                         picture.setRecipe(recipe);
+                         picture.setPictureData(
+                             Base64.getDecoder().decode(item.getData())
+                         );
+                         
+                         // Guardar imagen y asignárselo a la receta
+                         picture = pictureRepo.save(picture);
+                         recipe.addPicture(picture);
+                     });
     }
     
     /** Asigna los ingredientes, junto a sus cantidades y unidades de medida, a la receta recibida.
@@ -204,7 +207,9 @@ public class RecipeServiceImpl implements RecipeService {
             recipeIngredient.setQuantity(currentIngredientParams.getQuantity());
             recipeIngredient.setMeasureUnit(MeasureUnit.valueOf(currentIngredientParams.getMeasureUnit()));
             
-            recipeIngredientRepo.save(recipeIngredient);
+            // Guardar ingrediente y asignárselo a la receta
+            recipeIngredient = recipeIngredientRepo.save(recipeIngredient);
+            recipe.addIngredient(recipeIngredient);
         }
     }
     

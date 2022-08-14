@@ -1,6 +1,5 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors;
 
-import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.IngredientSummaryDTO;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import lombok.AccessLevel;
@@ -15,11 +14,8 @@ public class RecipeConversor {
     /* ******************** Convertir a DTO ******************** */
     public static RecipeIngredientDTO toRecipeIngredientDTO(RecipeIngredient entity) {
         RecipeIngredientDTO dto = new RecipeIngredientDTO();
-        IngredientSummaryDTO ingredientSummaryDTO = new IngredientSummaryDTO(
-                entity.getId().getIngredientID(),
-                entity.getIngredient().getName()
-        );
-        dto.setIngredient(ingredientSummaryDTO);
+        dto.setId(entity.getIngredient().getId());
+        dto.setName(entity.getIngredient().getName());
         dto.setMeasureUnit(entity.getMeasureUnit().toString());
         dto.setQuantity(entity.getQuantity());
         

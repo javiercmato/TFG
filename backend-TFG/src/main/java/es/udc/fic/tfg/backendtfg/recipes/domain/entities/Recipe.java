@@ -55,7 +55,7 @@ public class Recipe {
     
     
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "category")
+    @JoinColumn(name = "category_id")
     private Category category;
     
     
@@ -83,4 +83,34 @@ public class Recipe {
     )
     private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
     
+    
+    
+    /* *************** Domain-Model *************** */
+    
+    /**
+     * Añade el paso recibido a la receta
+     * @param step Paso a añadir
+     */
+    public void addStep(RecipeStep step) {
+        steps.add(step);
+        step.setRecipe(this);
+    }
+    
+    /**
+     * Añade la imagen recibida a la receta
+     * @param picture Imagen a añadir
+     */
+    public void addPicture(RecipePicture picture) {
+        pictures.add(picture);
+        picture.setRecipe(this);
+    }
+    
+    /**
+     * Añade el ingrediente recibido a la receta
+     * @param ingredient Ingrediente a añadir
+     */
+    public void addIngredient(RecipeIngredient ingredient) {
+        ingredients.add(ingredient);
+        ingredient.setRecipe(this);
+    }
 }
