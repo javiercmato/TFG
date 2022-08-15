@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class UserDTOUnitTest {
     @Test
-    public void testUserDTO() {
+    void testUserDTO() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -49,7 +49,7 @@ public class UserDTOUnitTest {
     }
     
     @Test
-    public void testSignUpParamsDTO() {
+    void testSignUpParamsDTO() {
         // Crear datos de prueba
         String avatar = "";
         
@@ -72,7 +72,7 @@ public class UserDTOUnitTest {
     }
     
     @Test
-    public void testLoginParamsDTO() {
+    void testLoginParamsDTO() {
         // Ejecutar código
         LoginParamsDTO dto = new LoginParamsDTO();
         dto.setNickname(DEFAULT_NICKNAME);
@@ -86,7 +86,7 @@ public class UserDTOUnitTest {
     }
     
     @Test
-    public void testUpdateProfileParamsDTO() {
+    void testUpdateProfileParamsDTO() {
         // Crear datos de prueba
         LocalDateTime currentDateTime = LocalDateTime.now();
         String avatar = "";
@@ -108,7 +108,7 @@ public class UserDTOUnitTest {
     }
     
     @Test
-    public void testAuthenticatedUserDTO() {
+    void testAuthenticatedUserDTO() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         LocalDateTime currentDateTime = LocalDateTime.now();
@@ -137,7 +137,7 @@ public class UserDTOUnitTest {
     }
     
     @Test
-    public void testChangePasswordParamsDTO() {
+    void testChangePasswordParamsDTO() {
         // Crear datos de prueba
         String newPassword = DEFAULT_PASSWORD + "XYZ";
         

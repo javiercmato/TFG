@@ -7,6 +7,7 @@ import java.util.UUID;
 /** Utilidad para generar datos de usuario en los tests */
 @UtilityClass
 public class TestConstants {
+    /* ************************* COMMON ************************* */
     // INFO: https://stackoverflow.com/questions/64580412/generate-valid-deterministic-uuids-for-tests
     public static final UUID NON_EXISTENT_UUID = UUID.fromString("00000000-0000-4000-8000-000000000000");
     
@@ -29,6 +30,13 @@ public class TestConstants {
     
     /* ************************* RECIPES ************************* */
     public static final String DEFAULT_CATEGORY_NAME = "category";
+    public static final String DEFAULT_RECIPE_NAME = "recipe";
+    public static final Long DEFAULT_RECIPE_DURATION = (long) 10;
+    public static final Integer DEFAULT_RECIPE_DINERS = 2;
+    public static final String DEFAULT_RECIPE_DESCRIPTION = "This is my recipe description";
+    public static final String DEFAULT_RECIPESTEP_TEXT = "This is a recipe step text";
+    public static final String DEFAULT_RECIPE_IMAGE_1 = "foto_comida_1.png";
+    
     
     
 }

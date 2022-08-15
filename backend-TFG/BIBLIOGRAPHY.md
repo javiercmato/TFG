@@ -2,6 +2,8 @@
 
 # Diseño de entidades
 - [Storing images in Database with SpringBoot and PostgreSQL](https://medium.com/echohub/imageserver-with-spring-boot-postgresql-aec02e5dad9b)
+- [Hibernate Documentation about mapping entities identifiers](https://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-mapping-identifier)
+- [Mapping MANY-TO-MANY relationships with additional attributes](https://thorben-janssen.com/hibernate-tip-many-to-many-association-with-additional-attributes/)
 
 
 # Configuración del entorno

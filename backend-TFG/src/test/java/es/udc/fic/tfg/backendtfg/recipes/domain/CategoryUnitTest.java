@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class CategoryUnitTest {
     
     @Test
-    public void createCategory() {
+    void createCategory() {
         // Crear datos de prueba
         UUID categoryID = UUID.randomUUID();
         String name = "category";

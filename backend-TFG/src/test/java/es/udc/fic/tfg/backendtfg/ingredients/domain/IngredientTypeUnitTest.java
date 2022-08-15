@@ -12,10 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class IngredientTypeUnitTest {
+class IngredientTypeUnitTest {
     
     @Test
-    public void createIngredientType() {
+    void createIngredientType() {
         // Crear datos de prueba
         UUID ingredientTypeID = UUID.randomUUID();
         String ingredientTypeName = "ingredientType";

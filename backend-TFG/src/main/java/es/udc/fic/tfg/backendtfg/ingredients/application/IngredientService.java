@@ -2,8 +2,7 @@ package es.udc.fic.tfg.backendtfg.ingredients.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -75,4 +74,10 @@ public interface IngredientService {
      * @return Bloque de ingredientes que coincidan con la búsqueda
      */
     Block<Ingredient> findIngredientsByNameAndType(String name, UUID ingredientTypeID, int page, int pageSize);
+    
+    /**
+     * Recupera todas las unidades de medidas de los ingredientes.
+     * @return Lista de unidades de medida
+     */
+    List<MeasureUnit> getAllMeasureUnits();
 }

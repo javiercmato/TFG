@@ -4,8 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientTypeConversor;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.dtos.*;
@@ -143,6 +142,12 @@ public class IngredientController {
         return createBlock(ingredientSummaryDTOList, ingredientsBlock.hasMoreItems(), ingredientsBlock.getItemsCount());
     }
     
+    @GetMapping(value = "/measures",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<MeasureUnit> getAllMeasureUnits() {
+        return ingredientService.getAllMeasureUnits();
+    }
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

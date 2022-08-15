@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 public class CategoryDTOUnitTest {
     @Test
-    public void testCategoryDTO() {
+    void testCategoryDTO() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         
@@ -33,7 +33,7 @@ public class CategoryDTOUnitTest {
     }
     
     @Test
-    public void testCreateCategoryParamsDTO() {
+    void testCreateCategoryParamsDTO() {
         // Ejecutar código
         CreateCategoryParamsDTO dto = new CreateCategoryParamsDTO();
         dto.setName(DEFAULT_CATEGORY_NAME);

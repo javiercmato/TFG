@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class UserUnitTest {
+class UserUnitTest {
     
     @Test
-    public void createUser() {
+    void createUser() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         String nickname = "nickname";

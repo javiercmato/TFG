@@ -328,7 +328,7 @@ class UserControllerTest {
         String errorMessage = getI18NExceptionMessageWithParams(
                 CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
                 locale,
-                new Object[] {User.class.getName(), jwtData.getUserID()},
+                new Object[] {User.class.getSimpleName(), jwtData.getUserID()},
                 User.class
         );
         
@@ -390,7 +390,7 @@ class UserControllerTest {
         String errorMessage = getI18NExceptionMessageWithParams(
                 CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
                 locale,
-                new Object[] {User.class.getName(), NON_EXISTENT_UUID},
+                new Object[] {User.class.getSimpleName(), NON_EXISTENT_UUID},
                 User.class
         );
         
@@ -461,10 +461,10 @@ class UserControllerTest {
         String errorMessage = getI18NExceptionMessage(UserController.INCORRECT_PASSWORD_EXCEPTION_KEY, locale);
     
         // Comprobar resultados
-        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        byte[] encodedResponseBodyContent = this.jsonMapper.writeValueAsBytes(new ErrorsDTO(errorMessage));
         changePasswordAction.andExpect(status().isBadRequest())
                             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                            .andExpect(content().string(encodedResponseBodyContent));
+                            .andExpect(content().bytes(encodedResponseBodyContent));
     }
     
     

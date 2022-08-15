@@ -6,12 +6,16 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsExc
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.controllers.RecipeController;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.CategoryConversor;
-import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.CategoryDTO;
-import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.CreateCategoryParamsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -33,6 +37,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
+import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
+import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -47,6 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RecipeControllerTest {
     private static final String API_ENDPOINT = "/api/recipes";
     private final ObjectMapper jsonMapper = new ObjectMapper();
+    
     private final Locale locale = Locale.getDefault();
     
     @Autowired
@@ -61,6 +68,12 @@ public class RecipeControllerTest {
     private CategoryRepository categoryRepo;
     @Autowired
     private RecipeService recipeService;
+    @Autowired
+    private RecipeRepository recipeRepo;
+    @Autowired
+    private IngredientTypeRepository ingredientTypeRepository;
+    @Autowired
+    private IngredientService ingredientService;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -107,6 +120,29 @@ public class RecipeControllerTest {
         category.setName(DEFAULT_CATEGORY_NAME);
         
         return categoryRepo.save(category);
+    }
+    
+    /** Genera un DTO con los parámetros para crear una receta.
+     * Faltan los parámetros: steps, pictures e ingredients
+    */
+    private CreateRecipeParamsDTO generateCreateRecipeParamsDTO(UUID authorID, UUID categoryID) {
+        CreateRecipeParamsDTO paramsDTO = new CreateRecipeParamsDTO();
+        paramsDTO.setName(DEFAULT_RECIPE_NAME);
+        paramsDTO.setDescription(DEFAULT_RECIPE_DESCRIPTION);
+        paramsDTO.setDuration(DEFAULT_RECIPE_DURATION);
+        paramsDTO.setDiners(DEFAULT_RECIPE_DINERS);
+        paramsDTO.setAuthorID(authorID);
+        paramsDTO.setCategoryID(categoryID);
+    
+        return paramsDTO;
+    }
+    
+    /** Registra un tipo de ingrediente válido. */
+    private IngredientType registerIngredientType() {
+        IngredientType type = new IngredientType();
+        type.setName(DEFAULT_INGREDIENTTYPE_NAME);
+        
+        return ingredientTypeRepository.save(type);
     }
     
     /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
@@ -265,5 +301,235 @@ public class RecipeControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenCreateRecipe_thenRecipeIsCreated() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        long duration = 10;
+        int diners = 2;
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        IngredientType ingredientType = registerIngredientType();
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), jwtData.getUserID());
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        picturesParams.add(new CreateRecipePictureParamsDTO(1,
+            Base64.getEncoder().encodeToString(loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION))
+        ));
+        Category category = registerCategory();
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(jwtData.getUserID(), category.getId());
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
     
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+    
+        // Comprobar resultados
+        //Recipe expectedResponse = recipeRepo.findAll().iterator().next();
+        //byte[] encodedResponseBodyContent = this.jsonMapper.writeValueAsBytes(expectedResponse);
+        action.andExpect(status().isCreated())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        //      .andExpect(content().bytes(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateRecipeAsOtherUser_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        long duration = 10;
+        int diners = 2;
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        IngredientType ingredientType = registerIngredientType();
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), jwtData.getUserID());
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        Category category = registerCategory();
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(jwtData.getUserID(), category.getId());
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateRecipeWithoutSteps_thenBadRequest_becauseEmptyRecipeStepsListException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        long duration = 10;
+        int diners = 2;
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        // stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        IngredientType ingredientType = registerIngredientType();
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), jwtData.getUserID());
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        Category category = registerCategory();
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(jwtData.getUserID(), category.getId());
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(RecipeController.EMPTY_RECIPE_STEPS_EXCEPTION_KEY, locale);
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isBadRequest())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateRecipe_andCategoryDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        long duration = 10;
+        int diners = 2;
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        // stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        IngredientType ingredientType = registerIngredientType();
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), jwtData.getUserID());
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(jwtData.getUserID(), NON_EXISTENT_UUID);
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Category.class.getSimpleName(), NON_EXISTENT_UUID},
+                User.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateRecipe_andIngredientDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        long duration = 10;
+        int diners = 2;
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        IngredientType ingredientType = registerIngredientType();
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(NON_EXISTENT_UUID, "1", MeasureUnit.UNIDAD.toString()));
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        Category category = registerCategory();
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(jwtData.getUserID(), category.getId());
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(ingredientsParams);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/";
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Ingredient.class.getSimpleName(), NON_EXISTENT_UUID},
+                User.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
 }

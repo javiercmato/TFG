@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class PrivateListUnitTest {
+class PrivateListUnitTest {
     
     @Test
-    public void createPrivateList() {
+    void createPrivateList() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         String title = "title";
