@@ -9,8 +9,7 @@ import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControl
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.infrastructure.conversors.IngredientConversor;
@@ -333,6 +332,22 @@ class IngredientControllerTest {
         Block<Ingredient> ingredients = ingredientService.findIngredientsByNameAndType("blanco", ingredientType.getId(), INITIAL_PAGE, PAGE_SIZE);
         List<IngredientSummaryDTO> ingredientSummaryDTOList = IngredientConversor.toIngredientSummaryListDTO(ingredients.getItems());
         BlockDTO<IngredientSummaryDTO> expectedResponse = new BlockDTO<>(ingredientSummaryDTOList, ingredients.hasMoreItems(), ingredients.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindAllMeasures_thenMeasuresListIsRetrieved() throws Exception {
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/measures";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+        );
+        
+        // Comprobar resultados
+        MeasureUnit[] expectedResponse = MeasureUnit.values();
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isOk())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
