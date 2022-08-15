@@ -31,6 +31,8 @@ public class TestConstants {
     /* ************************* RECIPES ************************* */
     public static final String DEFAULT_CATEGORY_NAME = "category";
     public static final String DEFAULT_RECIPE_NAME = "recipe";
+    public static final Long DEFAULT_RECIPE_DURATION = (long) 10;
+    public static final Integer DEFAULT_RECIPE_DINERS = 2;
     public static final String DEFAULT_RECIPE_DESCRIPTION = "This is my recipe description";
     public static final String DEFAULT_RECIPESTEP_TEXT = "This is a recipe step text";
     public static final String DEFAULT_RECIPE_IMAGE_1 = "foto_comida_1.png";

@@ -5,7 +5,7 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeStepDTO {

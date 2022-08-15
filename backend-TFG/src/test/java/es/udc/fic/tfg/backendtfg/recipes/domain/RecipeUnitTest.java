@@ -105,7 +105,7 @@ public class RecipeUnitTest {
     }
     
     @Test
-    public void createRecipeAndAddPicture () {
+    void createRecipeAndAddPicture () {
         // Crear datos de prueba
         UUID recipeID = UUID.randomUUID();
         int pictureOrder = 1;
@@ -140,7 +140,7 @@ public class RecipeUnitTest {
     }
     
     @Test
-    public void createRecipeAndAddIngredient () {
+    void createRecipeAndAddIngredient () {
         // Crear datos de prueba
         UUID recipeID = UUID.randomUUID();
         UUID ingredientID = UUID.randomUUID();

@@ -64,10 +64,8 @@ public class RecipeDTOUnitTest {
     @Test
     void testCreateRecipeParamsDTO() {
         // Crear datos de prueba
-        UUID recipeID = UUID.randomUUID();
         long duration = 10;
         int diners = 2;
-        boolean isBannedByAdmin = false;
         UUID authorID = UUID.randomUUID();
         UUID categoryID = UUID.randomUUID();
         List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();

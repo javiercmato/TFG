@@ -127,7 +127,7 @@ public class RecipeServiceImpl implements RecipeService {
         // Comprobar si existe la categoría con el ID recibido
         Optional<Category> optionalCategory = categoryRepo.findById(categoryID);
         if ( optionalCategory.isEmpty() )
-            throw new EntityNotFoundException(Category.class.getName(), categoryID);
+            throw new EntityNotFoundException(Category.class.getSimpleName(), categoryID);
         
         return optionalCategory.get();
     }

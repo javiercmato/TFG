@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 public class IngredientDTOUnitTest {
     @Test
-    public void testIngredientDTO() {
+    void testIngredientDTO() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         UUID typeID = UUID.randomUUID();
@@ -36,7 +36,7 @@ public class IngredientDTOUnitTest {
     }
     
     @Test
-    public void testCreateIngredientParamsDTO() {
+    void testCreateIngredientParamsDTO() {
         // Crear datos de prueba
         UUID typeID = UUID.randomUUID();
         UUID creatorID = UUID.randomUUID();
@@ -56,7 +56,7 @@ public class IngredientDTOUnitTest {
     }
     
     @Test
-    public void testIngredientSummaryDTO() {
+    void testIngredientSummaryDTO() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         
