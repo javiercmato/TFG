@@ -9,7 +9,6 @@ import java.util.UUID;
 
 /** Identificador de la relación N:M entre Recipe e Ingredient */
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode

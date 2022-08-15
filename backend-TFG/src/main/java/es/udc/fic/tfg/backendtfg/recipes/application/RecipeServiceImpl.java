@@ -152,10 +152,8 @@ public class RecipeServiceImpl implements RecipeService {
         // Para cada item recibido, crea un paso con los datos recibidos
         stepParams.stream()
                   .forEach((item) -> {
-                      RecipeStep step = new RecipeStep();
-                      step.setId(new RecipeStepID(recipe.getId(), item.getStep()));
-                      step.setText(item.getText());
-                      step.setRecipe(recipe);
+                      RecipeStepID stepID = new RecipeStepID(recipe.getId(), item.getStep());
+                      RecipeStep step = new RecipeStep(stepID, item.getText(), recipe);
                       
                       // Guardar paso y asignárselo a la receta
                       step = stepRepo.save(step);
@@ -168,12 +166,9 @@ public class RecipeServiceImpl implements RecipeService {
         // Para cada item recibido, crea una imagen con los datos recibidos
         pictureParams.stream()
                      .forEach((item) -> {
-                         RecipePicture picture = new RecipePicture();
-                         picture.setId(new RecipePictureID(recipe.getId(), item.getOrder()));
-                         picture.setRecipe(recipe);
-                         picture.setPictureData(
-                             Base64.getDecoder().decode(item.getData())
-                         );
+                         byte[] pictureBytes = Base64.getDecoder().decode(item.getData());                   // Decodificar imágen recibida
+                         RecipePictureID pictureID = new RecipePictureID(recipe.getId(), item.getOrder());
+                         RecipePicture picture = new RecipePicture(pictureID, pictureBytes, recipe);
                          
                          // Guardar imagen y asignárselo a la receta
                          picture = pictureRepo.save(picture);
@@ -200,12 +195,10 @@ public class RecipeServiceImpl implements RecipeService {
                                                                                       .findFirst()
                                                                                       .get();
             
-            RecipeIngredient recipeIngredient = new RecipeIngredient();
-            recipeIngredient.setId(new RecipeIngredientID(recipe.getId(), ingredientID));
-            recipeIngredient.setRecipe(recipe);
-            recipeIngredient.setIngredient(currentIngredient);
-            recipeIngredient.setQuantity(currentIngredientParams.getQuantity());
-            recipeIngredient.setMeasureUnit(MeasureUnit.valueOf(currentIngredientParams.getMeasureUnit()));
+            String quantity = currentIngredientParams.getQuantity();
+            MeasureUnit measureUnit = MeasureUnit.valueOf(currentIngredientParams.getMeasureUnit());
+            RecipeIngredientID recipeIngredientID = new RecipeIngredientID(recipe.getId(), ingredientID);
+            RecipeIngredient recipeIngredient = new RecipeIngredient(recipeIngredientID, quantity, measureUnit, recipe, currentIngredient);
             
             // Guardar ingrediente y asignárselo a la receta
             recipeIngredient = recipeIngredientRepo.save(recipeIngredient);

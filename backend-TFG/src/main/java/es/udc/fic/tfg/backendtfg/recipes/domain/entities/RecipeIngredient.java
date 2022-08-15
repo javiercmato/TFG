@@ -9,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(schema = "recipes", name = "recipeingredient")
 public class RecipeIngredient {

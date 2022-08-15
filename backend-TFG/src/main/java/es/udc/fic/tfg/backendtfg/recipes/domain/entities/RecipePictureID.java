@@ -9,7 +9,6 @@ import java.util.UUID;
 
 /** Identificador de la entidad débil RecipePicture */
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
