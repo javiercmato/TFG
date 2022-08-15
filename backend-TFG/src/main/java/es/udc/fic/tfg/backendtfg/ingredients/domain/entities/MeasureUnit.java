@@ -12,4 +12,5 @@ public enum MeasureUnit {
     RODAJA,
     PIZCA,
     RECIPIENTE,
+    UNIDAD
 }
