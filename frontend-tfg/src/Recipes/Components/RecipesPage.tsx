@@ -24,7 +24,7 @@ const RecipesPage = () => {
             {/* Columna con la lista de categorías existentes */}
             <Col>
                 <Row>
-                    CATEGORIES LIST
+                    
                 </Row>
             </Col>
         </Row>
