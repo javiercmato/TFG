@@ -21,6 +21,11 @@ export const getIngredientTypeName = (types: Array<IngredientType>, id: string) 
 }
 
 
+/* ******************** DATOS DE TIPOS DE INGREDIENTE ******************** */
+
+export const selectMeasureUnits = (state: RootState) : Array<string> => getModuleState(state).measures;
+
+
 /* ******************** DATOS DE BÚSQUEDAS DE INGREDIENTES ******************** */
 
 export const getIngredientSearch = (state: RootState) : Search<Ingredient> => getModuleState(state).ingredientSearch;

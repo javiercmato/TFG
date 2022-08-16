@@ -33,6 +33,7 @@ const translations = {
     'common.fields.avatar': 'Foto de perfil',
     'common.fields.ingredientType': 'Tipo de ingrediente',
     'common.fields.category': 'Categoría',
+    'common.fields.measureUnit': 'Unidad de medida',
 
 
     'common.alerts.noResults': 'Sin resultados',

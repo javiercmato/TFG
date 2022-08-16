@@ -32,6 +32,7 @@ const translations = {
     'common.fields.avatar': 'Avatar',
     'common.fields.ingredientType': 'Ingredient type',
     'common.fields.category': 'Category',
+    'common.fields.measureUnit': 'Measure unit',
 
 
     'common.alerts.noResults': 'No results found',
