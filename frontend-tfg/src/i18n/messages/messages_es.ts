@@ -34,6 +34,7 @@ const translations = {
     'common.fields.ingredientType': 'Tipo de ingrediente',
     'common.fields.category': 'Categoría',
     'common.fields.measureUnit': 'Unidad de medida',
+    'common.fields.description': 'Descripción',
 
 
     'common.alerts.noResults': 'Sin resultados',
@@ -81,6 +82,14 @@ const translations = {
     /* ******************** Recipes ******************** */
     'recipes.components.CreateCategory.title': 'Crear nueva categoría',
     'recipes.components.CreateCategory.placeholder': 'P. ej.: "Cócteles"',
+    'recipes.components.CreateRecipeForm.title': 'Crear nueva receta',
+    'recipes.components.CreateRecipeForm.title.placeholder': 'P. ej.: "Macarrones con tomate y atún"',
+    'recipes.components.CreateRecipeForm.description.placeholder': 'P. ej.: "Pláto rápido y sencillo de preparar, fácil de llevar a cualquier sitio"',
+    'recipes.components.CreateRecipeForm.duration.title': 'Duración (minutos)',
+    'recipes.components.CreateRecipeForm.duration.placeholder': '15',
+    'recipes.components.CreateRecipeForm.diners.title': 'Raciones',
+    'recipes.components.CreateRecipeForm.diners.placeholder': '2',
+
 
 }
 

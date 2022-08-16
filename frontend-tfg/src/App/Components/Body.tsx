@@ -6,7 +6,7 @@ import {ChangePassword, Login, Logout, SignUp, UpdateProfile, UserProfile, userR
 import {body} from './styles/body';
 import {useAppSelector} from "../../store";
 import {IngredientsPage} from "../../Ingredients";
-import {RecipesPage} from "../../Recipes";
+import {CreateRecipeForm, RecipesPage} from "../../Recipes";
 
 
 const Body = () => {
@@ -29,6 +29,7 @@ const Body = () => {
                 <Route path="/ingredients" element={<IngredientsPage />} />
                 {/* ****************************** RECIPES ****************************** */}
                 <Route path="/recipes" element={<RecipesPage />} />
+                <Route path="/recipes/create" element={<CreateRecipeForm />} />
 
 
                 {/* ****************************** DEFAULT ROUTE ****************************** */}

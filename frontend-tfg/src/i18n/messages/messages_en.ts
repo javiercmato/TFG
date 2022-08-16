@@ -33,6 +33,7 @@ const translations = {
     'common.fields.ingredientType': 'Ingredient type',
     'common.fields.category': 'Category',
     'common.fields.measureUnit': 'Measure unit',
+    'common.fields.description': 'Description',
 
 
     'common.alerts.noResults': 'No results found',
@@ -79,7 +80,16 @@ const translations = {
 
     /* ******************** Recipes ******************** */
     'recipes.components.CreateCategory.title': 'Create new category',
-    'recipes.components.CreateCategory.placeholder': 'P. ej.: "Coctails"',
+    'recipes.components.CreateCategory.placeholder': 'E.g.: "Coctails"',
+    'recipes.components.CreateRecipeForm.title': 'Create new recipe',
+    'recipes.components.CreateRecipeForm.title.placeholder': 'E.g.: "Macaroni with tomato and tuna"',
+    'recipes.components.CreateRecipeForm.description.placeholder': 'E.g.: "Quick and easy dish to prepare, easy to take anywhere"',
+    'recipes.components.CreateRecipeForm.duration.title': 'Duration (minutes)',
+    'recipes.components.CreateRecipeForm.duration.placeholder': '15',
+    'recipes.components.CreateRecipeForm.diners.title': 'Diners',
+    'recipes.components.CreateRecipeForm.diners.placeholder': '2',
+
+
 }
 
 export default translations;
