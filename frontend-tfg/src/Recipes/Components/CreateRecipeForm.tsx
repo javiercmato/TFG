@@ -7,6 +7,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import {cardHeader, descriptionTextarea} from './styles/createRecipeForm';
 import {RecipeIngredient, RecipePicture, RecipeStep} from "../Domain";
 import CategorySelector from "./CategorySelector";
+import RecipeIngredientsForm from "./RecipeIngredientsForm";
 
 
 const CreateRecipeForm = () => {
@@ -50,10 +51,10 @@ const CreateRecipeForm = () => {
                 </Card.Header>
 
                 <Card.Body>
-                    <Form
-                        ref={(node: HTMLFormElement) => {formRef = node}}
-                        onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e)}
-                    >
+                    {/*<Form*/}
+                    {/*    ref={(node: HTMLFormElement) => {formRef = node}}*/}
+                    {/*    onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e)}*/}
+                    {/*>*/}
                         {/* Nombre */}
                         <Row>
                             <FormGroup>
@@ -128,7 +129,13 @@ const CreateRecipeForm = () => {
 
                         </Row>
 
-                    </Form>
+                        {/* Ingredientes de la receta */}
+                        <Row>
+                            <RecipeIngredientsForm />
+                        </Row>
+
+
+                    {/*</Form>*/}
                 </Card.Body>
             </Card>
         </div>

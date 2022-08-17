@@ -17,6 +17,7 @@ const translations = {
     'common.buttons.clear': 'Limpiar',
     'common.buttons.previous': 'Anterior',
     'common.buttons.next': 'Siguiente',
+    'common.buttons.add': 'Añadir',
 
 
     'common.validation.mandatoryField': 'Campo obligatorio',
@@ -35,10 +36,12 @@ const translations = {
     'common.fields.category': 'Categoría',
     'common.fields.measureUnit': 'Unidad de medida',
     'common.fields.description': 'Descripción',
+    'common.fields.ingredients': 'Ingredientes',
+    'common.fields.quantity': 'Cantidad',
 
 
     'common.alerts.noResults': 'Sin resultados',
-
+    'common.alerts.notLoggedIn': 'No puedes realizar esta operación sin estar registrado',
 
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
@@ -79,6 +82,7 @@ const translations = {
     'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
     'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
 
+
     /* ******************** Recipes ******************** */
     'recipes.components.CreateCategory.title': 'Crear nueva categoría',
     'recipes.components.CreateCategory.placeholder': 'P. ej.: "Cócteles"',
@@ -89,6 +93,9 @@ const translations = {
     'recipes.components.CreateRecipeForm.duration.placeholder': '15',
     'recipes.components.CreateRecipeForm.diners.title': 'Raciones',
     'recipes.components.CreateRecipeForm.diners.placeholder': '2',
+    'recipes.components.AddIngredientToRecipeModal.title': 'Añadir ingrediente a receta',
+    'recipes.components.AddIngredientToRecipeModal.quantity.placeholder': 'P. ej.: 200',
+    'recipes.components.RecipeIngredientsSelection.title': 'Ingredientes seleccionados',
 
 
 }

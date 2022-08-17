@@ -24,8 +24,10 @@ initializeBackend( () => {
     );
 });
 
+
 /* Acciones a ejecutar tan pronto arranque la aplicación */
 store.dispatch(ingredientsRedux.actions.findAllIngredientTypesAsyncAction(() => {}));
+store.dispatch(ingredientsRedux.actions.getMeasureUnitsAsyncAction(() => {}));
 store.dispatch(recipesRedux.actions.getCategoriesAsyncAction(() => {}, () => {}));
 
 

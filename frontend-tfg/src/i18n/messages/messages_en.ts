@@ -17,6 +17,7 @@ const translations = {
     'common.buttons.clear': 'Clear',
     'common.buttons.previous': 'Previous',
     'common.buttons.next': 'Next',
+    'common.buttons.add': 'Add',
 
 
     'common.validation.mandatoryField': 'Mandatory field',
@@ -34,9 +35,12 @@ const translations = {
     'common.fields.category': 'Category',
     'common.fields.measureUnit': 'Measure unit',
     'common.fields.description': 'Description',
+    'common.fields.ingredients': 'Ingredients',
+    'common.fields.quantity': 'Quantity',
 
 
     'common.alerts.noResults': 'No results found',
+    'common.alerts.notLoggedIn': 'You are not logged in',
 
 
     /* ******************** App ******************** */
@@ -70,6 +74,7 @@ const translations = {
     'users.components.UserProfile.deleteUser': 'Delete user',
     'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
 
+
     /* ******************** Ingredients ******************** */
     'ingredients.components.CreateIngredientType.title': 'Create new ingredient type',
     'ingredients.components.CreateIngredientType.placeholder': 'E.g.: "Vegetables"',
@@ -88,6 +93,9 @@ const translations = {
     'recipes.components.CreateRecipeForm.duration.placeholder': '15',
     'recipes.components.CreateRecipeForm.diners.title': 'Diners',
     'recipes.components.CreateRecipeForm.diners.placeholder': '2',
+    'recipes.components.AddIngredientToRecipeModal.title': 'Add ingredient to recipe',
+    'recipes.components.AddIngredientToRecipeModal.quantity.placeholder': 'E.g.: 200',
+    'recipes.components.RecipeIngredientsSelection.title': 'Selected ingredients',
 
 
 }

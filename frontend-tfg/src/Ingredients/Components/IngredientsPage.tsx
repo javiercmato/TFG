@@ -14,6 +14,7 @@ const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE
 const IngredientsPage = () => {
     const dispatch = useAppDispatch();
     const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
+    const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
     const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
 
     useEffect( () => {
@@ -30,7 +31,7 @@ const IngredientsPage = () => {
     return (
         <Row>
             {/* Formulario para crear y mostrar los tipos y los ingredientes */}
-            {(isAdminLoggedIn) &&
+            {(isLoggedIn) &&
                 <Col md={4} >
                     <Row className={"gy-3"}>
                         <CreateIngredientType />
