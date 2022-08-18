@@ -19,7 +19,9 @@ const AddRecipeIngredient = ({onAddCustomizedIngredientCallback}: Props) => {
 
 
 
-    const handleAddClick = (ingredient: Ingredient): any => {
+    const handleAddClick = (e: any, ingredient: Ingredient): any => {
+        e.preventDefault();
+
         // Indica que se ha cambiado el ingrediente seleccionado
         setSelectedIngredient(ingredient);
 
@@ -71,7 +73,7 @@ const AddRecipeIngredient = ({onAddCustomizedIngredientCallback}: Props) => {
 
                             {/* Botón para añadir ingrediente seleccionado */}
                             <td>
-                                <Button onClick={() => handleAddClick(item)}>
+                                <Button onClick={(e) => handleAddClick(e, item)}>
                                     <FormattedMessage id="common.buttons.add" />
                                 </Button>
                             </td>

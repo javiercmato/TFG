@@ -17,12 +17,13 @@ interface RecipeIngredientDisplayData {
 }
 
 interface Props {
+    ingredientParams: Array<CreateRecipeIngredientParamsDTO>,
     onAddIngredientParams: (ingredientParams: Array<CreateRecipeIngredientParamsDTO>) => void,
     onRemoveIngredientParams: (ingredientID: string) => void,
 }
 
-const RecipeIngredientsForm = ({onAddIngredientParams, onRemoveIngredientParams}: Props) => {
-    const [recipeIngredientParams, setRecipeIngredientParams] = useState<Array<CreateRecipeIngredientParamsDTO>>([]);           // Parámetros de los ingredientes a añadir a la receta
+const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemoveIngredientParams}: Props) => {
+    const [recipeIngredientParams, setRecipeIngredientParams] = useState<Array<CreateRecipeIngredientParamsDTO>>(ingredientParams);           // Parámetros de los ingredientes a añadir a la receta
     const [displayableItems, setDisplayableItems] = useState<Array<DisplayCustomIngredient>>([]);                               // Información de ingredientes a visualizar en la lista
 
     /** Añade el ingrediente recibido a la lista de ingredientes para mostrar, junto a su cantidad y medida.
@@ -30,17 +31,29 @@ const RecipeIngredientsForm = ({onAddIngredientParams, onRemoveIngredientParams}
      */
     const onAddCustomizedIngredient = (ingredientName: string, params: CreateRecipeIngredientParamsDTO) => {
         // 1) Añadir los parámetros del ingrediente a la lista de parámetros
-        setRecipeIngredientParams( (prevState) => [...prevState, params]);
-        onAddIngredientParams(recipeIngredientParams);                      // Devuelve lista de parámetros al padre
-
-        // 2) Crear y añadir los datos del ingrediente añadido para poder visualizarlo
         let item: DisplayCustomIngredient = {
             ingredientID: params.ingredientID,
             quantity: params.quantity,
             measureUnit: params.measureUnit,
             ingredientName: ingredientName,
         }
-        setDisplayableItems((prevState) => [...prevState, item])
+        setDisplayableItems((prevState) => [...displayableItems, item]);
+
+
+        // 2) Crear y añadir los datos del ingrediente añadido para poder visualizarlo
+        setRecipeIngredientParams( [...recipeIngredientParams, params]);
+        onAddIngredientParams([...recipeIngredientParams, params]);                      // Devuelve lista de parámetros al padre
+
+    }
+
+    const onRemoveCustomizedIngredient = (ingredientID: string) => {
+        // Eliminar el ingrediente de la lista de ingredientes añadidos
+        setDisplayableItems((prevState) => prevState.filter(
+            (item) => item.ingredientID !== ingredientID)
+        );
+
+        // Ejecutar el callback para borrar
+        onRemoveIngredientParams(ingredientID);
     }
 
 
@@ -50,7 +63,7 @@ const RecipeIngredientsForm = ({onAddIngredientParams, onRemoveIngredientParams}
 
     let finalRecipeIngredientsListProps: FinalRecipeIngredientsListProps = {
         items: displayableItems,
-        onRemoveItemCallback: onRemoveIngredientParams,
+        onRemoveItemCallback: onRemoveCustomizedIngredient,
     }
 
     return (

@@ -20,7 +20,6 @@ const AddIngredientToRecipeModal = ({show, setShow, ingredient, onHideCallback, 
     const intl = useIntl();
     const [quantity, setQuantity] = useState<string>('');
     const [measureUnit, setMeasureUnit] = useState<string>('');
-    const [recipeIngredientParams, setRecipeIngredientParams] = useState<CreateRecipeIngredientParamsDTO>();
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
 
 
@@ -28,14 +27,13 @@ const AddIngredientToRecipeModal = ({show, setShow, ingredient, onHideCallback, 
         e.preventDefault();
 
         // Crea los parámetros para añadir ingrediente a la receta y se los pasa al padre
-        const params: CreateRecipeIngredientParamsDTO = {
+        let params: CreateRecipeIngredientParamsDTO = {
             ingredientID: ingredient?.id!,
             quantity: quantity,
             measureUnit: measureUnit,
         }
-        setRecipeIngredientParams(params);
-        onAddCustomizedIngredient(ingredient?.name!, params);                // Devuelve los parámetros del ingrediente al padre
-        setShow(false);             // Cierra el modal
+        onAddCustomizedIngredient(ingredient?.name!, params);                   // Devuelve los parámetros del ingrediente al padre
+        setShow(false);                                                         // Cierra el modal
     }
 
     let measureUnitSelectorProps: MeasureUnitSelectorProps = {
@@ -97,9 +95,12 @@ const AddIngredientToRecipeModal = ({show, setShow, ingredient, onHideCallback, 
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={handleAddClick}>
-                    <FormattedMessage id="common.buttons.add" />
-                </Button>
+                {/* Si está logeado muestra botón para añadir ingrediente */}
+                {(isLoggedIn) &&
+                    <Button onClick={(e) => handleAddClick(e)}>
+                        <FormattedMessage id="common.buttons.add" />
+                    </Button>
+                }
             </Modal.Footer>
         </Modal>
     )

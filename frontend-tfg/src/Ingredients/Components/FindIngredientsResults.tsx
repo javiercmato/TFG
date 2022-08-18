@@ -16,14 +16,11 @@ const FindIngredientsResults = () => {
     const handlePreviousPageClick = (event: any) => {
         event.preventDefault();
 
-        console.log('PREVIOUS CLICKED');
         let criteria: SearchCriteria = {
             ...searchCriteria,
             page: searchCriteria.page - 1
         }
         let onSuccess = (block: Block<Ingredient>) => {
-            console.log('PREVIOUS RESULTS:');
-            console.table(block.items)
         };
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);
@@ -36,14 +33,11 @@ const FindIngredientsResults = () => {
     const handleNextPageClick = (event: any) => {
         event.preventDefault();
 
-        console.log('NEXT CLICKED');
         let criteria: SearchCriteria = {
             ...searchCriteria,
             page: searchCriteria.page + 1
         }
         let onSuccess = (block: Block<Ingredient>) => {
-            console.log('NEXT RESULTS:');
-            console.table(block.items)
         };
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);

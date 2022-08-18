@@ -1,7 +1,7 @@
 import {useAppDispatch} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {ErrorDto, Errors} from "../../App";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {Button, Card, Col, Form, FormGroup, Row} from "react-bootstrap";
 import {FormattedMessage, useIntl} from "react-intl";
 import {card, descriptionTextarea} from './styles/createRecipeForm';
@@ -38,13 +38,11 @@ const CreateRecipeForm = () => {
 
     /** Añade los ingredientes recibidos a la receta */
     const addIngredientParamsToRecipe = (ingredientParams: Array<CreateRecipeIngredientParamsDTO>) => {
-        console.log("Current added ingredients to recipe:", ingredientParams);
         setRecipeIngredientsParams(ingredientParams);
     }
 
     /** Elimina un ingrediente de la receta */
     const removeIngredientFromRecipe = (ingredientID: string) => {
-        console.log("Removing ingredient with ID ", ingredientID, " from recipe");
         setRecipeIngredientsParams((list) => list.filter(
             (ing) => ing.ingredientID !== ingredientID
         ));
@@ -58,10 +56,13 @@ const CreateRecipeForm = () => {
 
 
     let ingredientsFormProps: RecipeIngredientsFormProps = {
+        ingredientParams: recipeIngredientsParams,
         onAddIngredientParams: addIngredientParamsToRecipe,
         onRemoveIngredientParams: removeIngredientFromRecipe,
     }
 
+
+    useEffect( () => {}, [recipeIngredientsParams]);
 
     return (
         <div>

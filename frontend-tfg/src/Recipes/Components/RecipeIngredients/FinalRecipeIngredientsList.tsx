@@ -57,8 +57,8 @@ const FinalRecipeIngredientsList = ({items, onRemoveItemCallback}: Props) => {
             </thead>
 
             <tbody>
-                {items.map((item: DisplayCustomIngredient) =>
-                    <tr key={item.ingredientID}>
+                {items.map((item: DisplayCustomIngredient, index: number) =>
+                    <tr key={index}>
                         <td>
                             {item.ingredientName}
                         </td>
