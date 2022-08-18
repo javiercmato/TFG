@@ -1,6 +1,6 @@
 import {CSSProperties} from "react";
 
-export const cardHeader: CSSProperties = {
+export const card: CSSProperties = {
     textAlign: "center",
 }
 

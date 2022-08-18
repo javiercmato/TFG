@@ -1,13 +1,17 @@
 import {useAppDispatch} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {ErrorDto, Errors} from "../../App";
-import {ChangeEvent, FormEvent, useState} from "react";
-import {Card, Col, Form, FormGroup, Row} from "react-bootstrap";
+import {ChangeEvent, useState} from "react";
+import {Button, Card, Col, Form, FormGroup, Row} from "react-bootstrap";
 import {FormattedMessage, useIntl} from "react-intl";
-import {cardHeader, descriptionTextarea} from './styles/createRecipeForm';
-import {RecipeIngredient, RecipePicture, RecipeStep} from "../Domain";
+import {card, descriptionTextarea} from './styles/createRecipeForm';
 import CategorySelector from "./CategorySelector";
-import RecipeIngredientsForm from "./RecipeIngredientsForm";
+import RecipeIngredientsForm, {RecipeIngredientsFormProps} from "./RecipeIngredients/RecipeIngredientsForm";
+import {
+    CreateRecipeIngredientParamsDTO,
+    CreateRecipePictureParamsDTO,
+    CreateRecipeStepParamsDTO
+} from "../Infrastructure";
 
 
 const CreateRecipeForm = () => {
@@ -20,9 +24,9 @@ const CreateRecipeForm = () => {
     const [duration, setDuration] = useState<number>(0);
     const [diners, setDiners] = useState<number>(0);
     const [categoryID, setCategoryID] = useState<string>('');
-    const [recipeSteps, setRecipeSteps] = useState<Array<RecipeStep>>([]);
-    const [recipeIngredients, setRecipeIngredients] = useState<Array<RecipeIngredient>>([]);
-    const [recipePictures, setRecipePictures] = useState<Nullable<Array<RecipePicture>>>(null);
+    const [recipeIngredientsParams, setRecipeIngredientsParams] = useState<Array<CreateRecipeIngredientParamsDTO>>([]);
+    const [recipeStepsParams, setRecipeStepsParams] = useState<Array<CreateRecipeStepParamsDTO>>([]);
+    const [recipePicturesParams, setRecipePicturesParams] = useState<Nullable<Array<CreateRecipePictureParamsDTO>>>(null);
 
     let formRef: HTMLFormElement;
 
@@ -32,9 +36,32 @@ const CreateRecipeForm = () => {
         setCategoryID(e.target.value);
     }
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-
+    /** Añade los ingredientes recibidos a la receta */
+    const addIngredientParamsToRecipe = (ingredientParams: Array<CreateRecipeIngredientParamsDTO>) => {
+        console.log("Current added ingredients to recipe:", ingredientParams);
+        setRecipeIngredientsParams(ingredientParams);
     }
+
+    /** Elimina un ingrediente de la receta */
+    const removeIngredientFromRecipe = (ingredientID: string) => {
+        console.log("Removing ingredient with ID ", ingredientID, " from recipe");
+        setRecipeIngredientsParams((list) => list.filter(
+            (ing) => ing.ingredientID !== ingredientID
+        ));
+    }
+
+
+    const handleSubmit = (e: any) => {
+        console.log("Ingredients currently added to recipe");
+        console.table(recipeIngredientsParams);
+    }
+
+
+    let ingredientsFormProps: RecipeIngredientsFormProps = {
+        onAddIngredientParams: addIngredientParamsToRecipe,
+        onRemoveIngredientParams: removeIngredientFromRecipe,
+    }
+
 
     return (
         <div>
@@ -43,8 +70,8 @@ const CreateRecipeForm = () => {
                 onCloseCallback={() => setBackendErrors(null)}
             />
 
-            <Card bg="light" border="light">
-                <Card.Header style={cardHeader}>
+            <Card bg="light" border="light" style={card}>
+                <Card.Header>
                     <h4>
                         <FormattedMessage id="recipes.components.CreateRecipeForm.title" />
                     </h4>
@@ -131,12 +158,18 @@ const CreateRecipeForm = () => {
 
                         {/* Ingredientes de la receta */}
                         <Row>
-                            <RecipeIngredientsForm />
+                            <RecipeIngredientsForm {...ingredientsFormProps} />
                         </Row>
 
 
                     {/*</Form>*/}
                 </Card.Body>
+
+                <Card.Footer>
+                    <Button onClick={handleSubmit} >
+                        <FormattedMessage id="common.buttons.create" />
+                    </Button>
+                </Card.Footer>
             </Card>
         </div>
     )

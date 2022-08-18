@@ -18,6 +18,7 @@ const translations = {
     'common.buttons.previous': 'Previous',
     'common.buttons.next': 'Next',
     'common.buttons.add': 'Add',
+    'common.buttons.remove': 'remove',
 
 
     'common.validation.mandatoryField': 'Mandatory field',
@@ -36,6 +37,7 @@ const translations = {
     'common.fields.measureUnit': 'Measure unit',
     'common.fields.description': 'Description',
     'common.fields.ingredients': 'Ingredients',
+    'common.fields.ingredient': 'Ingredient',
     'common.fields.quantity': 'Quantity',
 
 

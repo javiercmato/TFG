@@ -1,21 +1,22 @@
 import {Alert, Button, Col, Container, FormControl, FormGroup, FormLabel, Modal, Row} from "react-bootstrap";
 import {useState} from "react";
 import {FormattedMessage, useIntl} from "react-intl";
-import {Ingredient, MeasureUnitSelector, MeasureUnitSelectorProps} from "../../Ingredients";
-import {useAppSelector} from "../../store";
-import {userRedux} from "../../Users";
-import {modalHeader} from "./styles/addIngredientToRecipeModal";
-import {CreateRecipeIngredientParamsDTO} from "../Infrastructure";
+import {Ingredient, MeasureUnitSelector, MeasureUnitSelectorProps} from "../../../Ingredients";
+import {useAppSelector} from "../../../store";
+import {userRedux} from "../../../Users";
+import {modalHeader} from "../styles/addIngredientToRecipeModal";
+import {CreateRecipeIngredientParamsDTO} from "../../Infrastructure";
 
 
 interface Props {
     show: boolean,
-    ingredient?: Ingredient,
+    setShow: any,
+    ingredient: Nullable<Ingredient>,
     onHideCallback: any,
-    onAddIngredientCallback: any,
+    onAddCustomizedIngredient: (ingredientName: string, params: CreateRecipeIngredientParamsDTO) => void,
 }
 
-const AddIngredientToRecipeModal = ({show, ingredient, onHideCallback, onAddIngredientCallback}: Props) => {
+const AddIngredientToRecipeModal = ({show, setShow, ingredient, onHideCallback, onAddCustomizedIngredient}: Props) => {
     const intl = useIntl();
     const [quantity, setQuantity] = useState<string>('');
     const [measureUnit, setMeasureUnit] = useState<string>('');
@@ -23,19 +24,22 @@ const AddIngredientToRecipeModal = ({show, ingredient, onHideCallback, onAddIngr
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
 
 
+    const handleAddClick = (e: any) => {
+        e.preventDefault();
+
+        // Crea los parámetros para añadir ingrediente a la receta y se los pasa al padre
+        const params: CreateRecipeIngredientParamsDTO = {
+            ingredientID: ingredient?.id!,
+            quantity: quantity,
+            measureUnit: measureUnit,
+        }
+        setRecipeIngredientParams(params);
+        onAddCustomizedIngredient(ingredient?.name!, params);                // Devuelve los parámetros del ingrediente al padre
+        setShow(false);             // Cierra el modal
+    }
 
     let measureUnitSelectorProps: MeasureUnitSelectorProps = {
         onChangeCallback: (e: any) => setMeasureUnit(e.target.value),
-    }
-
-    const onAddIngredientClick = () => {
-        let params: CreateRecipeIngredientParamsDTO = {
-            ingredientID: ingredient!.id,
-            quantity: quantity,
-            measureUnit: measureUnit
-        }
-        setRecipeIngredientParams(params);
-        onAddIngredientCallback(params);
     }
 
     return (
@@ -93,7 +97,7 @@ const AddIngredientToRecipeModal = ({show, ingredient, onHideCallback, onAddIngr
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={onAddIngredientClick}>
+                <Button onClick={handleAddClick}>
                     <FormattedMessage id="common.buttons.add" />
                 </Button>
             </Modal.Footer>

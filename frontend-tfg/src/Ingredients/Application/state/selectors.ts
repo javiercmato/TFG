@@ -21,7 +21,7 @@ export const getIngredientTypeName = (types: Array<IngredientType>, id: string) 
 }
 
 
-/* ******************** DATOS DE TIPOS DE INGREDIENTE ******************** */
+/* ******************** DATOS DE UNIDADES DE MEDIDAS ******************** */
 
 export const selectMeasureUnits = (state: RootState) : Array<string> => getModuleState(state).measures;
 
@@ -33,3 +33,12 @@ export const getIngredientSearch = (state: RootState) : Search<Ingredient> => ge
 export const selectSearchCriteria = (state: RootState) : SearchCriteria => getIngredientSearch(state).criteria;
 
 export const selectSearchResultBlock = (state: RootState) : Nullable<Block<Ingredient>> => getIngredientSearch(state).result;
+
+export const selectIngredientName = (ingredients: Array<Ingredient>, id: string) => {
+    if (!ingredients) return '';
+
+    const ingredient = ingredients.find((item) => item.id === id);
+    if (!ingredient) return '';
+
+    return ingredient.name;
+}

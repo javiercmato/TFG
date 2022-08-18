@@ -1,13 +1,13 @@
 import {FormattedMessage, useIntl} from "react-intl";
-import {useAppDispatch, useAppSelector} from "../../store";
+import {useAppDispatch, useAppSelector} from "../../../store";
 import {ChangeEvent, FormEvent, useState} from "react";
 import {Alert, Button, Col, FormControl, InputGroup, Modal, Row} from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
-import CreateIngredient from "../../Ingredients/Components/CreateIngredient";
-import {findRecipeIngredientTitle} from "./styles/findRecipeIngredient";
-import {SearchCriteria} from "../../App";
-import {ingredientsRedux} from "../../Ingredients";
-import {userRedux} from "../../Users";
+import CreateIngredient from "../../../Ingredients/Components/CreateIngredient";
+import {findRecipeIngredientTitle} from "../styles/findRecipeIngredient";
+import {SearchCriteria} from "../../../App";
+import {ingredientsRedux} from "../../../Ingredients";
+import {userRedux} from "../../../Users";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
@@ -33,7 +33,11 @@ const FindRecipeIngredient = ({} : Props) => {
         }
 
         let onSuccess = () => {};
-        dispatch(ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess));
+        let hasSearchCriteria: boolean = (queryName !== '');
+        let action = (hasSearchCriteria) ?
+            ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess)
+            : ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess);
+        dispatch(action);
     }
 
     return (
@@ -58,10 +62,8 @@ const FindRecipeIngredient = ({} : Props) => {
                 </Col>
 
                 <Col>
-                    <Button>
-                        <Button onClick={() => setShowModal(true)}>
-                            <FormattedMessage id="ingredients.components.CreateIngredient.title" />
-                        </Button>
+                    <Button onClick={() => setShowModal(true)}>
+                        <FormattedMessage id="ingredients.components.CreateIngredient.title" />
                     </Button>
                 </Col>
             </Row>

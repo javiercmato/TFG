@@ -1,27 +1,22 @@
-import {useAppSelector} from "../../store";
-import {Ingredient, ingredientsRedux} from "../../Ingredients";
-import {Block} from "../../App";
+import {useAppSelector} from "../../../store";
+import {Ingredient, ingredientsRedux} from "../../../Ingredients";
+import {Block} from "../../../App";
 import {Alert, Button, Table} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
-import {tableContent} from "./styles/addRecipeIngredient";
+import {tableContent} from "../styles/addRecipeIngredient";
 import AddIngredientToRecipeModal, {AddIngredientToRecipeModalProps} from "./AddIngredientToRecipeModal";
 import {useState} from "react";
+import {CreateRecipeIngredientParamsDTO} from "../../Infrastructure";
 
 interface Props {
-    onAddIngredientCallback: any
+    onAddCustomizedIngredientCallback: (ingredientName: string, params: CreateRecipeIngredientParamsDTO) => void,
 }
 
-const AddRecipeIngredient = ({onAddIngredientCallback}: Props) => {
+const AddRecipeIngredient = ({onAddCustomizedIngredientCallback}: Props) => {
     const ingredientsBlock : Block<Ingredient> = useAppSelector(ingredientsRedux.selectors.selectSearchResultBlock)!;
     const [showModal, setShowModal] = useState<boolean>(false);
-    const [selectedIngredient, setSelectedIngredient] = useState<Ingredient>();
+    const [selectedIngredient, setSelectedIngredient] = useState<Nullable<Ingredient>>(null);
 
-    let addIngredientProps: AddIngredientToRecipeModalProps = {
-        show: showModal,
-        ingredient: selectedIngredient,
-        onHideCallback: () => setShowModal(false),
-        onAddIngredientCallback: onAddIngredientCallback
-    }
 
 
     const handleAddClick = (ingredient: Ingredient): any => {
@@ -33,6 +28,13 @@ const AddRecipeIngredient = ({onAddIngredientCallback}: Props) => {
     }
 
 
+    let addIngredientProps: AddIngredientToRecipeModalProps = {
+        show: showModal,
+        setShow: setShowModal,
+        ingredient: selectedIngredient,
+        onHideCallback: () => setShowModal(false),
+        onAddCustomizedIngredient: onAddCustomizedIngredientCallback,
+    }
 
 
     if (ingredientsBlock === null || ingredientsBlock.itemsCount === 0) {
