@@ -1,7 +1,7 @@
-import {useAppDispatch} from "../../store";
+import {useAppDispatch, useAppSelector} from "../../store";
 import {useNavigate} from "react-router-dom";
 import {ErrorDto, Errors} from "../../App";
-import {ChangeEvent, useEffect, useState} from "react";
+import {ChangeEvent, FormEvent, useState} from "react";
 import {Button, Card, Col, Form, FormGroup, Row} from "react-bootstrap";
 import {FormattedMessage, useIntl} from "react-intl";
 import {card, descriptionTextarea} from './styles/createRecipeForm';
@@ -9,9 +9,12 @@ import CategorySelector from "./CategorySelector";
 import RecipeIngredientsForm, {RecipeIngredientsFormProps} from "./RecipeIngredients/RecipeIngredientsForm";
 import {
     CreateRecipeIngredientParamsDTO,
+    CreateRecipeParamsDTO,
     CreateRecipePictureParamsDTO,
     CreateRecipeStepParamsDTO
 } from "../Infrastructure";
+import RecipePicturesForm, {RecipePicturesFormProps} from "./RecipePicturesForm";
+import {userRedux} from "../../Users";
 
 
 const CreateRecipeForm = () => {
@@ -27,7 +30,7 @@ const CreateRecipeForm = () => {
     const [recipeIngredientsParams, setRecipeIngredientsParams] = useState<Array<CreateRecipeIngredientParamsDTO>>([]);
     const [recipeStepsParams, setRecipeStepsParams] = useState<Array<CreateRecipeStepParamsDTO>>([]);
     const [recipePicturesParams, setRecipePicturesParams] = useState<Nullable<Array<CreateRecipePictureParamsDTO>>>(null);
-
+    const currentUserID = useAppSelector(userRedux.selectors.selectUserID);
     let formRef: HTMLFormElement;
 
     const handleCategorySelectorChange = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -48,10 +51,27 @@ const CreateRecipeForm = () => {
         ));
     }
 
+    const addPictureParamsToRecipe = (pictureParams: Array<CreateRecipePictureParamsDTO>) => {
+        setRecipePicturesParams(pictureParams);
+        console.table(pictureParams);
+    }
+
 
     const handleSubmit = (e: any) => {
-        console.log("Ingredients currently added to recipe");
-        console.table(recipeIngredientsParams);
+        e.preventDefault();
+
+        let recipe: CreateRecipeParamsDTO = {
+            name: name,
+            description: description,
+            diners: diners,
+            duration: duration,
+            ingredients: recipeIngredientsParams,
+            pictures: recipePicturesParams,
+            steps: recipeStepsParams,
+            categoryID: categoryID,
+            authorID: currentUserID,
+        }
+        console.log("Current recipe data: ", recipe);
     }
 
 
@@ -61,8 +81,10 @@ const CreateRecipeForm = () => {
         onRemoveIngredientParams: removeIngredientFromRecipe,
     }
 
+    let picturesFormProps: RecipePicturesFormProps = {
+        onUploadCallback: addPictureParamsToRecipe,
+    }
 
-    useEffect( () => {}, [recipeIngredientsParams]);
 
     return (
         <div>
@@ -79,10 +101,10 @@ const CreateRecipeForm = () => {
                 </Card.Header>
 
                 <Card.Body>
-                    {/*<Form*/}
-                    {/*    ref={(node: HTMLFormElement) => {formRef = node}}*/}
-                    {/*    onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e)}*/}
-                    {/*>*/}
+                    <Form
+                        ref={(node: HTMLFormElement) => {formRef = node}}
+                        onSubmit={(e: FormEvent<HTMLFormElement>) => handleSubmit(e)}
+                    >
                         {/* Nombre */}
                         <Row>
                             <FormGroup>
@@ -159,11 +181,18 @@ const CreateRecipeForm = () => {
 
                         {/* Ingredientes de la receta */}
                         <Row>
+                            <h5>
+                                <FormattedMessage id="common.fields.ingredients" />
+                            </h5>
                             <RecipeIngredientsForm {...ingredientsFormProps} />
                         </Row>
 
+                        {/* Imágenes de la receta */}
+                        <Row>
+                            <RecipePicturesForm {...picturesFormProps} />
+                        </Row>
 
-                    {/*</Form>*/}
+                    </Form>
                 </Card.Body>
 
                 <Card.Footer>

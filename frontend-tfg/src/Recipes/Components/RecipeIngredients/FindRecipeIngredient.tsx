@@ -11,11 +11,8 @@ import {userRedux} from "../../../Users";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
-interface Props {
 
-}
-
-const FindRecipeIngredient = ({} : Props) => {
+const FindRecipeIngredient = () => {
     const dispatch = useAppDispatch();
     const intl = useIntl();
     const [queryName, setQueryName] = useState<string>('');         // Nombre que se usará para la búsqueda
@@ -43,8 +40,6 @@ const FindRecipeIngredient = ({} : Props) => {
     return (
         <>
             <Row style={findRecipeIngredientTitle}>
-                <h4><FormattedMessage id="common.fields.ingredients" /></h4>
-
                 <Col>
                     <InputGroup>
                         <FormControl
