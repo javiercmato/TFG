@@ -5,19 +5,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.UserSummaryDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Data
 @NoArgsConstructor
-public class RecipeDTO {
+public class RecipeDetailsDTO {
     @NotNull
     private UUID id;
     
@@ -30,7 +32,6 @@ public class RecipeDTO {
     @DateTimeFormat(iso = ISO.DATE_TIME)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @PastOrPresent
     private LocalDateTime creationDate;
     
     @NotNull
@@ -41,13 +42,13 @@ public class RecipeDTO {
     @JsonProperty(value = "isBannedByAdmin")
     private boolean isBannedByAdmin;
     
-    private UUID authorID;
-    
     private UUID categoryID;
+    
+    private UserSummaryDTO author;
     
     private List<RecipeIngredientDTO> ingredients;
     
-    private List<RecipePictureDTO> pictures;
-    
     private List<RecipeStepDTO> steps;
+    
+    private List<RecipePictureDTO> pictures;
 }

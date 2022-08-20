@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.recipes.infrastructure;
 
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.UserSummaryDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -54,6 +55,53 @@ public class RecipeDTOUnitTest {
                 () -> assertEquals(diners, dto.getDiners()),
                 () -> assertEquals(isBannedByAdmin, dto.isBannedByAdmin()),
                 () -> assertEquals(authorID, dto.getAuthorID()),
+                () -> assertEquals(categoryID, dto.getCategoryID()),
+                () -> assertEquals(recipeIngredients, dto.getIngredients()),
+                () -> assertEquals(recipePictures, dto.getPictures()),
+                () -> assertEquals(recipeSteps, dto.getSteps())
+        );
+    }
+    
+    @Test
+    void testRecipeDetailsDTO() {
+        // Crear datos de prueba
+        UUID recipeID = UUID.randomUUID();
+        LocalDateTime creationDate = LocalDateTime.now();
+        long duration = 10;
+        int diners = 2;
+        boolean isBannedByAdmin = false;
+        UUID categoryID = UUID.randomUUID();
+        UUID authorID = UUID.randomUUID();
+        UserSummaryDTO author = new UserSummaryDTO(authorID, DEFAULT_NAME, DEFAULT_NICKNAME);
+        List<RecipeIngredientDTO> recipeIngredients = new ArrayList<>();
+        List<RecipeStepDTO> recipeSteps = new ArrayList<>();
+        List<RecipePictureDTO> recipePictures = new ArrayList<>();
+        
+        // Ejecutar código
+        RecipeDetailsDTO dto = new RecipeDetailsDTO();
+        dto.setId(recipeID);
+        dto.setName(DEFAULT_RECIPE_NAME);
+        dto.setDescription(DEFAULT_RECIPE_DESCRIPTION);
+        dto.setCreationDate(creationDate);
+        dto.setDuration(duration);
+        dto.setDiners(diners);
+        dto.setBannedByAdmin(isBannedByAdmin);
+        dto.setCategoryID(categoryID);
+        dto.setAuthor(author);
+        dto.setIngredients(recipeIngredients);
+        dto.setSteps(recipeSteps);
+        dto.setPictures(recipePictures);
+        
+        // Comprobar resultados
+        assertAll(
+                () -> assertEquals(recipeID, dto.getId()),
+                () -> assertEquals(DEFAULT_RECIPE_NAME, dto.getName()),
+                () -> assertEquals(DEFAULT_RECIPE_DESCRIPTION, dto.getDescription()),
+                () -> assertEquals(creationDate, dto.getCreationDate()),
+                () -> assertEquals(duration, dto.getDuration()),
+                () -> assertEquals(diners, dto.getDiners()),
+                () -> assertEquals(isBannedByAdmin, dto.isBannedByAdmin()),
+                () -> assertEquals(author, dto.getAuthor()),
                 () -> assertEquals(categoryID, dto.getCategoryID()),
                 () -> assertEquals(recipeIngredients, dto.getIngredients()),
                 () -> assertEquals(recipePictures, dto.getPictures()),

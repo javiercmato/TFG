@@ -96,7 +96,14 @@ public class RecipeController {
         return RecipeConversor.toRecipeDTO(recipe);
     }
     
-    
+    @GetMapping(path = "/{recipeID}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RecipeDetailsDTO getRecipeDetails(@PathVariable("recipeID") UUID recipeID) throws EntityNotFoundException {
+        // Llamada al servicio
+        Recipe recipe = recipeService.getRecipeDetails(recipeID);
+        
+        // Generar respuesta
+        return RecipeConversor.toRecipeDetailsDTO(recipe);
+    }
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
