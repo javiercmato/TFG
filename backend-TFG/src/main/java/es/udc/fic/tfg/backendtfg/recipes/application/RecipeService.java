@@ -37,4 +37,12 @@ public interface RecipeService {
      * @throws EntityNotFoundException No se encuentra al usuario o algún ingrediente
      */
     Recipe createRecipe(CreateRecipeParamsDTO recipeParams) throws EmptyRecipeStepsListException, EntityNotFoundException;
+    
+    /**
+     * Recupera la información de una receta.
+     * @param recipeID ID de la receta a buscar
+     * @return Receta encontrada
+     * @throws EntityNotFoundException No se encuentra la receta
+     */
+    Recipe getRecipeDetails(UUID recipeID) throws EntityNotFoundException;
 }

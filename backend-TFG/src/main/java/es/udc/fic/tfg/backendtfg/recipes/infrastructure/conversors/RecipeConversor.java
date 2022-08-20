@@ -9,6 +9,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor.toUserSummaryDTO;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RecipeConversor {
     /* ******************** Convertir a DTO ******************** */
@@ -42,6 +44,24 @@ public class RecipeConversor {
         dto.setBannedByAdmin(entity.isBannedByAdmin());
         dto.setAuthorID(entity.getAuthor().getId());
         dto.setCategoryID(entity.getCategory().getId());
+        dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
+        dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
+        dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
+        
+        return dto;
+    }
+    
+    public static RecipeDetailsDTO toRecipeDetailsDTO(Recipe entity) {
+        RecipeDetailsDTO dto = new RecipeDetailsDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setCreationDate(entity.getCreationDate());
+        dto.setDuration(entity.getDuration());
+        dto.setDiners(entity.getDiners());
+        dto.setBannedByAdmin(entity.isBannedByAdmin());
+        dto.setCategoryID(entity.getCategory().getId());
+        dto.setAuthor(toUserSummaryDTO(entity.getAuthor()));
         dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
         dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
