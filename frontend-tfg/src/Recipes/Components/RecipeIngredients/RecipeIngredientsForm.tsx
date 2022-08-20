@@ -7,6 +7,7 @@ import FinalRecipeIngredientsList, {
 } from "./FinalRecipeIngredientsList";
 import {CreateRecipeIngredientParamsDTO} from "../../Infrastructure";
 import {useState} from "react";
+import {FormattedMessage} from "react-intl";
 
 /** Datos que se mostrarán en la lista de ingredientes añadidos a la receta */
 interface RecipeIngredientDisplayData {
@@ -37,7 +38,7 @@ const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemov
             measureUnit: params.measureUnit,
             ingredientName: ingredientName,
         }
-        setDisplayableItems((prevState) => [...displayableItems, item]);
+        setDisplayableItems( [...displayableItems, item]);
 
 
         // 2) Crear y añadir los datos del ingrediente añadido para poder visualizarlo
@@ -77,6 +78,9 @@ const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemov
 
                 {/* Visualizar ingredientes a añadir a la receta*/}
                 <Col>
+                    <h4>
+                        <FormattedMessage id="common.results" />
+                    </h4>
                     <FinalRecipeIngredientsList {...finalRecipeIngredientsListProps} />
                 </Col>
             </Row>

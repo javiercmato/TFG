@@ -21,6 +21,7 @@ const translations = {
     'common.buttons.remove': 'Retirar',
 
 
+
     'common.validation.mandatoryField': 'Campo obligatorio',
     'common.validation.email': 'Introduzca un correo electrónico válido',
     'common.validation.passwordsDoNotMatch': 'Contraseñas no coinciden',
@@ -40,6 +41,8 @@ const translations = {
     'common.fields.ingredients': 'Ingredientes',
     'common.fields.ingredient': 'Ingrediente',
     'common.fields.quantity': 'Cantidad',
+    'common.fields.pictures': 'Imágenes',
+    'common.fields.steps': 'Pasos',
 
 
     'common.alerts.noResults': 'Sin resultados',
@@ -98,6 +101,8 @@ const translations = {
     'recipes.components.AddIngredientToRecipeModal.title': 'Añadir ingrediente a receta',
     'recipes.components.AddIngredientToRecipeModal.quantity.placeholder': 'P. ej.: 200',
     'recipes.components.RecipeIngredientsSelection.title': 'Ingredientes seleccionados',
+    'recipes.components.CreateStepsForm.title': 'Pasos de preparación:',
+    'recipes.components.CreateStepsForm.placeholder': 'P. ej.: Poner a hervir en una olla el agua con sal',
 
 
 }

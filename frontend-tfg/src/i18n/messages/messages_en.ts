@@ -39,6 +39,9 @@ const translations = {
     'common.fields.ingredients': 'Ingredients',
     'common.fields.ingredient': 'Ingredient',
     'common.fields.quantity': 'Quantity',
+    'common.fields.pictures': 'Pictures',
+    'common.fields.steps': 'Steps',
+
 
 
     'common.alerts.noResults': 'No results found',

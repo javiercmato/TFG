@@ -30,7 +30,7 @@ export const createRecipe = (recipe: CreateRecipeParamsDTO,
                              onSuccessCallback: CallbackFunction,
                              onErrorCallback: CallbackFunction) : void => {
     // Configurar petición al servicio
-    const endpoint = RECIPES_ENDPOINT + '/recipes/';
+    const endpoint = RECIPES_ENDPOINT + '/';
     const requestConfig = configFetchParameters('POST', recipe);
 
     // Realizar la petición

@@ -1,4 +1,3 @@
-export type {FindRecipeIngredientProps} from './RecipeIngredients/FindRecipeIngredient'
 export type {AddRecipeIngredientProps} from './RecipeIngredients/AddRecipeIngredient'
 
 

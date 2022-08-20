@@ -15,6 +15,9 @@ import {
 } from "../Infrastructure";
 import RecipePicturesForm, {RecipePicturesFormProps} from "./RecipePicturesForm";
 import {userRedux} from "../../Users";
+import CreateStepsForm, {CreateStepsFormProps} from "./CreateStepsForm";
+import {Recipe} from "../Domain";
+import {recipesRedux} from "../Application";
 
 
 const CreateRecipeForm = () => {
@@ -53,25 +56,48 @@ const CreateRecipeForm = () => {
 
     const addPictureParamsToRecipe = (pictureParams: Array<CreateRecipePictureParamsDTO>) => {
         setRecipePicturesParams(pictureParams);
-        console.table(pictureParams);
+    }
+
+    const addStepParamsToRecipe = (stepParams: Array<CreateRecipeStepParamsDTO>) => {
+        setRecipeStepsParams(stepParams);
+    }
+
+    const removeStepParamsFromRecipe = (stepIndex: number) => {
+        setRecipeStepsParams((list) => list.filter(
+            (item) => item.step !== stepIndex
+        ));
     }
 
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
-        let recipe: CreateRecipeParamsDTO = {
-            name: name,
-            description: description,
-            diners: diners,
-            duration: duration,
-            ingredients: recipeIngredientsParams,
-            pictures: recipePicturesParams,
-            steps: recipeStepsParams,
-            categoryID: categoryID,
-            authorID: currentUserID,
+        if (formRef.checkValidity()) {
+            let recipeParams: CreateRecipeParamsDTO = {
+                name: name,
+                description: description,
+                diners: diners,
+                duration: duration,
+                ingredients: recipeIngredientsParams,
+                pictures: recipePicturesParams,
+                steps: recipeStepsParams,
+                categoryID: categoryID,
+                authorID: currentUserID,
+            }
+
+            // Enviar a la página para ver la receta creada
+            let onSuccess = (recipe: Recipe) => navigate(`/recipes/${recipe.id}`);
+
+            let onError = (error: ErrorDto) => {
+                setBackendErrors(error);
+            }
+
+            dispatch(recipesRedux.actions.createRecipeAsyncAction(recipeParams, onSuccess, onError));
+        } else {
+            setBackendErrors(null);
+            formRef.classList.add('was-validated');
         }
-        console.log("Current recipe data: ", recipe);
+
     }
 
 
@@ -83,6 +109,11 @@ const CreateRecipeForm = () => {
 
     let picturesFormProps: RecipePicturesFormProps = {
         onUploadCallback: addPictureParamsToRecipe,
+    }
+
+    let stepsFormProps: CreateStepsFormProps = {
+        onAddCallback: addStepParamsToRecipe,
+        onRemoveCallback: removeStepParamsFromRecipe,
     }
 
 
@@ -129,7 +160,7 @@ const CreateRecipeForm = () => {
                                 <Form.Label>
                                     <b><FormattedMessage id="common.fields.description" /></b>
                                 </Form.Label>
-                                <Form.Text as="textarea" rows={2} cols={150}
+                                <Form.Control as="textarea" rows={2} cols={150}
                                     value={description}
                                     onChange={(e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
                                     placeholder={intl.formatMessage({id: 'recipes.components.CreateRecipeForm.description.placeholder'})}
@@ -189,9 +220,19 @@ const CreateRecipeForm = () => {
 
                         {/* Imágenes de la receta */}
                         <Row>
+                            <h5>
+                                <FormattedMessage id="common.fields.pictures" />
+                            </h5>
                             <RecipePicturesForm {...picturesFormProps} />
                         </Row>
 
+                        {/* Pasos de la receta */}
+                        <Row>
+                            <h5>
+                                <FormattedMessage id="recipes.components.CreateStepsForm.title" />
+                            </h5>
+                            <CreateStepsForm {...stepsFormProps} />
+                        </Row>
                     </Form>
                 </Card.Body>
 

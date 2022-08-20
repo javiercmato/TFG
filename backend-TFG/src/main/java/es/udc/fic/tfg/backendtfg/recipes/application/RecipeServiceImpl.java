@@ -164,16 +164,22 @@ public class RecipeServiceImpl implements RecipeService {
     /** Registra una lista de imágenes y se las asigna a la receta recibida */
     private void createRecipePictures(List<CreateRecipePictureParamsDTO> pictureParams, Recipe recipe) {
         // Para cada item recibido, crea una imagen con los datos recibidos
-        pictureParams.stream()
-                     .forEach((item) -> {
-                         byte[] pictureBytes = Base64.getDecoder().decode(item.getData());                   // Decodificar imágen recibida
-                         RecipePictureID pictureID = new RecipePictureID(recipe.getId(), item.getOrder());
-                         RecipePicture picture = new RecipePicture(pictureID, pictureBytes, recipe);
-                         
-                         // Guardar imagen y asignárselo a la receta
-                         picture = pictureRepo.save(picture);
-                         recipe.addPicture(picture);
-                     });
+        pictureParams.forEach((item) -> {
+            // Separa la cabecera "data:image/*" de la imagen en Base 64 si la tiene
+            String imageB64Data;
+            if (item.getData().contains(",")) {
+                imageB64Data = item.getData().split(",")[1];
+            } else {
+                imageB64Data = item.getData();
+            }
+            byte[] pictureBytes = Base64.getDecoder().decode(imageB64Data);                   // Decodificar imágen recibida
+            RecipePictureID pictureID = new RecipePictureID(recipe.getId(), item.getOrder());
+            RecipePicture picture = new RecipePicture(pictureID, pictureBytes, recipe);
+            
+            // Guardar imagen y asignárselo a la receta
+            picture = pictureRepo.save(picture);
+            recipe.addPicture(picture);
+        });
     }
     
     /** Asigna los ingredientes, junto a sus cantidades y unidades de medida, a la receta recibida.

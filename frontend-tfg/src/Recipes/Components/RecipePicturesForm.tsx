@@ -2,7 +2,7 @@ import {Carousel, Col, Image, Row} from "react-bootstrap";
 import {UploadFileButton} from "../../App";
 import {useEffect, useState} from "react";
 import {CreateRecipePictureParamsDTO} from "../Infrastructure";
-import {carouselPicture} from "./styles/recipePicturesForm";
+import {carouselPicture, carouselRow} from "./styles/recipePicturesForm";
 
 interface Props {
     onUploadCallback: (pictureParams: Array<CreateRecipePictureParamsDTO>) => void;
@@ -51,7 +51,7 @@ const RecipePicturesForm = ({onUploadCallback}: Props) => {
             </Row>
 
             {/* Carousel para mostrar las imágenes */}
-            <Row>
+            <Row style={carouselRow}>
                 <Carousel>
                     {pictureParams.map((picture) =>
                         <Carousel.Item key={picture.order}>

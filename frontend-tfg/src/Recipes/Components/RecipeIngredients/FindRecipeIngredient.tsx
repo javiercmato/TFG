@@ -81,5 +81,4 @@ const FindRecipeIngredient = () => {
     )
 }
 
-export type {Props as FindRecipeIngredientProps};
 export default FindRecipeIngredient;
