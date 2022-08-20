@@ -17,6 +17,9 @@ const translations = {
     'common.buttons.clear': 'Limpiar',
     'common.buttons.previous': 'Anterior',
     'common.buttons.next': 'Siguiente',
+    'common.buttons.add': 'Añadir',
+    'common.buttons.remove': 'Retirar',
+
 
 
     'common.validation.mandatoryField': 'Campo obligatorio',
@@ -33,10 +36,17 @@ const translations = {
     'common.fields.avatar': 'Foto de perfil',
     'common.fields.ingredientType': 'Tipo de ingrediente',
     'common.fields.category': 'Categoría',
+    'common.fields.measureUnit': 'Unidad de medida',
+    'common.fields.description': 'Descripción',
+    'common.fields.ingredients': 'Ingredientes',
+    'common.fields.ingredient': 'Ingrediente',
+    'common.fields.quantity': 'Cantidad',
+    'common.fields.pictures': 'Imágenes',
+    'common.fields.steps': 'Pasos',
 
 
     'common.alerts.noResults': 'Sin resultados',
-
+    'common.alerts.notLoggedIn': 'No puedes realizar esta operación sin estar registrado',
 
     /* ******************** App ******************** */
     'app.components.ErrorDialog.title' : 'Error',
@@ -77,9 +87,23 @@ const translations = {
     'ingredients.components.CreateIngredient.placeholder': 'P. ej.: "Zanahoria"',
     'ingredients.components.FindIngredients.findIngredients': 'Buscar ingredientes',
 
+
     /* ******************** Recipes ******************** */
     'recipes.components.CreateCategory.title': 'Crear nueva categoría',
     'recipes.components.CreateCategory.placeholder': 'P. ej.: "Cócteles"',
+    'recipes.components.CreateRecipeForm.title': 'Crear nueva receta',
+    'recipes.components.CreateRecipeForm.title.placeholder': 'P. ej.: "Macarrones con tomate y atún"',
+    'recipes.components.CreateRecipeForm.description.placeholder': 'P. ej.: "Pláto rápido y sencillo de preparar, fácil de llevar a cualquier sitio"',
+    'recipes.components.CreateRecipeForm.duration.title': 'Duración (minutos)',
+    'recipes.components.CreateRecipeForm.duration.placeholder': '15',
+    'recipes.components.CreateRecipeForm.diners.title': 'Raciones',
+    'recipes.components.CreateRecipeForm.diners.placeholder': '2',
+    'recipes.components.AddIngredientToRecipeModal.title': 'Añadir ingrediente a receta',
+    'recipes.components.AddIngredientToRecipeModal.quantity.placeholder': 'P. ej.: 200',
+    'recipes.components.RecipeIngredientsSelection.title': 'Ingredientes seleccionados',
+    'recipes.components.CreateStepsForm.title': 'Pasos de preparación:',
+    'recipes.components.CreateStepsForm.placeholder': 'P. ej.: Poner a hervir en una olla el agua con sal',
+
 
 }
 

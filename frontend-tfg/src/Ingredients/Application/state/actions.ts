@@ -38,6 +38,11 @@ export const clearIngredientsSearchAction = () : IngredientDispatchType => ({
     type: actionTypes.CLEAR_INGREDIENTS_SEARCH,
 })
 
+export const getMeasureUnitsTypesAction = (measureUnits: Array<string>) : IngredientDispatchType => ({
+    type: actionTypes.GET_MEASURE_UNITS,
+    payload: measureUnits
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 
@@ -179,5 +184,26 @@ export const findIngredientsAsyncAction = (criteria: SearchCriteria, onSuccessCa
     // Llamar al servicio y ejecutar los callbacks
     const {type, name, page, pageSize} = criteria;
     ingredientService.findIngredients(name, type, page, pageSize, onSuccess, onError);
+}
+
+export const getMeasureUnitsAsyncAction = (onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (measureUnits: Array<string>) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(getMeasureUnitsTypesAction(measureUnits));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(measureUnits);
+    };
+
+    // Función a ejecutar en caso de error (buscar elementos no produce errores, por eso una función vacía
+    const onError = () => {};
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    ingredientService.getMeasureUnits(onSuccess, onError);
 }
 

@@ -2,6 +2,7 @@ import CreateCategory from "./CreateCategory";
 import {Col, Row} from "react-bootstrap";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
+import {Link} from "react-router-dom";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
@@ -24,7 +25,7 @@ const RecipesPage = () => {
             {/* Columna con la lista de categorías existentes */}
             <Col>
                 <Row>
-                    CATEGORIES LIST
+                    <Link to={"/recipes/create"} >CREAR RECETA</Link>
                 </Row>
             </Col>
         </Row>

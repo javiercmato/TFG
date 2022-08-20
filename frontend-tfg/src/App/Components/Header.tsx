@@ -9,6 +9,7 @@ import {FaHome} from "react-icons/fa";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
 import {headerLink, navbar, navGlobalItem, navItem} from "./styles/header";
+import {Fragment} from "react";
 
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
@@ -71,7 +72,7 @@ const Header = () => {
         >
             <Container>
                 <NavbarBrand>
-                    <Link to="/" style={headerLink}>
+                    <Link to="/" style={headerLink} key={"/"}>
                         <FaHome size="2rem"/>
                     </Link>
                 </NavbarBrand>
@@ -100,14 +101,14 @@ const Header = () => {
                         <Nav className="ms-auto">
                             <NavDropdown id="basic-nav-dropdown" title={nickname} align={"end"}>
                                 {loggedUserActions.map( (action, index) => (
-                                    <>
+                                    <Fragment key={index}>
                                         {(action.isDivided) ? <Dropdown.Divider/> : null}
                                         <NavDropdown.Item id={action.link}>
-                                            <Link to={action.link} style={headerLink} key={index}>
+                                            <Link to={action.link} style={headerLink} >
                                                 <FormattedMessage id={`app.components.Header.userActions.${action.i18nID}`} />
                                             </Link>
                                         </NavDropdown.Item>
-                                    </>
+                                    </Fragment>
                                 ))}
                             </NavDropdown>
                         </Nav>
@@ -115,8 +116,8 @@ const Header = () => {
                         // Elementos a mostrar para un usuario no registrado
                         <Nav className="ms-auto">
                             {nonLoggedUserActions.map( (action, index) => (
-                                <Nav.Item style={navItem} id={action.link}>
-                                    <Link to={action.link} style={headerLink} key={index}>
+                                <Nav.Item style={navItem} id={action.link} key={index}>
+                                    <Link to={action.link} style={headerLink} >
                                         <FormattedMessage id={`app.components.Header.${action.i18nID}`} />
                                     </Link>
                                 </Nav.Item>
