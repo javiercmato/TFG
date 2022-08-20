@@ -11,6 +11,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.controllers.RecipeController;
@@ -143,6 +144,32 @@ public class RecipeControllerTest {
         type.setName(DEFAULT_INGREDIENTTYPE_NAME);
         
         return ingredientTypeRepository.save(type);
+    }
+    
+    /** Registra un ingrediente válido */
+    private Ingredient registerIngredient(String name, UUID ingredientTypeID, UUID authorID) throws Exception {
+        return ingredientService.createIngredient(name, ingredientTypeID, authorID);
+    }
+    
+    
+    /** Registra una receta válida sin ingredientes */
+    private Recipe registerRecipe(UUID authorID, UUID categoryID) throws Exception {
+        // Crear pasos
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        // Crear imágenes
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        String encodedImage = Base64.getEncoder()
+                                    .encodeToString(
+                                            loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION));
+        picturesParams.add(new CreateRecipePictureParamsDTO(1, encodedImage));
+    
+        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(authorID, categoryID);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(Collections.emptyList());
+        
+        return recipeService.createRecipe(paramsDTO);
     }
     
     /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
@@ -523,6 +550,52 @@ public class RecipeControllerTest {
                 CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
                 locale,
                 new Object[] {Ingredient.class.getSimpleName(), NON_EXISTENT_UUID},
+                User.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetRecipeDetails_thenRecipeSummaryDTOIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe createdRecipe = registerRecipe(jwtData.getUserID(), category.getId());
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + createdRecipe.getId().toString();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+        );
+    
+        // Comprobar resultados
+        //Recipe expectedResponse = recipeRepo.findAll().iterator().next();
+        //byte[] encodedResponseBodyContent = this.jsonMapper.writeValueAsBytes(expectedResponse);
+        //RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(createdRecipe);
+        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        //      .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetRecipeDetails_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                    .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
                 User.class
         );
         

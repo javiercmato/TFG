@@ -49,6 +49,22 @@ public class UserDTOUnitTest {
     }
     
     @Test
+    void testUserSummaryDTO() {
+        // Crear datos de prueba
+        UUID id = UUID.randomUUID();
+        
+        // Ejecutar código
+        UserSummaryDTO dto = new UserSummaryDTO(id, DEFAULT_NAME, DEFAULT_NICKNAME);
+        
+        // Comprobar resultados
+        assertAll(
+                () -> assertEquals(id, dto.getUserID()),
+                () -> assertEquals(DEFAULT_NAME, dto.getName()),
+                () -> assertEquals(DEFAULT_NICKNAME, dto.getNickname())
+        );
+    }
+    
+    @Test
     void testSignUpParamsDTO() {
         // Crear datos de prueba
         String avatar = "";
@@ -152,4 +168,5 @@ public class UserDTOUnitTest {
                 () -> assertEquals(newPassword, dto.getNewPassword())
         );
     }
+    
 }
