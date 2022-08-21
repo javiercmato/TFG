@@ -4,7 +4,7 @@
 - [Storing images in Database with SpringBoot and PostgreSQL](https://medium.com/echohub/imageserver-with-spring-boot-postgresql-aec02e5dad9b)
 - [Hibernate Documentation about mapping entities identifiers](https://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-mapping-identifier)
 - [Mapping MANY-TO-MANY relationships with additional attributes](https://thorben-janssen.com/hibernate-tip-many-to-many-association-with-additional-attributes/)
-
+- [Solve the N+1 Query problem using JOIN FETCH](https://medium.com/javarevisited/spring-jpa-when-to-use-join-fetch-a6cec898c4c6)
 
 # Configuración del entorno
 - [Spring Boot Profiles for DEV and PROD Environments](https://mkyong.com/maven/maven-profiles-example/)

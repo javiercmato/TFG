@@ -47,9 +47,7 @@ public class Recipe {
     
     
     /* *************** Asociaciones con otras entidades *************** */
-    @ManyToOne(cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY
-    )
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "author")
     private User author;
     
@@ -60,28 +58,28 @@ public class Recipe {
     
     
     @OneToMany(mappedBy = "recipe",
-            fetch = FetchType.EAGER,
+            //fetch = FetchType.EAGER,
             orphanRemoval = true
     )
-    private List<RecipeStep> steps = new ArrayList<>();
+    private Set<RecipeStep> steps = new HashSet<>();
     
     
     @OneToMany(mappedBy = "recipe",
             orphanRemoval = true
     )
-    private List<RecipePicture> pictures = new ArrayList<>();
+    private Set<RecipePicture> pictures = new HashSet<>();
     
     
     @OneToMany(mappedBy = "recipe",
             orphanRemoval = true
     )
-    private List<RecipeIngredient> ingredients = new ArrayList<>();
+    private Set<RecipeIngredient> ingredients = new HashSet<>();
     
     
     @OneToMany(mappedBy = "recipe",
             orphanRemoval = true
     )
-    private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
+    private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
     
     
     
