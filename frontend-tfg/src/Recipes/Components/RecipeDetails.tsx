@@ -3,17 +3,36 @@ import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Col, Container, FormText, Row} from "react-bootstrap";
-import {RecipeIngredientsList, RecipeIngredientsListProps} from "./index";
+import {Carousel, Col, Container, Image, Row} from "react-bootstrap";
+import {
+    RecipeData,
+    RecipeDataProps,
+    RecipeIngredientsList,
+    RecipeIngredientsListProps,
+    RecipeSteps,
+    RecipeStepsProps
+} from "./index";
+import {userRedux} from "../../Users";
+import {FormattedMessage} from "react-intl";
+import {carouselPicture} from "./styles/recipePicturesForm";
 
 const RecipeDetails = () => {
     const dispatch = useAppDispatch();
     const {recipeID} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const recipeData = useAppSelector(recipesRedux.selectors.selectRecipe);
+    const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
 
     let ingredientsListProps: RecipeIngredientsListProps = {
         ingredients: recipeData?.ingredients!,
+    }
+
+    let recipeDataProps: RecipeDataProps = {
+        recipe: recipeData!,
+    }
+
+    let recipeStepsProps: RecipeStepsProps = {
+        steps: recipeData?.steps!,
     }
 
     // Solicita los datos de la receta cada vez que cambie el ID en la URL
@@ -25,7 +44,9 @@ const RecipeDetails = () => {
         }
 
         dispatch(recipesRedux.actions.getRecipeDetailsAsyncAction(recipeID!, onSuccess, onError));
-    }, [recipeID]);
+    }, [dispatch, recipeID]);
+
+    if (recipeData === null) return <div>NO HAY RECETA</div>
 
     return (
         <div>
@@ -35,46 +56,69 @@ const RecipeDetails = () => {
             />
 
             <Container>
-                <Col>
-                   {/* Información básica de la receta */}
-                   <Row>
-                       <Col md={8}>
-                           {/* Nombre y descripción*/}
-                           <Row>
-                               <h2>{recipeData?.name}</h2>
-                               <FormText className="border border-dark">
-                                   {recipeData?.description}
-                               </FormText>
-                           </Row>
+                {/* Nombre y descripción*/}
+                <Row>
+                    <Col>
+                        <h2>{recipeData?.name}</h2>
+                        <Row>
+                            <span className="border border-dark">
+                                {recipeData?.description}
+                            </span>
+                        </Row>
+                    </Col>
 
-                           {/* Ingredientes */}
-                           <Row>
-                               <RecipeIngredientsList {...ingredientsListProps} />
-                           </Row>
-                       </Col>
+                    {/* Botones para editar y banear receta */}
+                    {(isLoggedIn) &&
+                        <Col md={(isLoggedIn) ? 2: 0}></Col>
+                    }
+                </Row>
 
-                       {/* Categoría, datos, votación y añadir a lista privada */}
-                       <Col md={4}>
+                {/* Información básica de la receta */}
+                <Row>
+                    {/* Ingredientes de la receta */}
+                    <Col>
+                        <h4>
+                            <FormattedMessage id="common.fields.ingredients" />
+                        </h4>
+                        <RecipeIngredientsList {...ingredientsListProps} />
+                    </Col>
 
-                       </Col>
-                   </Row>
+                    {/* Categoría, datos, votación y añadir a lista privada */}
+                    <Col>
+                        <RecipeData {...recipeDataProps} />
+                    </Col>
+                </Row>
 
-                   {/* Pasos de preparación */}
-                   <Row>
-                       PASOS
-                   </Row>
+                {/* Pasos de preparación */}
+                <Row>
+                    <h4>
+                        <FormattedMessage id="common.fields.steps" />
+                    </h4>
+                    <RecipeSteps {...recipeStepsProps} />
+                </Row>
 
-                   {/* Fotos de la receta */}
-                   <Row>
-                       FOTOS
-                   </Row>
+                {/* Fotos de la receta */}
+                <Row>
+                    <h4>
+                        <FormattedMessage id="common.fields.pictures" />
+                    </h4>
+                    <Carousel>
+                        {recipeData.pictures?.map((picture) =>
+                            <Carousel.Item key={picture.order}>
+                                <Image
+                                    src={picture.pictureData}
+                                    style={carouselPicture}
+                                />
+                            </Carousel.Item>
+                        )}
+                    </Carousel>
 
-                   {/* Comentarios */}
-                   <Row>
-                       COMENTARIOS
-                   </Row>
+                </Row>
 
-                </Col>
+                {/* Comentarios */}
+                <Row>
+                    COMENTARIOS
+                </Row>
             </Container>
         </div>
     )
