@@ -13,3 +13,4 @@ export type {CreateCategoryParamsDTO, CreateRecipeParamsDTO, CreateRecipeIngredi
 /* ********** Components ********** */
 export {RecipesPage} from './Components';
 export {CreateRecipeForm} from './Components';
+export {RecipeDetails} from './Components';
