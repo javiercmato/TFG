@@ -43,6 +43,8 @@ const translations = {
     'common.fields.quantity': 'Cantidad',
     'common.fields.pictures': 'Imágenes',
     'common.fields.steps': 'Pasos',
+    'common.fields.minutes': 'minutos',
+    'common.fields.diners': 'raciones',
 
 
     'common.alerts.noResults': 'Sin resultados',

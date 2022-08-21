@@ -41,6 +41,7 @@ const translations = {
     'common.fields.quantity': 'Quantity',
     'common.fields.pictures': 'Pictures',
     'common.fields.steps': 'Steps',
+    'common.fields.minutes': 'minutes',
 
 
 

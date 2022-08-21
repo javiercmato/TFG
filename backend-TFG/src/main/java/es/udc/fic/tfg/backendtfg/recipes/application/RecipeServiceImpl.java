@@ -118,10 +118,11 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeRepo.save(recipe);
     }
     
+    @Transactional(readOnly = true)
     @Override
     public Recipe getRecipeDetails(UUID recipeID) throws EntityNotFoundException {
         // Buscar la receta. Si no existe lanza EntityNotFoundException
-        Optional<Recipe> optionalRecipe = recipeRepo.findById(recipeID);
+        Optional<Recipe> optionalRecipe = recipeRepo.retrieveRecipeDetails(recipeID);
         if (optionalRecipe.isEmpty())
             throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
         

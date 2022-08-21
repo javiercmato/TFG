@@ -5,8 +5,7 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor.toUserSummaryDTO;
@@ -70,19 +69,19 @@ public class RecipeConversor {
     }
     
     /* ******************** Convertir a conjunto de DTO ******************** */
-    public static List<RecipeIngredientDTO> toRecipeIngredientListDTO(List<RecipeIngredient> entityList) {
+    public static List<RecipeIngredientDTO> toRecipeIngredientListDTO(Set<RecipeIngredient> entityList) {
         return entityList.stream()
                          .map(RecipeConversor::toRecipeIngredientDTO)
                          .collect(Collectors.toList());
     }
     
-    public static List<RecipePictureDTO> toRecipePictureListDTO(List<RecipePicture> entityList) {
+    public static List<RecipePictureDTO> toRecipePictureListDTO(Set<RecipePicture> entityList) {
         return entityList.stream()
                          .map(RecipeConversor::toRecipePictureDTO)
                          .collect(Collectors.toList());
     }
     
-    public static List<RecipeStepDTO> toRecipeStepListDTO(List<RecipeStep> entityList) {
+    public static List<RecipeStepDTO> toRecipeStepListDTO(Set<RecipeStep> entityList) {
         return entityList.stream()
                          .map(RecipeConversor::toRecipeStepDTO)
                          .collect(Collectors.toList());

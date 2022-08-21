@@ -25,6 +25,11 @@ export const createRecipeAction = (recipe: Recipe) : RecipeDispatchType => ({
     payload: recipe,
 })
 
+export const getRecipeDetailsAction = (recipe: Recipe) : RecipeDispatchType => ({
+    type: actionTypes.GET_RECIPE_DETAILS,
+    payload: recipe,
+})
+
 
 
 /* ************************* ASYNC ACTIONS ******************** */
@@ -113,4 +118,33 @@ export const createRecipeAsyncAction = (recipe: CreateRecipeParamsDTO,
 
     // Llamar al servicio y ejecutar los callbacks
     recipeService.createRecipe(recipe, onSuccess, onError);
+}
+
+export const getRecipeDetailsAsyncAction = (recipeID: string,
+                                            onSuccessCallback: CallbackFunction,
+                                            onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (recipe: Recipe) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(getRecipeDetailsAction(recipe));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback(recipe);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    recipeService.getRecipeDetails(recipeID, onSuccess, onError);
 }
