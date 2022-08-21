@@ -5,6 +5,7 @@ import {Category, Recipe} from "../../Domain";
 export const CREATE_CATEGORY: string = 'recipes/createCategory';
 export const GET_CATEGORIES: string = 'recipes/findCategories';
 export const CREATE_RECIPE: string = 'recipes/createRecipe';
+export const GET_RECIPE_DETAILS: string = 'recipes/getRecipeDetails';
 
 
 /* ******************** Tipos de las acciones ******************** */
@@ -24,7 +25,13 @@ export interface CreateRecipeActionType {
     payload: Recipe
 }
 
+export interface GetRecipeDetailsActionType {
+    type: string,
+    payload: Recipe
+}
+
 export type RecipeDispatchType = CreateCategoryActionType
     | GetCategoriesActionType
     | CreateRecipeActionType
+    | GetRecipeDetailsActionType
 ;

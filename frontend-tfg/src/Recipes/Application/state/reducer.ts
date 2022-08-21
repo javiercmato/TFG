@@ -1,8 +1,13 @@
 import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
-import {CreateCategoryActionType, GetCategoriesActionType, RecipeDispatchType} from './actionTypes';
+import {
+    CreateCategoryActionType,
+    GetCategoriesActionType,
+    GetRecipeDetailsActionType,
+    RecipeDispatchType
+} from './actionTypes';
 import {initialState, IRecipeState} from "./IRecipeState";
-import {Category} from "../../Domain";
+import {Category, Recipe} from "../../Domain";
 
 
 const categories = (state: Array<Category> = initialState.categories,
@@ -25,9 +30,25 @@ const categories = (state: Array<Category> = initialState.categories,
     }
 }
 
+const recipes = (state: Nullable<Recipe> = initialState.recipe,
+                 action: RecipeDispatchType) : Nullable<Recipe> => {
+    switch (action.type) {
+        case actionTypes.GET_RECIPE_DETAILS: {
+            let payload: Recipe = (action as GetRecipeDetailsActionType).payload;
+
+            return payload;
+        }
+
+        default:
+            return state;
+
+    }
+}
+
 
 const recipesReducer = combineReducers<IRecipeState>({
-    categories: categories
+    categories: categories,
+    recipe: recipes,
 });
 
 export default recipesReducer;

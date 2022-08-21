@@ -36,3 +36,14 @@ export const createRecipe = (recipe: CreateRecipeParamsDTO,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const getRecipeDetails = (recipeID: string,
+                                 onSuccessCallback: CallbackFunction,
+                                 onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = RECIPES_ENDPOINT + `/${recipeID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
