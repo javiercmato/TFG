@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface RecipeRepository extends PagingAndSortingRepository<Recipe, UUID> {
+public interface RecipeRepository extends PagingAndSortingRepository<Recipe, UUID>, CustomizedRecipeRepository {
 
     @Query(
             "SELECT DISTINCT r\n" +

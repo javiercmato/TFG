@@ -1,6 +1,8 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.controllers;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
@@ -105,9 +107,36 @@ public class RecipeController {
         return RecipeConversor.toRecipeDetailsDTO(recipe);
     }
     
+    @GetMapping(
+            path = "find",
+            //params = {"name", "categoryID", "ingredients"},
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<RecipeSummaryDTO> findRecipes(@RequestParam(value = "name", required = false) String name,
+                                                  @RequestParam(value = "categoryID", required = false) UUID categoryID,
+                                                  @RequestParam(value = "ingredientIdList", required = false) List<UUID> ingredientIdList,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        // Llamada al servicio
+        Block<Recipe> recipesBlock = recipeService.findRecipesByCriteria(name, categoryID, ingredientIdList, page, pageSize);
+        
+        // Generar respuesta
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesBlock.getItems());
+        
+        return createBlock(recipeSummaryDTOList, recipesBlock.hasMoreItems(), recipesBlock.getItemsCount());
+        
+    }
+    
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
+    private <T> BlockDTO<T> createBlock(List<T> items, boolean hasMoreItems, int itemsCount) {
+        BlockDTO<T> block = new BlockDTO<>();
+        block.setItems(items);
+        block.setItemsCount(itemsCount);
+        block.setHasMoreItems(hasMoreItems);
     
+        return block;
+    }
     
     
 }

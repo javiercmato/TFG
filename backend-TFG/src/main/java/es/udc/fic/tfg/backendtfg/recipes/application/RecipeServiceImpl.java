@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.recipes.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
@@ -11,6 +12,7 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -130,7 +132,15 @@ public class RecipeServiceImpl implements RecipeService {
         return optionalRecipe.get();
     }
     
-    
+    @Transactional(readOnly = true)
+    @Override
+    public Block<Recipe> findRecipesByCriteria(String name, UUID categoryId, List<UUID> ingredientIDsList, int page, int pageSize) {
+        // Busca las recetas en el repositorio
+        Slice<Recipe> recipeSlice = recipeRepo.findByCriteria(name, categoryId, ingredientIDsList, page, pageSize);
+        
+        // Devuelve resultados
+        return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
+    }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la categoría por el ID recibido */
