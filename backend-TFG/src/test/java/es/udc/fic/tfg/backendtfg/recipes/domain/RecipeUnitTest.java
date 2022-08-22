@@ -30,10 +30,10 @@ public class RecipeUnitTest {
         boolean isBannedByAdmin = false;
         Category category = new Category();
         User author = new User();
-        List<RecipeStep> steps = new ArrayList<>();
-        List<RecipePicture> pictures = new ArrayList<>();
-        List<RecipeIngredient> ingredients = new ArrayList<>();
-        List<PrivateListRecipe> privateLists = new ArrayList<>();
+        Set<RecipeStep> steps = new HashSet<>();
+        Set<RecipePicture> pictures = new HashSet<>();
+        Set<RecipeIngredient> ingredients = new HashSet<>();
+        Set<PrivateListRecipe> privateLists = new HashSet<>();
         
         // Ejecutar código
         Recipe recipe = new Recipe();
@@ -78,7 +78,7 @@ public class RecipeUnitTest {
         int stepOrder = 1;
         Recipe recipe = new Recipe();
         recipe.setId(recipeID);
-        List<RecipeStep> steps = new ArrayList<>();
+        Set<RecipeStep> steps = new HashSet<>();
         RecipeStepID stepID = new RecipeStepID(recipeID, stepOrder);
         RecipeStep step = new RecipeStep(stepID, DEFAULT_RECIPESTEP_TEXT, recipe);
         RecipeStep noArgsEntity = new RecipeStep();
@@ -111,7 +111,7 @@ public class RecipeUnitTest {
         int pictureOrder = 1;
         Recipe recipe = new Recipe();
         recipe.setId(recipeID);
-        List<RecipePicture> pictures = new ArrayList<>();
+        Set<RecipePicture> pictures = new HashSet<>();
         byte[] imageBytes = loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION);
         RecipePicture noArgsEntity = new RecipePicture();
         
@@ -146,7 +146,7 @@ public class RecipeUnitTest {
         UUID ingredientID = UUID.randomUUID();
         Recipe recipe = new Recipe();
         recipe.setId(recipeID);
-        List<RecipeIngredient> ingredients = new ArrayList<>();
+        Set<RecipeIngredient> ingredients = new HashSet<>();
         Ingredient ingredient = new Ingredient();
         ingredient.setId(ingredientID);
         String quantity = "2";

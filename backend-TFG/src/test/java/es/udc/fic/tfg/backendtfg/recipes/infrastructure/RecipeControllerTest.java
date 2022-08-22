@@ -579,7 +579,7 @@ public class RecipeControllerTest {
         //byte[] encodedResponseBodyContent = this.jsonMapper.writeValueAsBytes(expectedResponse);
         //RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(createdRecipe);
         //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
-        action.andExpect(status().isOk())
+        action.andExpect(status().isNotFound())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON));
         //      .andExpect(content().string(encodedResponseBodyContent));
     }
