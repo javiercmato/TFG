@@ -10,12 +10,12 @@ import java.util.UUID;
 public interface RecipeRepository extends PagingAndSortingRepository<Recipe, UUID>, CustomizedRecipeRepository {
 
     @Query(
-            "SELECT DISTINCT r\n" +
-                    "FROM Recipe r INNER JOIN FETCH r.author author\n" +
-                    "INNER JOIN FETCH r.ingredients\n" +
-                    "INNER JOIN FETCH r.steps\n" +
-                    "INNER JOIN FETCH r.pictures\n" +
-                    "WHERE r.id = ?1"
+            "SELECT r \n" +
+                "FROM Recipe r LEFT JOIN FETCH r.author \n" +
+                "LEFT JOIN FETCH r.ingredients \n" +
+                "LEFT JOIN FETCH r.steps \n" +
+                "LEFT JOIN FETCH r.pictures \n" +
+                "WHERE r.id = ?1"
     )
     Optional<Recipe> retrieveRecipeDetails(UUID recipeID);
 }

@@ -80,7 +80,6 @@ public class CustomizedRecipeRepositoryImpl implements CustomizedRecipeRepositor
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private String[] getWords(String keywords) {
-        
         if (keywords == null || keywords.length() == 0) {
             return new String[0];
         } else {

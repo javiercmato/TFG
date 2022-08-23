@@ -54,6 +54,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/recipes/categories").permitAll()                                  // getAllCategories
                 .antMatchers(HttpMethod.POST,   "/api/recipes/").permitAll()                                            // createRecipe
                 .antMatchers(HttpMethod.GET,    "/api/recipes/*").permitAll()                                           // getRecipeDetails
+                .antMatchers(HttpMethod.GET,    "/api/recipes/find/").permitAll()                                       // findRecipes
                 
         
         
