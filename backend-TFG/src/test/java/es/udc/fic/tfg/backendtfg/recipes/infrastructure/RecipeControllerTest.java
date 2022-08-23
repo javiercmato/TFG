@@ -2,20 +2,21 @@ package es.udc.fic.tfg.backendtfg.recipes.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
-import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.controllers.RecipeController;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.CategoryConversor;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -54,6 +55,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RecipeControllerTest {
     private static final String API_ENDPOINT = "/api/recipes";
     private final ObjectMapper jsonMapper = new ObjectMapper();
+    private final int INITIAL_PAGE = 0;
+    private final int PAGE_SIZE = 5;
     
     private final Locale locale = Locale.getDefault();
     
@@ -71,6 +74,8 @@ public class RecipeControllerTest {
     private RecipeService recipeService;
     @Autowired
     private RecipeRepository recipeRepo;
+    @Autowired
+    private RecipeIngredientRepository recipeIngredientRepo;
     @Autowired
     private IngredientTypeRepository ingredientTypeRepository;
     @Autowired
@@ -151,6 +156,16 @@ public class RecipeControllerTest {
         return ingredientService.createIngredient(name, ingredientTypeID, authorID);
     }
     
+    /** Añade el ingrediente recibido a la receta */
+    private RecipeIngredient addIngredientToRecipe(Ingredient ingredient, Recipe recipe) {
+        // Crear ingrediente de receta
+        RecipeIngredientID id = new RecipeIngredientID(recipe.getId(), ingredient.getId());
+        RecipeIngredient recipeIngredient = new RecipeIngredient(id, "1", MeasureUnit.UNIDAD, recipe, ingredient);
+        
+        recipe.addIngredient(recipeIngredient);
+        
+        return recipeIngredientRepo.save(recipeIngredient);
+    }
     
     /** Registra una receta válida sin ingredientes */
     private Recipe registerRecipe(UUID authorID, UUID categoryID) throws Exception {
@@ -333,8 +348,6 @@ public class RecipeControllerTest {
         // Crear datos de prueba
         AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
-        long duration = 10;
-        int diners = 2;
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         IngredientType ingredientType = registerIngredientType();
@@ -377,8 +390,6 @@ public class RecipeControllerTest {
         // Crear datos de prueba
         AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
-        long duration = 10;
-        int diners = 2;
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         IngredientType ingredientType = registerIngredientType();
@@ -422,8 +433,6 @@ public class RecipeControllerTest {
         // Crear datos de prueba
         AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
-        long duration = 10;
-        int diners = 2;
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         // stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         IngredientType ingredientType = registerIngredientType();
@@ -467,8 +476,6 @@ public class RecipeControllerTest {
         // Crear datos de prueba
         AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
-        long duration = 10;
-        int diners = 2;
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         // stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         IngredientType ingredientType = registerIngredientType();
@@ -516,11 +523,8 @@ public class RecipeControllerTest {
         // Crear datos de prueba
         AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
-        long duration = 10;
-        int diners = 2;
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
-        IngredientType ingredientType = registerIngredientType();
         List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
         ingredientsParams.add(new CreateRecipeIngredientParamsDTO(NON_EXISTENT_UUID, "1", MeasureUnit.UNIDAD.toString()));
         List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
@@ -575,13 +579,13 @@ public class RecipeControllerTest {
         );
     
         // Comprobar resultados
-        //Recipe expectedResponse = recipeRepo.findAll().iterator().next();
-        //byte[] encodedResponseBodyContent = this.jsonMapper.writeValueAsBytes(expectedResponse);
-        //RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(createdRecipe);
-        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        //Recipe foundRecipe = recipeService.getRecipeDetails(createdRecipe.getId());
+        Recipe foundRecipe = recipeRepo.findById(createdRecipe.getId()).get();
+        RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(foundRecipe);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isOk())
-              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        //      .andExpect(content().string(encodedResponseBodyContent));
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
     }
     
     @Test
@@ -602,6 +606,70 @@ public class RecipeControllerTest {
         // Comprobar resultados
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
         action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindRecipes_withoutCriteria_thenRecipesBlockIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        IngredientType type = registerIngredientType();
+        Ingredient ingredient = registerIngredient(DEFAULT_INGREDIENT_NAME, type.getId(), jwtData.getUserID());
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        addIngredientToRecipe(ingredient, recipe);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/find";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        
+        // Comprobar resultados
+        Block<Recipe> recipes = recipeService.findRecipesByCriteria(null, null, null, INITIAL_PAGE, PAGE_SIZE);
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipes.getItems());
+        BlockDTO<RecipeSummaryDTO> expectedResponse = new BlockDTO<>(recipeSummaryDTOList, recipes.hasMoreItems(), recipes.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFindRecipes_withAllCriterias_thenRecipesBlockIsRetrieved() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        IngredientType type = registerIngredientType();
+        Ingredient ingredient = registerIngredient(DEFAULT_INGREDIENT_NAME, type.getId(), jwtData.getUserID());
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        addIngredientToRecipe(ingredient, recipe);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/find";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+                        .queryParam("name", recipe.getName())
+                        .queryParam("categoryID", category.getId().toString())
+                        .queryParam("ingredientIdList", ingredient.getId().toString())
+        );
+        
+        // Comprobar resultados
+        Block<Recipe> recipes = recipeService.findRecipesByCriteria(
+                recipe.getName(), recipe.getCategory().getId(), List.of(ingredient.getId()), INITIAL_PAGE, PAGE_SIZE);
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipes.getItems());
+        BlockDTO<RecipeSummaryDTO> expectedResponse = new BlockDTO<>(recipeSummaryDTOList, recipes.hasMoreItems(), recipes.getItemsCount());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }

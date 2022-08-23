@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.recipes.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
@@ -45,4 +46,17 @@ public interface RecipeService {
      * @throws EntityNotFoundException No se encuentra la receta
      */
     Recipe getRecipeDetails(UUID recipeID) throws EntityNotFoundException;
+    
+    /**
+     * Recupera todas las recetas que contengan el nombre, pertenezcan a la categoría o contengan los ingredientes dados.
+     * Los resultados están ordenados por fecha de creación descendiente (las más recientes primero).
+     * Si no se recibe ningún criterio, se devuelven todas las recetas.
+     * @param name Nombre de la receta a buscar (opcional)
+     * @param categoryId ID de la categoría de la receta (opcional)
+     * @param ingredientIDsList Lista de ID de los ingredientes que debe contener la receta (opcional)
+     * @param page Número de página a cargar
+     * @param pageSize Tamaño de página
+     * @return Bloque de recetas que coincidan con la búsqueda, o todas las recetas si no hay ningún criterio.
+     */
+    Block<Recipe> findRecipesByCriteria(String name, UUID categoryId, List<UUID> ingredientIDsList, int page, int pageSize);
 }

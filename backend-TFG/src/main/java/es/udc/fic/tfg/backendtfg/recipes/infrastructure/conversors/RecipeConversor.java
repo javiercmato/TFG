@@ -68,25 +68,54 @@ public class RecipeConversor {
         return dto;
     }
     
+    public static RecipeSummaryDTO toRecipeSummaryDTO(Recipe entity) {
+        RecipeSummaryDTO dto = new RecipeSummaryDTO();
+        dto.setId(entity.getId());
+        dto.setCategoryID(entity.getCategory().getId());
+        dto.setName(entity.getName());
+        dto.setDescription(entity.getDescription());
+        dto.setDuration(entity.getDuration());
+        dto.setDiners(entity.getDiners());
+        dto.setBannedByAdmin(entity.isBannedByAdmin());
+        // Codificar imágen (si hay)
+        if (!entity.getPictures().isEmpty()) {
+            RecipePictureDTO pictureDTO = toRecipePictureDTO(
+                entity.getPictures().stream()
+                    .findFirst()
+                    .get());
+            dto.setPicture(pictureDTO.getPictureData());
+        } else {
+            dto.setPicture(null);
+        }
+        dto.setIngredientsCount(entity.getIngredients().size());
+        
+        return dto;
+    }
+    
     /* ******************** Convertir a conjunto de DTO ******************** */
-    public static List<RecipeIngredientDTO> toRecipeIngredientListDTO(Set<RecipeIngredient> entityList) {
-        return entityList.stream()
-                         .map(RecipeConversor::toRecipeIngredientDTO)
-                         .collect(Collectors.toList());
+    public static List<RecipeIngredientDTO> toRecipeIngredientListDTO(Set<RecipeIngredient> entitySet) {
+        return entitySet.stream()
+                        .map(RecipeConversor::toRecipeIngredientDTO)
+                        .collect(Collectors.toList());
     }
     
-    public static List<RecipePictureDTO> toRecipePictureListDTO(Set<RecipePicture> entityList) {
-        return entityList.stream()
-                         .map(RecipeConversor::toRecipePictureDTO)
-                         .collect(Collectors.toList());
+    public static List<RecipePictureDTO> toRecipePictureListDTO(Set<RecipePicture> entitSet) {
+        return entitSet.stream()
+                        .map(RecipeConversor::toRecipePictureDTO)
+                        .collect(Collectors.toList());
     }
     
-    public static List<RecipeStepDTO> toRecipeStepListDTO(Set<RecipeStep> entityList) {
-        return entityList.stream()
-                         .map(RecipeConversor::toRecipeStepDTO)
-                         .collect(Collectors.toList());
+    public static List<RecipeStepDTO> toRecipeStepListDTO(Set<RecipeStep> entitySet) {
+        return entitySet.stream()
+                        .map(RecipeConversor::toRecipeStepDTO)
+                        .collect(Collectors.toList());
     }
     
+    public static List<RecipeSummaryDTO> toRecipeSummaryListDTO(List<Recipe> entityList) {
+        return entityList.stream()
+                         .map(RecipeConversor::toRecipeSummaryDTO)
+                         .collect(Collectors.toList());
+    }
     /* ******************** Convertir a Entidad ******************** */
     
     
