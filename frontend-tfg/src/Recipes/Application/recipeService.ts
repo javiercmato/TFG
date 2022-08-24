@@ -60,6 +60,33 @@ export const getRecipeDetails = (recipeID: string,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const findRecipes = (name: Nullable<string>,
+                            categoryID: Nullable<string>,
+                            ingredientsIDLIst: Nullable<Array<string>>,
+                            page: number = 0,
+                            pageSize: number = DEFAULT_PAGE_SIZE,
+                            onSuccessCallback: CallbackFunction,
+                            onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = RECIPES_ENDPOINT + '/find' + '?';
+    endpoint += `page=${page}`;
+    endpoint += `&pageSize=${pageSize}`;
+    if (name != null)
+        endpoint += `&name=${name}`;
+    if (categoryID != null)
+        endpoint += `&categoryID=${categoryID}`;
+    if (ingredientsIDLIst) {
+        endpoint += `&ingredientIdList=`;
+        ingredientsIDLIst.forEach((item) => endpoint += item + ',');
+    }
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+
+
 /* ************************* FUNCIONES AUXILIARES ************************* */
 const sortRecipeSteps = (steps: Array<RecipeStep>): Array<RecipeStep> => {
     // compareFunction(a,b) < 0 : a va antes que b

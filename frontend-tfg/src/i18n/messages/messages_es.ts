@@ -105,6 +105,8 @@ const translations = {
     'recipes.components.RecipeIngredientsSelection.title': 'Ingredientes seleccionados',
     'recipes.components.CreateStepsForm.title': 'Pasos de preparación:',
     'recipes.components.CreateStepsForm.placeholder': 'P. ej.: Poner a hervir en una olla el agua con sal',
+    'recipes.components.CreateRecipeButton.title': 'Crear receta',
+
 
 
 }

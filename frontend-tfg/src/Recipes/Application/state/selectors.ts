@@ -1,6 +1,7 @@
 import {RootState} from "../../../store";
 import {IRecipeState} from "./IRecipeState";
 import {Category, Recipe} from "../../Domain";
+import {Block, Search, SearchCriteria} from "../../../App";
 
 
 const getModuleState = (state: RootState): IRecipeState => state.recipes;
@@ -23,4 +24,12 @@ export const selectCategoryName = (categories: Array<Category>, categoryId: stri
 
 export const selectRecipe = (state: RootState) : Nullable<Recipe> => getModuleState(state).recipe;
 
+
+/* ******************** DATOS DE RECETA ******************** */
+
+export const getRecipeSearch = (state: RootState) : Search<Recipe> => getModuleState(state).recipeSearch;
+
+export const getSearchCriteria = (state: RootState) : SearchCriteria => getRecipeSearch(state).criteria;
+
+export const getSearchResultBlock = (state: RootState) : Nullable<Block<Recipe>> => getRecipeSearch(state).result;
 

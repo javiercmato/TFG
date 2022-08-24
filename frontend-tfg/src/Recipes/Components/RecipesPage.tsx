@@ -1,12 +1,16 @@
 import CreateCategory from "./CreateCategory";
-import {Col, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
-import {Link} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {FormattedMessage} from "react-intl";
+import FindRecipesForm from "./FindRecipesForm";
+import {FindRecipesResults} from "./index";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
 const RecipesPage = () => {
+    const navigate = useNavigate();
     const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
 
 
@@ -19,14 +23,19 @@ const RecipesPage = () => {
                     <Row className={"gy-3"}>
                         <CreateCategory />
                     </Row>
+
+                    <Row>
+                        <Button onClick={() => navigate('/recipes/create')}>
+                            <FormattedMessage id={'recipes.components.CreateRecipeButton.title'} />
+                        </Button>
+                    </Row>
                 </Col>
             }
 
-            {/* Columna con la lista de categorías existentes */}
+            {/* Buscador de recetas y resultados */}
             <Col>
-                <Row>
-                    <Link to={"/recipes/create"} >CREAR RECETA</Link>
-                </Row>
+                <FindRecipesForm />
+                <FindRecipesResults />
             </Col>
         </Row>
     )
