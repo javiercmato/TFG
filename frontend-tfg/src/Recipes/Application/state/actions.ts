@@ -5,6 +5,7 @@ import {Category, Recipe} from "../../Domain";
 import {AppThunk} from "../../../store";
 import {appRedux as app, appRedux, Block, ErrorDto, Search, SearchCriteria} from "../../../App";
 import {CreateCategoryParamsDTO, CreateRecipeParamsDTO} from "../../Infrastructure";
+import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
 
 
 /* ************************* DISPATCHABLE ACTIONS ******************** */
@@ -29,7 +30,7 @@ export const getRecipeDetailsAction = (recipe: Recipe) : RecipeDispatchType => (
     payload: recipe,
 })
 
-export const findRecipesAction = (recipesSearch: Search<Recipe>) : RecipeDispatchType => ({
+export const findRecipesAction = (recipesSearch: Search<RecipeSummaryDTO>) : RecipeDispatchType => ({
     type: actionTypes.FIND_RECIPES,
     payload: recipesSearch,
 })
@@ -157,9 +158,9 @@ export const getRecipeDetailsAsyncAction = (recipeID: string,
 
 export const findRecipesAsyncAction = (criteria: SearchCriteria, onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
-    const onSuccess: CallbackFunction = (block: Block<Recipe>) : void => {
+    const onSuccess: CallbackFunction = (block: Block<RecipeSummaryDTO>) : void => {
         // Encapsula la respuesta
-        const search: Search<Recipe> = {
+        const search: Search<RecipeSummaryDTO> = {
             criteria: criteria,
             result: block
         }

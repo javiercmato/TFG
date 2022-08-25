@@ -1,7 +1,7 @@
 import {useAppSelector} from "../../store";
 import {ingredientsRedux} from "../Application";
 import {Container, Form, ListGroup, ListGroupItem} from "react-bootstrap";
-import {ChangeEvent} from "react";
+import {ChangeEvent, useEffect} from "react";
 
 
 interface Props {
@@ -28,14 +28,13 @@ const IngredientsChecklist = ({ingredientIDList, setIngredientIDList, onCheckIte
 
         // Envía los elementos marcados al padre
         setIngredientIDList(checkedItems);
-        onCheckItemCallback(checkedItems);
     }
 
     // Devuelve los ID de los ingredientes selecionados al padre cada vez que se produzca un cambio
-    // useEffect(() => {
-    //     onCheckItemCallback(ingredientIDList)
-    //     }, [ingredientIDList]
-    // )
+    useEffect(() => {
+        onCheckItemCallback(ingredientIDList)
+        }, [ingredientIDList]
+    )
 
     if (ingredientsSearch === null || ingredientsSearch.itemsCount === 0) {
         return null;

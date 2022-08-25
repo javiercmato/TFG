@@ -10,6 +10,7 @@ import {
 import {initialState, IRecipeState} from "./IRecipeState";
 import {Category, Recipe} from "../../Domain";
 import {Search} from "../../../App";
+import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
 
 
 const categories = (state: Array<Category> = initialState.categories,
@@ -47,11 +48,11 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
     }
 }
 
-const recipesSearch = (state: Search<Recipe> = initialState.recipeSearch,
-                       action: RecipeDispatchType): Search<Recipe> => {
+const recipesSearch = (state: Search<RecipeSummaryDTO> = initialState.recipeSearch,
+                       action: RecipeDispatchType): Search<RecipeSummaryDTO> => {
     switch (action.type) {
         case actionTypes.FIND_RECIPES: {
-            let search: Search<Recipe> = (action as FindRecipesActionType).payload;
+            let search: Search<RecipeSummaryDTO> = (action as FindRecipesActionType).payload;
 
             return search;
         }

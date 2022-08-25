@@ -79,7 +79,9 @@ const FindRecipesForm = () => {
                 </Row>
 
                 <Row>
-                    <Button onClick={handleSubmit}>BOTON PARA VER RESULTADO</Button>
+                    <Button onClick={handleSubmit}>
+                        <FormattedMessage id="recipes.components.FindRecipesForm.searchButton" />
+                    </Button>
                 </Row>
             </Col>
         </Container>

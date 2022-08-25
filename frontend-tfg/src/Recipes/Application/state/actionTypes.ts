@@ -1,5 +1,6 @@
 import {Category, Recipe} from "../../Domain";
 import {Search} from "../../../App";
+import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
 
 /* ******************** Nombres de las acciones ******************** */
 
@@ -34,7 +35,7 @@ export interface GetRecipeDetailsActionType {
 
 export interface FindRecipesActionType {
     type: string,
-    payload: Search<Recipe>
+    payload: Search<RecipeSummaryDTO>
 }
 
 export interface ClearRecipesSearchActionType {

@@ -1,6 +1,8 @@
 import {appFetch, configFetchParameters} from "../../proxy";
 import {CreateCategoryParamsDTO, CreateRecipeParamsDTO} from "../Infrastructure";
 import {Recipe, RecipeStep} from "../Domain";
+import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
+import {Block} from "../../App";
 
 const RECIPES_ENDPOINT = '/recipes';
 const DEFAULT_PAGE_SIZE = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
@@ -49,6 +51,7 @@ export const getRecipeDetails = (recipeID: string,
     let onSuccess = (recipe: Recipe) => {
         // Ordena los pasos de la receta antes de guardarlos en redux
         recipe.steps = sortRecipeSteps(recipe.steps);
+        // Añade la cabecera a las imágenes para poder mostrarlas correctamente
         recipe.pictures?.forEach((picture) =>
             picture.pictureData = addBase64ImageHeader(picture.pictureData)
         )
@@ -81,8 +84,19 @@ export const findRecipes = (name: Nullable<string>,
     }
     const requestConfig = configFetchParameters('GET');
 
+    // Añade la cabecera a las imágenes para poder mostrarlas correctamente
+    let onSuccess = (block: Block<RecipeSummaryDTO>) => {
+        block.items.forEach((item: RecipeSummaryDTO) => {
+            if (item.picture !== null) {
+                item.picture = addBase64ImageHeader(item.picture);
+            }
+        })
+
+        onSuccessCallback(block);
+    }
+
     // Realizar la petición
-    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
 
