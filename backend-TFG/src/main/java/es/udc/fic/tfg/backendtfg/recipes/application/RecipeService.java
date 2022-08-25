@@ -59,4 +59,13 @@ public interface RecipeService {
      * @return Bloque de recetas que coincidan con la búsqueda, o todas las recetas si no hay ningún criterio.
      */
     Block<Recipe> findRecipesByCriteria(String name, UUID categoryId, List<UUID> ingredientIDsList, int page, int pageSize);
+    
+    /**
+     * Elimina una receta.
+     * @param recipeID ID de la receta a eliminar
+     * @param recipeID ID de del usuario que solicita el borrado
+     * @throws EntityNotFoundException No se encuentra la receta
+     * @throws PermissionException Usuario no es propietario de la receta
+     */
+    void deleteRecipe(UUID recipeID, UUID userID) throws EntityNotFoundException, PermissionException;
 }

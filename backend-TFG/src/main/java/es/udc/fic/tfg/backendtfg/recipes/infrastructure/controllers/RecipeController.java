@@ -14,8 +14,7 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -124,7 +123,18 @@ public class RecipeController {
         List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesBlock.getItems());
         
         return createBlock(recipeSummaryDTOList, recipesBlock.hasMoreItems(), recipesBlock.getItemsCount());
+    }
+    
+    @DeleteMapping(path = "/{recipeID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    ResponseEntity<Void> deleteRecipe(@RequestAttribute("userID") UUID userID,
+                                      @PathVariable("recipeID") UUID pathRecipeID)
+        throws EntityNotFoundException, PermissionException {
+        // Llamada al servicio
+        recipeService.deleteRecipe(pathRecipeID, userID);
         
+        // Generar respuesta
+        return ResponseEntity.noContent().build();
     }
     
     

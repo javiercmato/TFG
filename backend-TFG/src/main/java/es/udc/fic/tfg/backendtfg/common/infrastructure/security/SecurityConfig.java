@@ -55,6 +55,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,   "/api/recipes/").permitAll()                                            // createRecipe
                 .antMatchers(HttpMethod.GET,    "/api/recipes/*").permitAll()                                           // getRecipeDetails
                 .antMatchers(HttpMethod.GET,    "/api/recipes/find/").permitAll()                                       // findRecipes
+                .antMatchers(HttpMethod.DELETE, "/api/recipes/*").permitAll()                                           // deleteRecipe
                 
         
         
