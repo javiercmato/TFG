@@ -1,11 +1,11 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 public class UserSummaryDTO {
     private UUID userID;

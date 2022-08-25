@@ -1,13 +1,13 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class RecipeSummaryDTO {
     @NotNull
