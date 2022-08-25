@@ -181,8 +181,9 @@ public class RecipeServiceImpl implements RecipeService {
     /** Busca la receta por el ID recibido */
     private Recipe fetchRecipeByID(UUID recipeID) throws EntityNotFoundException {
         Optional<Recipe> optionalRecipe = recipeRepo.findById(recipeID);
-        if (optionalRecipe.isEmpty())
+        if (!optionalRecipe.isPresent()) {
             throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
+        }
         
         return optionalRecipe.get();
     }

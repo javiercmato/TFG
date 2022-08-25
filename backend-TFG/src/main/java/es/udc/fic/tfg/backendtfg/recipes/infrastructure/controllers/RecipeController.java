@@ -131,7 +131,7 @@ public class RecipeController {
                                       @PathVariable("recipeID") UUID pathRecipeID)
         throws EntityNotFoundException, PermissionException {
         // Llamada al servicio
-        recipeService.deleteRecipe(userID, pathRecipeID);
+        recipeService.deleteRecipe(pathRecipeID, userID);
         
         // Generar respuesta
         return ResponseEntity.noContent().build();

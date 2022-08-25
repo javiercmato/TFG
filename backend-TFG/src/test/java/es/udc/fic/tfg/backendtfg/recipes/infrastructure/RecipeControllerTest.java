@@ -42,8 +42,7 @@ import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -670,6 +669,88 @@ public class RecipeControllerTest {
         BlockDTO<RecipeSummaryDTO> expectedResponse = new BlockDTO<>(recipeSummaryDTOList, recipes.hasMoreItems(), recipes.getItemsCount());
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenDeleteRecipe_thenNoContent() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        IngredientType type = registerIngredientType();
+        Ingredient ingredient = registerIngredient(DEFAULT_INGREDIENT_NAME, type.getId(), jwtData.getUserID());
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        addIngredientToRecipe(ingredient, recipe);
+        String recipeID = recipe.getId().toString();
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + recipeID;
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        action.andExpect(status().isNoContent());
+    }
+    
+    @Test
+    void whenDeleteRecipe_andUserIsNotAuthor_thenNotAllowed_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenDeleteNonExistentRecipe_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
