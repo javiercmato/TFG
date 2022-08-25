@@ -19,6 +19,7 @@ const translations = {
     'common.buttons.next': 'Siguiente',
     'common.buttons.add': 'Añadir',
     'common.buttons.remove': 'Retirar',
+    'common.buttons.delete': 'Borrar',
 
 
 

@@ -42,9 +42,14 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             return payload;
         }
 
+        case actionTypes.CLEAR_RECIPE_DETAILS:
+            return initialState.recipe;
+
+        case actionTypes.DELETE_RECIPE:
+            return initialState.recipe;
+
         default:
             return state;
-
     }
 }
 
@@ -62,7 +67,6 @@ const recipesSearch = (state: Search<RecipeSummaryDTO> = initialState.recipeSear
 
         default:
             return state;
-
     }
 }
 

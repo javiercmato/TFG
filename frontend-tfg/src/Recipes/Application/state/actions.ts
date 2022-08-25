@@ -30,6 +30,10 @@ export const getRecipeDetailsAction = (recipe: Recipe) : RecipeDispatchType => (
     payload: recipe,
 })
 
+export const clearRecipeDetailsAction = () : RecipeDispatchType => ({
+    type: actionTypes.CLEAR_RECIPE_DETAILS,
+})
+
 export const findRecipesAction = (recipesSearch: Search<RecipeSummaryDTO>) : RecipeDispatchType => ({
     type: actionTypes.FIND_RECIPES,
     payload: recipesSearch,
@@ -37,6 +41,10 @@ export const findRecipesAction = (recipesSearch: Search<RecipeSummaryDTO>) : Rec
 
 export const clearRecipesSearchAction = () : RecipeDispatchType => ({
     type: actionTypes.CLEAR_RECIPES_SEARCH,
+})
+
+export const deleteRecipeAction = () : RecipeDispatchType => ({
+    type: actionTypes.DELETE_RECIPE,
 })
 
 /* ************************* ASYNC ACTIONS ******************** */
@@ -182,4 +190,33 @@ export const findRecipesAsyncAction = (criteria: SearchCriteria, onSuccessCallba
     // Llamar al servicio y ejecutar los callbacks
     const {name, category, ingredients, page, pageSize} = criteria;
     recipeService.findRecipes(name, category, ingredients, page, pageSize, onSuccess, onError);
+}
+
+export const deleteRecipeAsyncAction = (recipeID: string,
+                                        onSuccessCallback: NoArgsCallbackFunction,
+                                        onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: NoArgsCallbackFunction = () : void => {
+        // Actualiza estado de la aplicación
+        dispatch(deleteRecipeAction());
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    recipeService.deleteRecipe(recipeID, onSuccess, onError);
 }

@@ -99,6 +99,17 @@ export const findRecipes = (name: Nullable<string>,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const deleteRecipe = (recipeID: string,
+                             onSuccessCallback: CallbackFunction,
+                             onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = RECIPES_ENDPOINT + `/${recipeID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
