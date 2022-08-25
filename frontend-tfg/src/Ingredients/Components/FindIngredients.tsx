@@ -34,10 +34,12 @@ const FindIngredients = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let criteria: SearchCriteria = {
+            category: null,
+            ingredients: null,
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
             name: (queryName !== '') ? queryName : null,
-            type: (typeIDQuery !== '') ? typeIDQuery : null,
+            type: (typeIDQuery !== '') ? typeIDQuery : null
         }
 
         let onSuccess = () => {};
@@ -54,37 +56,32 @@ const FindIngredients = () => {
     }
 
     return (
-        <div>
-            <Row style={rowIngredientsSearch}>
-                <h4><FormattedMessage id="ingredients.components.FindIngredients.findIngredients" /></h4>
-                <br/>
-                <Form
-                    onSubmit={handleSubmit}
-                >
-                    <Row>
-                        <InputGroup>
-                            <FormControl
-                                as="input"
-                                type="text"
-                                value={queryName}
-                                placeholder={intl.formatMessage({id: 'ingredients.components.CreateIngredient.placeholder'})}
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => setQueryName(e.target.value)}
-                            />
+        <div style={rowIngredientsSearch}>
+            <br/>
+            <Form onSubmit={handleSubmit}>
+                <Row>
+                    <InputGroup>
+                        <FormControl
+                            as="input"
+                            type="text"
+                            value={queryName}
+                            placeholder={intl.formatMessage({id: 'ingredients.components.CreateIngredient.placeholder'})}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setQueryName(e.target.value)}
+                        />
 
-                            <IngredientTypeSelector {...typeSelectorProps}/>
+                        <IngredientTypeSelector {...typeSelectorProps}/>
 
-                            <Button type="submit">
-                                <FormattedMessage id="common.buttons.search" />
-                            </Button>
-                            <Button variant="dark"
-                                onClick={handleClearButtonClick}
-                            >
-                                <FormattedMessage id="common.buttons.clear" />
-                            </Button>
-                        </InputGroup>
-                    </Row>
-                </Form>
-            </Row>
+                        <Button type="submit">
+                            <FormattedMessage id="common.buttons.search" />
+                        </Button>
+                        <Button variant="dark"
+                            onClick={handleClearButtonClick}
+                        >
+                            <FormattedMessage id="common.buttons.clear" />
+                        </Button>
+                    </InputGroup>
+                </Row>
+            </Form>
         </div>
     )
 }

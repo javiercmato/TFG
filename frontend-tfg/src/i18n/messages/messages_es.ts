@@ -47,6 +47,7 @@ const translations = {
     'common.fields.diners': 'raciones',
 
 
+    'common.Components.WarningModal.title': 'Aviso',
     'common.alerts.noResults': 'Sin resultados',
     'common.alerts.notLoggedIn': 'No puedes realizar esta operación sin estar registrado',
 
@@ -105,6 +106,10 @@ const translations = {
     'recipes.components.RecipeIngredientsSelection.title': 'Ingredientes seleccionados',
     'recipes.components.CreateStepsForm.title': 'Pasos de preparación:',
     'recipes.components.CreateStepsForm.placeholder': 'P. ej.: Poner a hervir en una olla el agua con sal',
+    'recipes.components.CreateRecipeButton.title': 'Crear receta',
+    'recipes.components.FindRecipesForm.searchButton': 'Buscar recetas',
+    'recipes.components.RecipeCard.button': 'Ver receta',
+
 
 
 }

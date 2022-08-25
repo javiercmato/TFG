@@ -4,8 +4,7 @@ import {FormattedMessage} from "react-intl";
 import {Alert, Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import IngredientItem from "./IngredientItem";
 import {pagerRow, resultItem, resultsRow, titleRow} from './styles/findIngredientsResults';
-import {Block, Pager, PagerProps, SearchCriteria} from "../../App";
-import {Ingredient} from "../Domain";
+import {Pager, PagerProps, SearchCriteria} from "../../App";
 
 
 const FindIngredientsResults = () => {
@@ -20,8 +19,7 @@ const FindIngredientsResults = () => {
             ...searchCriteria,
             page: searchCriteria.page - 1
         }
-        let onSuccess = (block: Block<Ingredient>) => {
-        };
+        let onSuccess = () => {};
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);
         let action = (hasCriteria) ?
@@ -37,7 +35,7 @@ const FindIngredientsResults = () => {
             ...searchCriteria,
             page: searchCriteria.page + 1
         }
-        let onSuccess = (block: Block<Ingredient>) => {
+        let onSuccess = () => {
         };
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);
@@ -48,7 +46,7 @@ const FindIngredientsResults = () => {
     }
 
     let pagerProps: PagerProps = {
-        currentPage: searchCriteria.page,
+        currentPage: searchCriteria.page + 1,
         previous: {
             enabled: searchCriteria.page > 0,
             onClickCallback: handlePreviousPageClick

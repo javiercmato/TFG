@@ -1,6 +1,8 @@
 import {appFetch, configFetchParameters} from "../../proxy";
 import {CreateCategoryParamsDTO, CreateRecipeParamsDTO} from "../Infrastructure";
 import {Recipe, RecipeStep} from "../Domain";
+import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
+import {Block} from "../../App";
 
 const RECIPES_ENDPOINT = '/recipes';
 const DEFAULT_PAGE_SIZE = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
@@ -49,6 +51,7 @@ export const getRecipeDetails = (recipeID: string,
     let onSuccess = (recipe: Recipe) => {
         // Ordena los pasos de la receta antes de guardarlos en redux
         recipe.steps = sortRecipeSteps(recipe.steps);
+        // Añade la cabecera a las imágenes para poder mostrarlas correctamente
         recipe.pictures?.forEach((picture) =>
             picture.pictureData = addBase64ImageHeader(picture.pictureData)
         )
@@ -59,6 +62,44 @@ export const getRecipeDetails = (recipeID: string,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
+
+export const findRecipes = (name: Nullable<string>,
+                            categoryID: Nullable<string>,
+                            ingredientsIDLIst: Nullable<Array<string>>,
+                            page: number = 0,
+                            pageSize: number = DEFAULT_PAGE_SIZE,
+                            onSuccessCallback: CallbackFunction,
+                            onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = RECIPES_ENDPOINT + '/find' + '?';
+    endpoint += `page=${page}`;
+    endpoint += `&pageSize=${pageSize}`;
+    if (name != null)
+        endpoint += `&name=${name}`;
+    if (categoryID != null)
+        endpoint += `&categoryID=${categoryID}`;
+    if (ingredientsIDLIst) {
+        endpoint += `&ingredientIdList=`;
+        ingredientsIDLIst.forEach((item) => endpoint += item + ',');
+    }
+    const requestConfig = configFetchParameters('GET');
+
+    // Añade la cabecera a las imágenes para poder mostrarlas correctamente
+    let onSuccess = (block: Block<RecipeSummaryDTO>) => {
+        block.items.forEach((item: RecipeSummaryDTO) => {
+            if (item.picture !== null) {
+                item.picture = addBase64ImageHeader(item.picture);
+            }
+        })
+
+        onSuccessCallback(block);
+    }
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
+
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 const sortRecipeSteps = (steps: Array<RecipeStep>): Array<RecipeStep> => {

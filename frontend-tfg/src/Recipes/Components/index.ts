@@ -12,3 +12,4 @@ export {default as RecipeDetails} from './RecipeDetails';
 export {default as RecipeIngredientsList} from './RecipeIngredientsList';
 export {default as RecipeData} from './RecipeData';
 export {default as RecipeSteps} from './RecipeSteps';
+export {default as FindRecipesResults} from './FindRecipesResults';

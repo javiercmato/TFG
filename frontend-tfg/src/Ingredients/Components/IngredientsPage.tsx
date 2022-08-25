@@ -8,12 +8,12 @@ import {useAppDispatch, useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
 import {ingredientsRedux} from "../Application";
 import {SearchCriteria} from "../../App";
+import {FormattedMessage} from "react-intl";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
 const IngredientsPage = () => {
     const dispatch = useAppDispatch();
-    const isAdminLoggedIn = useAppSelector(userRedux.selectors.selectIsAdmin);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
     const searchCriteria = useAppSelector(ingredientsRedux.selectors.selectSearchCriteria);
 
@@ -21,6 +21,8 @@ const IngredientsPage = () => {
         let criteria: SearchCriteria = {
             page: searchCriteria.page,
             pageSize: DEFAULT_PAGE_SIZE,
+            ingredients: null,
+            category: null,
             type: null,
             name: null,
         }
@@ -43,6 +45,7 @@ const IngredientsPage = () => {
             {/* Columna para buscar ingredientes */}
             <Col>
                 <Row className={"gy-3"}>
+                    <h4><FormattedMessage id="ingredients.components.FindIngredients.findIngredients" /></h4>
                     <FindIngredients />
                     <FindIngredientsResults />
                 </Row>

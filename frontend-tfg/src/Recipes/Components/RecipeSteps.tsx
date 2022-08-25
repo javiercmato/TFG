@@ -21,7 +21,7 @@ const RecipeSteps = ({steps}: Props) => {
     return (
         <Container >
             {steps.map((item) =>
-                <Row>
+                <Row key={item.step}>
                     <Col md={1} >
                         <Badge bg="dark">
                             <h5>{item.step + 1}</h5>

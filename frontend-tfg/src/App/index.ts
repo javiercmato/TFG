@@ -14,8 +14,11 @@ export {appInitialState} from './Application';
 
 
 /* ********** Components ********** */
+export type {PagerProps} from './Components';
+export type {WarningModalProps} from './Components';
+
 export {App} from './Components';
 export {Errors} from './Components';
 export {UploadFileButton} from './Components';
 export {Pager} from './Components';
-export type {PagerProps} from './Components';
+export {WarningModal} from './Components';

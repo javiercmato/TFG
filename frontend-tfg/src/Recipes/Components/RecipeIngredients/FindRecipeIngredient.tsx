@@ -26,7 +26,9 @@ const FindRecipeIngredient = () => {
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
             name: (queryName !== '') ? queryName : null,
-            type: null
+            type: null,
+            ingredients: null,
+            category: null
         }
 
         let onSuccess = () => {};
