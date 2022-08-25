@@ -1,13 +1,13 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class CreateRecipeParamsDTO {
     @NotBlank

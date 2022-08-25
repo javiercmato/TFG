@@ -14,10 +14,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class IngredientUnitTest {
+public class IngredientUnitTest {
     
     @Test
-    void createIngredient() {
+    public void createIngredient() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         String name = "ingredient";

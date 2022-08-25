@@ -1,12 +1,12 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class CreateCategoryParamsDTO {
     @NotBlank

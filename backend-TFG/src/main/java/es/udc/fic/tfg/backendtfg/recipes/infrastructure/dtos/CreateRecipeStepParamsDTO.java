@@ -4,7 +4,8 @@ import lombok.*;
 
 import javax.validation.constraints.*;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateRecipeStepParamsDTO {

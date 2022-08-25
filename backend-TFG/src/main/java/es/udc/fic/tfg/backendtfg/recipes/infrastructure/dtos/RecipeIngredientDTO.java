@@ -5,7 +5,8 @@ import lombok.*;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class RecipeIngredientDTO {
