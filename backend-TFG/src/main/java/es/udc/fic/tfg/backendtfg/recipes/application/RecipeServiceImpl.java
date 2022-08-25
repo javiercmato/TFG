@@ -142,6 +142,21 @@ public class RecipeServiceImpl implements RecipeService {
         return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
     }
     
+    @Override
+    public void deleteRecipe(UUID recipeID, UUID userID) throws EntityNotFoundException, PermissionException {
+        // Buscar la receta. Si no existe lanza EntityNotFoundException
+        Recipe recipe = fetchRecipeByID(recipeID);
+        
+        // Si usuario no es el propietario de la receta, lanza PermissionException
+        if (!recipe.getAuthor().getId().equals(userID))
+            throw new PermissionException();
+        
+        // Eliminar la receta
+        recipeRepo.delete(recipe);
+    }
+    
+    
+    
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la categoría por el ID recibido */
     private Category fetchCategoryByID(UUID categoryID) throws EntityNotFoundException {
@@ -161,6 +176,15 @@ public class RecipeServiceImpl implements RecipeService {
             throw new EntityNotFoundException(Ingredient.class.getSimpleName(), ingredientID);
         
         return optionalIngredient.get();
+    }
+    
+    /** Busca la receta por el ID recibido */
+    private Recipe fetchRecipeByID(UUID recipeID) throws EntityNotFoundException {
+        Optional<Recipe> optionalRecipe = recipeRepo.findById(recipeID);
+        if (optionalRecipe.isEmpty())
+            throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
+        
+        return optionalRecipe.get();
     }
     
     /** Registra una lista de pasos y se los asigna a la receta recibida */
