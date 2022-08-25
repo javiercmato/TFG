@@ -1,9 +1,9 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Carousel, Col, Container, Image, Row} from "react-bootstrap";
+import {Button, Carousel, Col, Container, Image, Row} from "react-bootstrap";
 import {
     RecipeData,
     RecipeDataProps,
@@ -15,13 +15,26 @@ import {
 import {userRedux} from "../../Users";
 import {FormattedMessage} from "react-intl";
 import {carouselPicture} from "./styles/recipePicturesForm";
+import {FaTrash} from "react-icons/fa";
 
 const RecipeDetails = () => {
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const {recipeID} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const recipeData = useAppSelector(recipesRedux.selectors.selectRecipe);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
+
+
+    const handleDeleteClick = (e: any) => {
+        e.preventDefault();
+
+        let onSuccess = () => navigate('/recipes');
+        let onError = (error: ErrorDto) => setBackendErrors(error);
+        dispatch(recipesRedux.actions.deleteRecipeAsyncAction(String(recipeID), onSuccess, onError));
+    }
+
+
 
     let ingredientsListProps: RecipeIngredientsListProps = {
         ingredients: recipeData?.ingredients!,
@@ -35,6 +48,7 @@ const RecipeDetails = () => {
         steps: recipeData?.steps!,
     }
 
+
     // Solicita los datos de la receta cada vez que cambie el ID en la URL
     useEffect( () => {
         let onSuccess = () => {};
@@ -44,6 +58,11 @@ const RecipeDetails = () => {
         }
 
         dispatch(recipesRedux.actions.getRecipeDetailsAsyncAction(recipeID!, onSuccess, onError));
+
+        // Limpia los datos de la receta buscada cuando se desmonta el componente
+        return () => {
+            dispatch(recipesRedux.actions.clearRecipeDetailsAction())
+        }
     }, [dispatch, recipeID]);
 
     if (recipeData === null) return <div>NO HAY RECETA</div>
@@ -118,6 +137,16 @@ const RecipeDetails = () => {
                 {/* Comentarios */}
                 <Row>
                     COMENTARIOS
+                </Row>
+
+                {/* Borrar receta */}
+                <Row>
+                    <Button variant="danger" onClick={handleDeleteClick}>
+                        <span>
+                            <FaTrash />
+                            <FormattedMessage id="common.buttons.delete" />
+                        </span>
+                    </Button>
                 </Row>
             </Container>
         </div>
