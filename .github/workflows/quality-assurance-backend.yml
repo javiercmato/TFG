@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - features/backend/**
+      - develop
       - release
       - main
   # O al abrir una nueva PR a la rama de desarrollo
