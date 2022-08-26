@@ -137,6 +137,13 @@ public class RecipeController {
         return ResponseEntity.noContent().build();
     }
     
+    @PutMapping(path = "/admin/ban/{recipeID}")
+    public boolean banRecipeAsAdmin(@RequestAttribute("userID") UUID adminID,
+                                    @PathVariable("recipeID") UUID targetRecipeID)
+            throws EntityNotFoundException, PermissionException {
+        // Llamada al servicio
+        return recipeService.banRecipeAsAdmin(adminID, targetRecipeID);
+    }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private <T> BlockDTO<T> createBlock(List<T> items, boolean hasMoreItems, int itemsCount) {

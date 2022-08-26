@@ -155,6 +155,25 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepo.delete(recipe);
     }
     
+    /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
+    @Override
+    public boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException {
+        // Commprobar si existe el administrador
+        try {
+            userUtils.fetchAdministrator(adminID);
+        } catch ( EntityNotFoundException ex) {
+            throw new PermissionException();
+        }
+        
+        // Obtener la receta a banear
+        Recipe targetRecipe = fetchRecipeByID(recipeID);
+        
+        // Aplicar/retirar baneo
+        targetRecipe.setBannedByAdmin(!targetRecipe.isBannedByAdmin());
+        recipeRepo.save(targetRecipe);
+        
+        return targetRecipe.isBannedByAdmin();
+    }
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
