@@ -31,7 +31,7 @@ public class PrivateList {
     
     /* *************** Asociaciones con otras entidades *************** */
     @ManyToOne(optional = false,
-            cascade = CascadeType.PERSIST,
+            //cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "creatorID")
     private User creator;
@@ -41,4 +41,16 @@ public class PrivateList {
     )
     private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
     
+    /* *************** DOMAIN-MODEL *************** */
+//    /** Inserta la receta recibida en la lista */
+//    public void insertRecipe(PrivateListRecipe recipe) {
+//        privateListRecipes.add(recipe);
+//        recipe.setPrivateList(this);
+//    }
+//
+//    /** Elimina la receta de la lista */
+//    public void removeRecipe(PrivateListRecipe recipe) {
+//        privateListRecipes.remove(recipe);
+//        recipe.setPrivateList(null);
+//    }
 }

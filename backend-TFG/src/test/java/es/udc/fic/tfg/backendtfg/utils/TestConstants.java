@@ -21,6 +21,8 @@ public class TestConstants {
     public static final String DEFAULT_AVATAR_NAME = "default_user_avatar.png";
     public static final String ADMIN_NICKNAME = "admin";
     public static final String ADMIN_PASSWORD = "secretPassword";
+    public static final String DEFAULT_PRIVATE_LIST_TITLE = "Private List";
+    public static final String DEFAULT_PRIVATE_LIST_DESCRIPTION = "This is my private list description";
     
     
     /* ************************* INGREDIENTS ************************* */

@@ -127,11 +127,13 @@ public class UserServiceImpl implements UserService {
         // Obtener al usuario
         User creator = userUtils.fetchUserByID(userID);
         
-        // Crear la lista y devolver datos
+        // Crear la lista
         PrivateList list = new PrivateList();
-        list.setCreator(creator);
         list.setTitle(title);
         list.setDescription(description);
+        
+        // Incluye la lista en las listas privadas del usuario
+        list.setCreator(creator);
         
         return listRepository.save(list);
     }
