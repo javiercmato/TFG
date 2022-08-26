@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class UserDTOUnitTest {
+class UserDTOUnitTest {
     @Test
     void testUserDTO() {
         // Crear datos de prueba

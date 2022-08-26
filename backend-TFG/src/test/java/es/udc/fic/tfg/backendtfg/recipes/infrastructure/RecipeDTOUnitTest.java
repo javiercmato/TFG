@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class RecipeDTOUnitTest {
+class RecipeDTOUnitTest {
     @Test
     void testRecipeDTO() {
         // Crear datos de prueba

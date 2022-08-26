@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class RecipeControllerTest {
+class RecipeControllerTest {
     private static final String API_ENDPOINT = "/api/recipes";
     private final ObjectMapper jsonMapper = new ObjectMapper();
     private final int INITIAL_PAGE = 0;
