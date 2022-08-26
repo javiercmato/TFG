@@ -80,8 +80,8 @@ const translations = {
     'users.components.UpdateProfile.updateButton': 'Actualizar perfil',
     'users.components.BanUserButton.banButton': 'Inhabillitar usuario',
     'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
-    'users.components.UserProfile.deleteUser': 'Delete user',
-    'users.warning.UserIsBannedByAdmin': 'User has been banned by administrator',
+    'users.components.UserProfile.deleteUser': 'Borrar usuario',
+    'users.warning.UserIsBannedByAdmin': 'Usuario ha sido moderado por el administrador',
 
 
     /* ******************** Ingredients ******************** */
@@ -110,6 +110,9 @@ const translations = {
     'recipes.components.CreateRecipeButton.title': 'Crear receta',
     'recipes.components.FindRecipesForm.searchButton': 'Buscar recetas',
     'recipes.components.RecipeCard.button': 'Ver receta',
+    'recipes.components.BanRecipeButton.banButton': 'Inhabillitar receta',
+    'recipes.components.BanRecipeButton.unbanButton': 'Rehabillitar receta',
+    'recipes.warning.RecipeIsBannedByAdmin': 'Receta ha sido moderada por el administrador',
 
 
 
