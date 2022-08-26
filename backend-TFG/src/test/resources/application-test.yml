@@ -4,7 +4,7 @@ logging:
     org:
       hibernate:
         SQL: info
-      springframework: info
+      springframework: off
 spring:
   jpa:
     show-sql: false      # Mostrar consultas SQL ejecutadas por Hibernate

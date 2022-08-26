@@ -9,10 +9,11 @@ on:
       - develop
       - release
       - main
-  # O al abrir una nueva PR a la rama de desarrollo
+  # O al abrir una nueva Pull Request
   pull_request:
-    branches:
-      - develop
+    types:
+      - opened
+      - synchronize
     paths:
       - ./backend-TFG/
 
