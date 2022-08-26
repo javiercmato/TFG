@@ -12,6 +12,7 @@ export const CLEAR_RECIPE_DETAILS: string = 'recipes/clearRecipeDetails';
 export const FIND_RECIPES: string = 'recipes/findRecipes';
 export const CLEAR_RECIPES_SEARCH: string = 'recipes/clearRecipesSearch';
 export const DELETE_RECIPE: string = 'recipes/deleteRecipe';
+export const BAN_RECIPE: string = 'recipes/banRecipe';
 
 /* ******************** Tipos de las acciones ******************** */
 
@@ -52,6 +53,11 @@ export interface DeleteRecipeActionType {
     type: string
 }
 
+export interface BanRecipeActionType {
+    type: string,
+    payload: boolean
+}
+
 
 export type RecipeDispatchType = CreateCategoryActionType
     | GetCategoriesActionType
@@ -61,4 +67,5 @@ export type RecipeDispatchType = CreateCategoryActionType
     | FindRecipesActionType
     | ClearRecipesSearchActionType
     | DeleteRecipeActionType
+    | BanRecipeActionType
 ;

@@ -110,6 +110,17 @@ export const deleteRecipe = (recipeID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const banRecipeAsAdmin = (recipeID: string,
+                                 onSuccessCallback: CallbackFunction,
+                                 onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = RECIPES_ENDPOINT + `/admin/ban/${recipeID}`;
+    const requestConfig = configFetchParameters('PUT');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
