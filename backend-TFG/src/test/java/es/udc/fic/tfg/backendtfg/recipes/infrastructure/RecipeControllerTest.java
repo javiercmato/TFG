@@ -754,4 +754,90 @@ public class RecipeControllerTest {
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
+    
+    @Test
+    void whenBanRecipeAsAdmin_thenReturnTrue() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        String recipeID = recipe.getId().toString();
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/admin/ban/" + recipeID;
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(true);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenBanRecipeAsAdmin_andCurrentUserIsNotAdmin_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        AuthenticatedUserDTO notAdminDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData notAdminJwtData = jwtGenerator.extractInfo(notAdminDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(notAdminJwtData.getUserID(), category.getId());
+        String recipeID = recipe.getId().toString();
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/admin/ban/" + recipeID;
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", notAdminJwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenBanRecipeAsAdmin_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/admin/ban/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+
+
+    
 }
