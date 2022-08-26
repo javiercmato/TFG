@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class IngredientDTOUnitTest {
+class IngredientDTOUnitTest {
     @Test
     void testIngredientDTO() {
         // Crear datos de prueba

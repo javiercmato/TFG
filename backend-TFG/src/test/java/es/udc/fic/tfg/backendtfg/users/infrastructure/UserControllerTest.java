@@ -642,7 +642,7 @@ class UserControllerTest {
     
     
     @Test
-    void whenBanUserAsAdmin_thenReturnUserDTO() throws Exception {
+    void whenBanUserAsAdmin_thenReturnTrue() throws Exception {
         // Crear datos de prueba
         String nickname = "Foo";
         AuthenticatedUserDTO targetUserDTO = createAuthenticatedUser(generateValidUser(nickname));

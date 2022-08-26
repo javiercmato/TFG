@@ -68,4 +68,16 @@ public interface RecipeService {
      * @throws PermissionException Usuario no es propietario de la receta
      */
     void deleteRecipe(UUID recipeID, UUID userID) throws EntityNotFoundException, PermissionException;
+    
+    /**
+     * Banea una receta del sistema.
+     * Si la receta estaba baneada previamente, la desbanea.
+     * Caso de uso restringido al administrador.
+     * @param adminID ID del administrador
+     * @param recipeID ID de la receta a banear
+     * @return True si la receta está baneada: false si no está baneada.
+     * @throws EntityNotFoundException No se encuentra la receta
+     * @throws PermissionException El usuario no es administrador
+     */
+    boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException;
 }

@@ -86,6 +86,7 @@ public interface UserService {
      * @param targetUserID ID del usuario a banear
      * @return True si el usuario está baneado; false si no está baneado.
      * @throws EntityNotFoundException No se encuentra al usuario
+     * @throws PermissionException El usuario no es administrador
      */
     boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException, PermissionException;
 }

@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class CategoryDTOUnitTest {
+class CategoryDTOUnitTest {
     @Test
     void testCategoryDTO() {
         // Crear datos de prueba

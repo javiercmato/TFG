@@ -56,6 +56,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/recipes/*").permitAll()                                           // getRecipeDetails
                 .antMatchers(HttpMethod.GET,    "/api/recipes/find/").permitAll()                                       // findRecipes
                 .antMatchers(HttpMethod.DELETE, "/api/recipes/*").permitAll()                                           // deleteRecipe
+                .antMatchers(HttpMethod.PUT,    "/api/recipes/admin/ban/*").hasRole(UserRole.ADMIN.toString())          // banRecipeAsAdmin
                 
         
         

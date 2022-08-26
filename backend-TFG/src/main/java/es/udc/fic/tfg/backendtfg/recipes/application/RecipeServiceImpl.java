@@ -155,6 +155,25 @@ public class RecipeServiceImpl implements RecipeService {
         recipeRepo.delete(recipe);
     }
     
+    /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
+    @Override
+    public boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException {
+        // Commprobar si existe el administrador
+        try {
+            userUtils.fetchAdministrator(adminID);
+        } catch ( EntityNotFoundException ex) {
+            throw new PermissionException();
+        }
+        
+        // Obtener la receta a banear
+        Recipe targetRecipe = fetchRecipeByID(recipeID);
+        
+        // Aplicar/retirar baneo
+        targetRecipe.setBannedByAdmin(!targetRecipe.isBannedByAdmin());
+        recipeRepo.save(targetRecipe);
+        
+        return targetRecipe.isBannedByAdmin();
+    }
     
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
@@ -197,7 +216,7 @@ public class RecipeServiceImpl implements RecipeService {
         
         // Para cada item recibido, crea un paso con los datos recibidos
         stepParams.stream()
-                  .forEach((item) -> {
+                  .forEach(item -> {
                       RecipeStepID stepID = new RecipeStepID(recipe.getId(), item.getStep());
                       RecipeStep step = new RecipeStep(stepID, item.getText(), recipe);
                       
@@ -210,7 +229,7 @@ public class RecipeServiceImpl implements RecipeService {
     /** Registra una lista de imágenes y se las asigna a la receta recibida */
     private void createRecipePictures(List<CreateRecipePictureParamsDTO> pictureParams, Recipe recipe) {
         // Para cada item recibido, crea una imagen con los datos recibidos
-        pictureParams.forEach((item) -> {
+        pictureParams.forEach(item -> {
             // Separa la cabecera "data:image/*" de la imagen en Base 64 si la tiene
             String imageB64Data;
             if (item.getData().contains(",")) {
@@ -233,7 +252,7 @@ public class RecipeServiceImpl implements RecipeService {
     private void attachIngredientsToRecipe(List<CreateRecipeIngredientParamsDTO> ingredientParams, Recipe recipe) throws EntityNotFoundException {
         // Obtener los ID de los ingredientes y ordenarlos
         List<UUID> ingredientIds = ingredientParams.stream()
-                                                   .map((ing) -> ing.getIngredientID())
+                                                   .map(CreateRecipeIngredientParamsDTO::getIngredientID)
                                                    .collect(Collectors.toList());
         
         // Asignar cada ingrediente con sus propiedades a la receta recibida
