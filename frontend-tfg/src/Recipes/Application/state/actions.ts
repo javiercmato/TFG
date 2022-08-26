@@ -47,6 +47,11 @@ export const deleteRecipeAction = () : RecipeDispatchType => ({
     type: actionTypes.DELETE_RECIPE,
 })
 
+export const banRecipeAction = (isBanned: boolean) : RecipeDispatchType => ({
+    type: actionTypes.BAN_RECIPE,
+    payload: isBanned,
+})
+
 /* ************************* ASYNC ACTIONS ******************** */
 
 export const createCategoryAsyncAction = (category: CreateCategoryParamsDTO,
@@ -219,4 +224,33 @@ export const deleteRecipeAsyncAction = (recipeID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     recipeService.deleteRecipe(recipeID, onSuccess, onError);
+}
+
+export const banRecipeAsyncAction = (recipeID: string,
+                                     onSuccessCallback: NoArgsCallbackFunction,
+                                     onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (isBanned: boolean) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(banRecipeAction(isBanned));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    recipeService.banRecipeAsAdmin(recipeID, onSuccess, onError);
 }

@@ -1,6 +1,7 @@
 import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
 import {
+    BanRecipeActionType,
     CreateCategoryActionType,
     FindRecipesActionType,
     GetCategoriesActionType,
@@ -47,6 +48,11 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
 
         case actionTypes.DELETE_RECIPE:
             return initialState.recipe;
+
+        case actionTypes.BAN_RECIPE: {
+            let payload: boolean = (action as BanRecipeActionType).payload;
+            return ({...state, isBannedByAdmin: payload}) as Nullable<Recipe>;
+        }
 
         default:
             return state;

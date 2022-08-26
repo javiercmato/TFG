@@ -34,3 +34,4 @@ export const selectSearchCriteria = (state: RootState) : SearchCriteria => getRe
 
 export const selectSearchResultBlock = (state: RootState) : Nullable<Block<RecipeSummaryDTO>> => getRecipeSearch(state).result;
 
+export const isBannedByAdmin = (state: RootState) : boolean => selectRecipe(state)?.isBannedByAdmin!;

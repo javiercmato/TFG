@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Button, Carousel, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Button, Carousel, Col, Container, Image, Row} from "react-bootstrap";
 import {
     RecipeData,
     RecipeDataProps,
@@ -16,6 +16,7 @@ import {userRedux} from "../../Users";
 import {FormattedMessage} from "react-intl";
 import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
+import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -24,6 +25,7 @@ const RecipeDetails = () => {
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const recipeData = useAppSelector(recipesRedux.selectors.selectRecipe);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
+    const isRecipeBanned = useAppSelector(recipesRedux.selectors.isBannedByAdmin);
 
 
     const handleDeleteClick = (e: any) => {
@@ -48,6 +50,11 @@ const RecipeDetails = () => {
         steps: recipeData?.steps!,
     }
 
+    let banButtonProps: BanRecipeButtonProps = {
+        recipe: recipeData!,
+        onErrorCallback: setBackendErrors,
+    }
+
 
     // Solicita los datos de la receta cada vez que cambie el ID en la URL
     useEffect( () => {
@@ -65,7 +72,27 @@ const RecipeDetails = () => {
         }
     }, [dispatch, recipeID]);
 
-    if (recipeData === null) return <div>NO HAY RECETA</div>
+
+    // Mostrar aviso si no se encuentra la receta
+    if (recipeData === null) {
+        return (
+            <Alert variant="warning">
+                <FormattedMessage id="common.alerts.noResults" />
+            </Alert>
+        )
+    }
+
+    // Mostrar aviso si la receta está baneada por el administrador
+    if (isRecipeBanned) {
+        return (
+            <>
+                <BanRecipeButton {...banButtonProps} />
+                <Alert variant="warning">
+                    <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
+                </Alert>
+            </>
+        )
+    }
 
     return (
         <div>
@@ -147,6 +174,9 @@ const RecipeDetails = () => {
                             <FormattedMessage id="common.buttons.delete" />
                         </span>
                     </Button>
+                </Row>
+                <Row>
+                    <BanRecipeButton {...banButtonProps} />
                 </Row>
             </Container>
         </div>
