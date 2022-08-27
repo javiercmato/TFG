@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
@@ -89,4 +90,14 @@ public interface UserService {
      * @throws PermissionException El usuario no es administrador
      */
     boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException, PermissionException;
+    
+    /**
+     * Crea una lista privada con los datos recibidos.
+     * @param userID ID del usuario propietario
+     * @param title Título de la lista
+     * @param description Descripción de la lista
+     * @return Lista privada recién creada
+     * @throws EntityNotFoundException No se encuentra al usuario
+     */
+    PrivateList createPrivateList(UUID userID, String title, String description) throws EntityNotFoundException;
 }

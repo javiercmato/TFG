@@ -64,12 +64,15 @@ public class User {
     
     /* *************** Asociaciones con otras entidades *************** */
     @OneToMany(mappedBy = "creator",
-            cascade = CascadeType.PERSIST,
+            //cascade = CascadeType.PERSIST,
             orphanRemoval = true                // Borrar al usuario elimina también sus listas privadas
     )
     private Set<PrivateList> privateLists = new HashSet<>();
     
     @OneToMany(mappedBy = "author")
-    private Set<Recipe> recipes = new LinkedHashSet<>();
+    private Set<Recipe> recipes = new HashSet<>();
+
+    
+    /* *************** DOMAIN-MODEL *************** */
     
 }

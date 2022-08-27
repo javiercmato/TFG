@@ -2,14 +2,13 @@ package es.udc.fic.tfg.backendtfg.users.domain;
 
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -35,7 +34,8 @@ class PrivateListUnitTest {
                 () -> assertEquals(id, privateList.getId()),
                 () -> assertEquals(title, privateList.getTitle()),
                 () -> assertEquals(description, privateList.getDescription()),
-                () -> assertEquals(creator, privateList.getCreator())
+                () -> assertEquals(creator, privateList.getCreator()),
+                () -> assertTrue(privateList.getPrivateListRecipes().isEmpty())
         );
         
     }

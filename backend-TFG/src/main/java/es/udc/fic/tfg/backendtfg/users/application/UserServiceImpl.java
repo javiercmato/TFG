@@ -2,10 +2,10 @@ package es.udc.fic.tfg.backendtfg.users.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
+import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +25,8 @@ public class UserServiceImpl implements UserService {
     private UserUtils userUtils;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private PrivateListRepository listRepository;
     
     
     /* ******************** FUNCIONALIDADES USUARIO ******************** */
@@ -118,6 +120,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByNickname(String nickname) throws EntityNotFoundException {
         return userUtils.fetchUserByNickname(nickname);
+    }
+    
+    @Override
+    public PrivateList createPrivateList(UUID userID, String title, String description) throws EntityNotFoundException {
+        // Obtener al usuario
+        User creator = userUtils.fetchUserByID(userID);
+        
+        // Crear la lista
+        PrivateList list = new PrivateList();
+        list.setTitle(title);
+        list.setDescription(description);
+        
+        // Incluye la lista en las listas privadas del usuario
+        list.setCreator(creator);
+        
+        return listRepository.save(list);
     }
     
     

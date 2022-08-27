@@ -3,10 +3,12 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.PrivateListConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,6 +185,7 @@ public class UserController {
         return UserConversor.toUserDTO(user);
     }
     
+    
     @GetMapping(path = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -198,6 +201,28 @@ public class UserController {
             @PathVariable("userID") UUID targetUserID) throws EntityNotFoundException, PermissionException {
         // Banear al usuario
         return userService.banUserAsAdmin(adminID, targetUserID);
+    }
+    
+    
+    @PostMapping(path = "/{userID}/lists",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public PrivateListDTO createPrivateList(@Validated @RequestBody CreatePrivateListParamsDTO params,
+                                            @RequestAttribute("userID") UUID userID,
+                                            @PathVariable("userID") UUID pathUserID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        PrivateList list = userService.createPrivateList(userID, params.getTitle(), params.getDescription());
+        
+        // Convertir datos y generar respuesta
+        return PrivateListConversor.toPrivateListDTO(list);
     }
     
 }

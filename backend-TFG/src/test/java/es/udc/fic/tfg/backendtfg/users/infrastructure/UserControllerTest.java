@@ -6,9 +6,9 @@ import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
+import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
@@ -50,6 +50,8 @@ class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
+    private MessageSource messageSource;
+    @Autowired
     private JwtGenerator jwtGenerator;
     @Autowired
     private UserRepository userRepository;
@@ -58,7 +60,7 @@ class UserControllerTest {
     @Autowired
     private UserController userController;
     @Autowired
-    private MessageSource messageSource;
+    private PrivateListRepository privateListRepository;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -100,6 +102,7 @@ class UserControllerTest {
         return userController.login(loginParamsDTO);
     }
     
+    /** Devuelve el DTO necesario para poder registrar a un usuario en el controlador */
     private SignUpParamsDTO generateSignUpParamsDtoFromUser(User user) {
         SignUpParamsDTO dto = new SignUpParamsDTO();
         dto.setName(user.getName());
@@ -112,6 +115,16 @@ class UserControllerTest {
         );
         
         return dto;
+    }
+    
+    /** Crea una lista privada con datos válidos */
+    private PrivateList generatePrivateList(User creator) {
+        PrivateList list = new PrivateList();
+        list.setCreator(creator);
+        list.setTitle(DEFAULT_PRIVATE_LIST_TITLE);
+        list.setDescription(DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        return list;
     }
     
     /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
@@ -403,7 +416,7 @@ class UserControllerTest {
     
     
     @Test
-    void whenChangePasswordToOtherUser_thenUnauthorized_becausePermissionException() throws Exception {
+    void whenChangePasswordToOtherUser_thenForbidden_becausePermissionException() throws Exception {
         // Crear datos de prueba
         User currentUser = generateValidUser("currentUser");
         AuthenticatedUserDTO currentUserDTO = createAuthenticatedUser(currentUser);
@@ -509,7 +522,7 @@ class UserControllerTest {
     
     
     @Test
-    void whenUpdateProfileToOtherUser_thenUnauthorized_becausePermissionException() throws Exception {
+    void whenUpdateProfileToOtherUser_thenForbidden_becausePermissionException() throws Exception {
         // Crear datos de prueba
         User currentUser = generateValidUser("currentUser");
         User targetUser = generateValidUser("targetUser");
@@ -572,7 +585,7 @@ class UserControllerTest {
     
     
     @Test
-    void whenDeleteAnotherUser__thenUnauthorized_becausePermissionException() throws Exception {
+    void whenDeleteAnotherUser__thenForbidden_becausePermissionException() throws Exception {
         // Crear datos de prueba
         User currentUser = generateValidUser("currentUser");
         User targetUser = generateValidUser("targetUser");
@@ -666,7 +679,7 @@ class UserControllerTest {
     }
     
     @Test
-    void whenBanUserAsAdmin_andCurrentUserIsNotAdmin_thenUnauthorized_becausePermissionException() throws Exception {
+    void whenBanUserAsAdmin_andCurrentUserIsNotAdmin_thenForbidden_becausePermissionException() throws Exception {
         // Crear datos de prueba
         String targetNickname = "TargetUser";
         String currentUserNickname = "CurrentUser";
@@ -691,4 +704,61 @@ class UserControllerTest {
                         .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenCreatePrivateList_thenCreated() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        CreatePrivateListParamsDTO paramsDTO = new CreatePrivateListParamsDTO(DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        // Ejecutar funcionalidades
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists";
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        
+        // Comprobar resultados
+        //String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedList);
+        action.andExpect(status().isCreated())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+    
+    @Test
+    void whenCreatePrivateListAsOtherUser_thenForbidden_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        String userNickname = "Foo";
+        String otherUserNickname = "Bar";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(userNickname));
+        AuthenticatedUserDTO otherUserDTO = createAuthenticatedUser(generateValidUser(otherUserNickname));
+        JwtData userJwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        JwtData otherUserJwtData = jwtGenerator.extractInfo(otherUserDTO.getServiceToken());
+        CreatePrivateListParamsDTO paramsDTO = new CreatePrivateListParamsDTO(DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        // Ejecutar funcionalidades
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        String endpointAddress = API_ENDPOINT + "/" + userJwtData.getUserID() + "/lists";
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", otherUserJwtData.getUserID())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
 }

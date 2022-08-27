@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/users/*").permitAll()                                             // deleteUser
                 .antMatchers(HttpMethod.PUT,    "/api/users/*").permitAll()                                             // updateProfile
                 .antMatchers(HttpMethod.PUT,    "/api/users/admin/ban/*").hasRole(UserRole.ADMIN.toString())            // banUserAsAdmin
+                .antMatchers(HttpMethod.POST,   "/api/users/*/lists").permitAll()                                       // createPrivateList
                 // INGREDIENT ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/").permitAll()                                        // createIngredient
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/").permitAll()                                        // findAllIngredients
