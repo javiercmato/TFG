@@ -2,7 +2,6 @@ import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
 import {
     BanRecipeActionType,
-    CreateCategoryActionType,
     FindRecipesActionType,
     GetCategoriesActionType,
     GetRecipeDetailsActionType,
@@ -18,9 +17,9 @@ const categories = (state: Array<Category> = initialState.categories,
                     action: RecipeDispatchType): Array<Category> => {
     switch (action.type) {
         case actionTypes.CREATE_CATEGORY: {
-            let payload: Category = (action as CreateCategoryActionType).payload;
+            //let payload: Category = (action as CreateCategoryActionType).payload;
 
-            return [...state, payload];
+            return state;
         }
 
         case actionTypes.GET_CATEGORIES: {

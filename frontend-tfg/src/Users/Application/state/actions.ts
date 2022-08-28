@@ -4,6 +4,8 @@ import {AuthenticatedUser, User} from "../../Domain";
 import {AppThunk} from "../../../store";
 import {appRedux as app, ErrorDto} from "../../../App";
 import * as userService from "../userService";
+import PrivateList from "../../Domain/PrivateList";
+import {CreatePrivateListParamsDTO} from "../../Infrastructure";
 
 /* ************************* DISPATCHABLE ACTIONS ******************** */
 
@@ -43,6 +45,12 @@ export const banUserAction = (isBanned: boolean) : UserDispatchType => ({
 export const deleteUserAction = () : UserDispatchType => ({
     type: actionTypes.DELETE_USER,
 })
+
+export const createPrivateListAction = (list: PrivateList) : UserDispatchType => ({
+    type: actionTypes.CREATE_PRIVATE_LIST,
+    payload: list,
+})
+
 
 
 /* ************************* ASYNC ACTIONS ******************** */
@@ -270,4 +278,35 @@ export const deleteUserAsyncAction = (userID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     userService.deleteUser(userID, onSuccess, onError);
+}
+
+export const createPrivateListAsyncAction = (userID: string,
+                                             params: CreatePrivateListParamsDTO,
+                                             onSuccessCallback: CallbackFunction,
+                                             onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (list: PrivateList) : void => {
+        // Actualiza estado de aplicación
+        dispatch(createPrivateListAction(list));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(list);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.createPrivateList(userID, params, onSuccess, onError);
 }

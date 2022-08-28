@@ -1,7 +1,6 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
 import {
-    CreateIngredientTypeActionType,
     FindAllIngredientsActionType,
     FindAllIngredientTypesActionType,
     FindIngredientsActionType,
@@ -20,9 +19,9 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
             return (action as FindAllIngredientTypesActionType).payload;
 
         case actionTypes.CREATE_INGREDIENT_TYPE:
-            let payload: IngredientType = (action as CreateIngredientTypeActionType).payload;
+            //let payload: IngredientType = (action as CreateIngredientTypeActionType).payload;
 
-            return [...state, payload]
+            return state;
 
         default:
             return state;

@@ -1,4 +1,5 @@
 import {AuthenticatedUser, User} from "../../Domain";
+import PrivateList from "../../Domain/PrivateList";
 
 
 /* ******************** Nombres de las acciones ******************** */
@@ -11,6 +12,7 @@ export const FIND_USER_BY_NICKNAME : string = 'users/findUserByNickname';
 export const UPDATE_PROFILE : string = 'users/updateProfile';
 export const BAN_USER : string = 'users/banUser';
 export const DELETE_USER : string = 'users/deleteUser';
+export const CREATE_PRIVATE_LIST : string = 'users/createPrivateList';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -53,6 +55,11 @@ export interface DeleteUserActionType {
     type: string,
 }
 
+export interface CreatePrivateListActionType {
+    type: string,
+    payload: PrivateList,
+}
+
 
 export type UserDispatchType = SignUpUserActionType
     | LoginActionType
@@ -62,4 +69,5 @@ export type UserDispatchType = SignUpUserActionType
     | UpdateProfileActionType
     | BanUserActionType
     | DeleteUserActionType
+    | CreatePrivateListActionType
 ;

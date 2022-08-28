@@ -9,7 +9,7 @@ export {userService} from './Application';
 
 
 /* ********** Infrastructure ********** */
-
+export type {UserSummaryDTO, CreatePrivateListParamsDTO} from './Infrastructure';
 
 
 /* ********** Components ********** */
