@@ -7,6 +7,7 @@ import {
     setServiceToken
 } from "../../proxy";
 import {AuthenticatedUser, User} from "../Domain";
+import {CreatePrivateListParamsDTO} from "../Infrastructure";
 
 const USERS_ENDPOINT = '/users';
 
@@ -149,6 +150,18 @@ export const deleteUser = (userID: string,
     // Configurar petición al servicio
     const endpoint = USERS_ENDPOINT + `/${userID}`;
     const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const createPrivateList = (userID: string,
+                                  params: CreatePrivateListParamsDTO,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists`;
+    const requestConfig = configFetchParameters('POST', params);
 
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);

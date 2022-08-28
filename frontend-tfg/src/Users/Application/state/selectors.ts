@@ -1,12 +1,14 @@
 import {RootState} from "../../../store";
 import {IUserState} from "./IUserState";
-import {User} from "../../Domain";
+import {PrivateList, User} from "../../Domain";
 
 const getModuleState = (state: RootState) : IUserState => state.users;
 
 const getUserModule = (state: RootState) : Nullable<User> => getModuleState(state).user;
 
 const getUserSearchModule = (state: RootState) : Nullable<User> => getModuleState(state).userSearch;
+
+const getPrivateListsModule = (state: RootState) : Array<PrivateList> => getModuleState(state).privateLists;
 
 /* ******************** DATOS DE USUARIO ******************** */
 
@@ -30,3 +32,8 @@ export const selectUserSearch = (state: RootState) : User => getUserSearchModule
 export const isUserSearchAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.role! === 'ADMIN';
 
 export const isUserSearchBannedByAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.isBannedByAdmin!;
+
+
+/* ******************** DATOS DE LISTAS PRIVADAS ******************** */
+
+export const selectPrivateLists = (state: RootState) : Array<PrivateList> => getPrivateListsModule(state);

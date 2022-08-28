@@ -2,6 +2,7 @@ import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
 import {
     BanUserActionType,
+    CreatePrivateListActionType,
     FindUserActionType,
     SignUpUserActionType,
     UpdateProfileActionType,
@@ -9,6 +10,7 @@ import {
 } from './actionTypes';
 import {initialState, IUserState} from "./IUserState";
 import {User} from "../../Domain";
+import PrivateList from "../../Domain/PrivateList";
 
 
 const user = (state: Nullable<User> = initialState.user,
@@ -55,10 +57,25 @@ const userSearch = (state: Nullable<User> = initialState.userSearch,
     }
 }
 
+const privateList = (state: Array<PrivateList> = initialState.privateLists,
+                      action: UserDispatchType) : Array<PrivateList> => {
+    switch (action.type) {
+        case actionTypes.CREATE_PRIVATE_LIST: {
+            let payload: PrivateList = (action as CreatePrivateListActionType).payload;
+
+            return [...state, payload];
+        }
+
+        default:
+            return state;
+    }
+}
+
 
 const userReducer = combineReducers<IUserState>({
     user: user,
-    userSearch: userSearch
+    userSearch: userSearch,
+    privateLists: privateList,
 });
 
 export default userReducer;
