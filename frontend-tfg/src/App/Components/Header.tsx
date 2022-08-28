@@ -44,10 +44,15 @@ const Header = () => {
             isDivided: false,
         },
         {
+            link: `/lists`,
+            i18nID: 'privateLists',
+            isDivided: true,
+        },
+        {
             link: `/logout`,
             i18nID: 'logout',
             isDivided: true,
-        }
+        },
     ];
 
     // Elementos del desplegable para acciones del usuario registrado

@@ -1,5 +1,5 @@
 /* ********** Domain ********** */
-export type {User, AuthenticatedUser} from './Domain';
+export type {User, AuthenticatedUser, PrivateList} from './Domain';
 
 /* ********** Application ********** */
 export {userRedux} from './Application';
@@ -14,3 +14,4 @@ export type {UserSummaryDTO, CreatePrivateListParamsDTO} from './Infrastructure'
 
 /* ********** Components ********** */
 export {SignUp, Login, Logout, ChangePassword, UserAvatar, UserProfile, UpdateProfile, BanUserButton} from './Components';
+export {PrivateListsPage} from './Components';

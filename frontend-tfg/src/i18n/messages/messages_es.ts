@@ -60,8 +60,9 @@ const translations = {
     'app.components.Header.globalLinks.recipes': 'Recetas',
     'app.components.Header.userActions.logout': 'Cerrar sesión',
     'app.components.Header.userActions.changePassword': 'Cambiar contraseña',
-    'app.components.Header.userActions.seeProfile': 'Ver perfil',
+    'app.components.Header.userActions.seeProfile': 'Ver mi perfil',
     'app.components.Header.userActions.editProfile': 'Editar perfil',
+    'app.components.Header.userActions.privateLists': 'Mis listas privadas',
 
 
     /* ******************** Users ******************** */
@@ -81,6 +82,12 @@ const translations = {
     'users.components.BanUserButton.banButton': 'Inhabillitar usuario',
     'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
     'users.components.UserProfile.deleteUser': 'Borrar usuario',
+    'users.components.PrivateListsPage.title': 'Crear lista privada',
+    'users.components.CreatePrivateList.title.placeholder': 'P. ej.: "Veranito ☀️"',
+    'users.components.CreatePrivateList.description.placeholder': 'P. ej.: "Recetas para el verano"',
+    'users.components.CreatePrivateList.createListButton': 'Crear lista privada',
+
+
     'users.warning.UserIsBannedByAdmin': 'Usuario ha sido moderado por el administrador',
 
 
