@@ -1,11 +1,14 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
@@ -100,4 +103,31 @@ public interface UserService {
      * @throws EntityNotFoundException No se encuentra al usuario
      */
     PrivateList createPrivateList(UUID userID, String title, String description) throws EntityNotFoundException;
+    
+    /**
+     * Recupera todas las listas privadas que tiene el usuario recibido.
+     * @param userID ID del usuario
+     * @return Listas privaddas del usuario
+     * @throws EntityNotFoundException No se encuentra al usuario
+     */
+    List<PrivateList> getPrivateListsByUser(UUID userID) throws EntityNotFoundException;
+    
+    /**
+     * Obtiene la información de la lista privada recibida.
+     * @param listID ID de la lista privada
+     * @return Información de la lista privada
+     * @throws EntityNotFoundException No se encuentra la lista
+     */
+    PrivateList findPrivateListByID(UUID listID) throws EntityNotFoundException;
+    
+    /**
+     * Recupera las recetas paginadas guardadas en la lista privada recibida.
+     * @param listID ID de la lista privada
+     * @param page Número de página
+     * @param pageSize Tamaño de página
+     * @return Bloque de recetas guardadas
+     * @throws EntityNotFoundException No se encuentra la lista privada
+     */
+    Block<Recipe> getRecipesFromPrivateList(UUID listID, int page, int pageSize) throws EntityNotFoundException;
+    
 }

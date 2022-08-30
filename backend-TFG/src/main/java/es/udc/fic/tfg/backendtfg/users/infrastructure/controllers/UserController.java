@@ -19,8 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -204,6 +203,8 @@ public class UserController {
     }
     
     
+    
+    /* ****************************** LISTAS PRIVADAS ****************************** */
     @PostMapping(path = "/{userID}/lists",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -220,6 +221,42 @@ public class UserController {
         
         // Llamada al servicio
         PrivateList list = userService.createPrivateList(userID, params.getTitle(), params.getDescription());
+        
+        
+        // Convertir datos y generar respuesta
+        return PrivateListConversor.toPrivateListDTO(list);
+    }
+    
+    @GetMapping(path = "/{userID}/lists",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<PrivateListSummaryDTO> getPrivateListsByUser(@RequestAttribute("userID") UUID userID,
+                                                            @PathVariable("userID") UUID pathUserID)
+            throws PermissionException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        List<PrivateList> userLists = userService.getPrivateListsByUser(userID);
+        
+        // Convertir datos y generar respuesta
+        return PrivateListConversor.toPrivateListSummaryDTOList(userLists);
+    }
+    
+    @GetMapping(path = "/{userID}/lists/{listID}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public PrivateListDTO getPrivateListDetails(@RequestAttribute("userID") UUID userID,
+                                                            @PathVariable("userID") UUID pathUserID,
+                                                            @PathVariable("listID") UUID listID)
+            throws PermissionException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el propietario de la lista son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        PrivateList list = userService.findPrivateListByID(listID);
         
         // Convertir datos y generar respuesta
         return PrivateListConversor.toPrivateListDTO(list);

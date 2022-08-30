@@ -47,7 +47,6 @@ public class PrivateList {
 //        privateListRecipes.add(recipe);
 //        recipe.setPrivateList(this);
 //    }
-//
 //    /** Elimina la receta de la lista */
 //    public void removeRecipe(PrivateListRecipe recipe) {
 //        privateListRecipes.remove(recipe);

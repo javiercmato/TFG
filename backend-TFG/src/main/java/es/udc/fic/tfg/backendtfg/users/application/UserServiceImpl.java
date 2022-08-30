@@ -1,6 +1,9 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.PrivateListRecipeRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -8,12 +11,13 @@ import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordExcept
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 @Transactional
 @Service
@@ -27,6 +31,8 @@ public class UserServiceImpl implements UserService {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private PrivateListRepository listRepository;
+    @Autowired
+    private PrivateListRecipeRepository listRecipeRepository;
     
     
     /* ******************** FUNCIONALIDADES USUARIO ******************** */
@@ -138,7 +144,37 @@ public class UserServiceImpl implements UserService {
         return listRepository.save(list);
     }
     
+    @Override
+    public List<PrivateList> getPrivateListsByUser(UUID userID) throws EntityNotFoundException {
+        // Obtener al usuario
+        User user = userUtils.fetchUserByID(userID);
+        
+        return user.getAllPrivateLists();
+    }
     
+    @Override
+    public PrivateList findPrivateListByID(UUID listID) throws EntityNotFoundException {
+        // Obtiene la lista. Si no existe lanza EntityNotFoundException
+        Optional<PrivateList> optionalPrivateList = listRepository.findById(listID);
+        if ( optionalPrivateList.isEmpty() )
+            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+        
+        return optionalPrivateList.get();
+    }
+    
+    @Override
+    public Block<Recipe> getRecipesFromPrivateList(UUID listID, int page, int pageSize) throws EntityNotFoundException {
+        // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
+        if (!listRepository.existsById(listID))
+            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+        
+        // Recupera las recetas pertencientes a la lista
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Recipe> recipeSlice = listRecipeRepository.getRecipesFromPrivateList(listID, pageable);
+        
+        // Devuelve resultados
+        return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
+    }
     
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
     @Override
