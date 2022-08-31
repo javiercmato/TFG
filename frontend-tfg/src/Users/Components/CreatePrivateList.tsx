@@ -13,7 +13,6 @@ const CreatePrivateList = () => {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const userID = useAppSelector(userRedux.selectors.selectUserID);
-    const privateLists = useAppSelector(userRedux.selectors.selectPrivateLists);
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

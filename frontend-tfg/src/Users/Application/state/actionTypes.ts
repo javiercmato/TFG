@@ -1,5 +1,6 @@
 import {AuthenticatedUser, User} from "../../Domain";
 import PrivateList from "../../Domain/PrivateList";
+import PrivateListSummaryDTO from "../../Infrastructure/PrivateListSummaryDTO";
 
 
 /* ******************** Nombres de las acciones ******************** */
@@ -13,6 +14,8 @@ export const UPDATE_PROFILE : string = 'users/updateProfile';
 export const BAN_USER : string = 'users/banUser';
 export const DELETE_USER : string = 'users/deleteUser';
 export const CREATE_PRIVATE_LIST : string = 'users/createPrivateList';
+export const GET_PRIVATE_LISTS : string = 'users/getPrivateLists';
+export const GET_PRIVATE_LIST_DETAILS: string = 'users/getPrivateListDetails';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -60,6 +63,16 @@ export interface CreatePrivateListActionType {
     payload: PrivateList,
 }
 
+export interface GetPrivateListsActionType {
+    type: string,
+    payload: Array<PrivateListSummaryDTO>,
+}
+
+export interface GetPrivateListDetailsActionType {
+    type: string,
+    payload: PrivateList,
+}
+
 
 export type UserDispatchType = SignUpUserActionType
     | LoginActionType
@@ -70,4 +83,6 @@ export type UserDispatchType = SignUpUserActionType
     | BanUserActionType
     | DeleteUserActionType
     | CreatePrivateListActionType
+    | GetPrivateListsActionType
+    | GetPrivateListDetailsActionType
 ;

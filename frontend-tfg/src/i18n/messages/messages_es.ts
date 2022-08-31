@@ -9,6 +9,7 @@ const translations = {
     'common.results': 'Resultados',
 
 
+    'common.buttons.open': 'Abrir',
     'common.buttons.close': 'Cerrar',
     'common.buttons.edit': 'Editar',
     'common.buttons.uploadFile': 'Subir fichero',
@@ -83,6 +84,7 @@ const translations = {
     'users.components.BanUserButton.unbanButton': 'Rehabillitar usuario',
     'users.components.UserProfile.deleteUser': 'Borrar usuario',
     'users.components.PrivateListsPage.title': 'Crear lista privada',
+    'users.components.PrivateListsPage.myLists': 'Mis listas privadas',
     'users.components.CreatePrivateList.title.placeholder': 'P. ej.: "Veranito ☀️"',
     'users.components.CreatePrivateList.description.placeholder': 'P. ej.: "Recetas para el verano"',
     'users.components.CreatePrivateList.createListButton': 'Crear lista privada',

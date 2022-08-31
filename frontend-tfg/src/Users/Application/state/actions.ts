@@ -6,6 +6,7 @@ import {appRedux as app, ErrorDto} from "../../../App";
 import * as userService from "../userService";
 import PrivateList from "../../Domain/PrivateList";
 import {CreatePrivateListParamsDTO} from "../../Infrastructure";
+import PrivateListSummaryDTO from "../../Infrastructure/PrivateListSummaryDTO";
 
 /* ************************* DISPATCHABLE ACTIONS ******************** */
 
@@ -51,6 +52,15 @@ export const createPrivateListAction = (list: PrivateList) : UserDispatchType =>
     payload: list,
 })
 
+export const getPrivateListsAction = (lists: Array<PrivateListSummaryDTO>) : UserDispatchType => ({
+    type: actionTypes.GET_PRIVATE_LISTS,
+    payload: lists,
+})
+
+export const getPrivateListDetailsAction = (list: PrivateList) : UserDispatchType => ({
+    type: actionTypes.GET_PRIVATE_LIST_DETAILS,
+    payload: list,
+})
 
 
 /* ************************* ASYNC ACTIONS ******************** */
@@ -309,4 +319,65 @@ export const createPrivateListAsyncAction = (userID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     userService.createPrivateList(userID, params, onSuccess, onError);
+}
+
+export const getPrivateListsAsyncAction = (userID: string,
+                                           onSuccessCallback: CallbackFunction,
+                                           onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (lists: Array<PrivateListSummaryDTO>) : void => {
+        // Actualiza estado de aplicación
+        dispatch(getPrivateListsAction(lists));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(lists);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.getPrivateLists(userID, onSuccess, onError);
+}
+
+export const getPrivateListDetailsAsyncAction = (userID: string,
+                                                 privateListID: string,
+                                                 onSuccessCallback: CallbackFunction,
+                                                 onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (list: PrivateList) : void => {
+        // Actualiza estado de aplicación
+        dispatch(getPrivateListDetailsAction(list));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(list);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.getPrivateListDetails(userID, privateListID, onSuccess, onError);
 }
