@@ -1,10 +1,9 @@
-import {UserSummaryDTO} from "../Infrastructure";
 import {RecipeSummaryDTO} from "../../Recipes";
 
 interface PrivateList {
     id: string,
     title: string,
-    creator: UserSummaryDTO,
+    description: string,
     recipes: Array<RecipeSummaryDTO>
 }
 

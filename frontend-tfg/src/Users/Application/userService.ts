@@ -167,6 +167,29 @@ export const createPrivateList = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const getPrivateLists = (userID: string,
+                                onSuccessCallback: CallbackFunction,
+                                onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const getPrivateListDetails = (userID: string,
+                                      privateListID: string,
+                                      onSuccessCallback: CallbackFunction,
+                                      onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
 const processAuthenticatedUser = (authUser: AuthenticatedUser,
