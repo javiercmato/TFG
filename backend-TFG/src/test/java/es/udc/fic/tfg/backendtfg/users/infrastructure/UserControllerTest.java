@@ -5,12 +5,15 @@ import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.PrivateListConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.junit.jupiter.api.*;
@@ -758,6 +761,170 @@ class UserControllerTest {
         // Comprobar resultados
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
         action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsByUser_thenOK() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists";
+        ResultActions banUserAsAdminAction = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        List<PrivateList> userLists = userService.getPrivateListsByUser(jwtData.getUserID());
+        List<PrivateListSummaryDTO> expectedResponse = PrivateListConversor.toPrivateListSummaryDTOList(userLists);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        banUserAsAdminAction.andExpect(status().isOk())
+                            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                            .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsByUser_andUserIsNotOwner_thenForbidden_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsByUser_andUserDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + NON_EXISTENT_UUID + "/lists";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", NON_EXISTENT_UUID)
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {User.class.getSimpleName(), NON_EXISTENT_UUID},
+                User.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsDetails_thenOK() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList createdList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + createdList.getId();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        List<Recipe> recipesInList = userService.getRecipesFromPrivateList(createdList.getId());
+        PrivateListDTO expectedResponse = PrivateListConversor.toPrivateListDTO(createdList);
+        expectedResponse.setRecipes(RecipeConversor.toRecipeSummaryListDTO(recipesInList));
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsDetails_andUserIsNotOwner_thenForbidden_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList createdList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + createdList.getId();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetPrivateListsDetails_andListDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {PrivateList.class.getSimpleName(), NON_EXISTENT_UUID},
+                PrivateList.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }

@@ -27,4 +27,5 @@ public class PrivateListRecipe {
     @ManyToOne
     @MapsId("recipeID")
     private Recipe recipe;
+
 }

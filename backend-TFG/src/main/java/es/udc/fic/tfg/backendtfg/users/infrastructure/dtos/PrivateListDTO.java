@@ -1,6 +1,5 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeSummaryDTO;
 import lombok.*;
 
@@ -21,10 +20,6 @@ public class PrivateListDTO {
     
     @Size(max = 100)
     private String description;
-    
-    @NotNull
-    @JsonProperty("creator")
-    private UserSummaryDTO userSummaryDTO;
     
     @NotNull
     private List<RecipeSummaryDTO> recipes;

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -74,5 +75,11 @@ public class User {
 
     
     /* *************** DOMAIN-MODEL *************** */
-    
+    @Transient
+    /** Devuelve las listas privadas del usuario */
+    public List<PrivateList> getAllPrivateLists() {
+        return privateLists.stream()
+                .sorted((pl1, pl2) -> pl1.getTitle().compareToIgnoreCase(pl2.getTitle()))
+                .collect(Collectors.toList());
+    }
 }
