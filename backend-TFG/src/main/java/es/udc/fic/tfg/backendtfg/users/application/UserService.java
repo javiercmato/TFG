@@ -1,6 +1,5 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
-import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
@@ -121,13 +120,12 @@ public interface UserService {
     PrivateList findPrivateListByID(UUID listID) throws EntityNotFoundException;
     
     /**
-     * Recupera las recetas paginadas guardadas en la lista privada recibida.
+     * Recupera una lista con las recetas guardadas en la lista privada recibida.
      * @param listID ID de la lista privada
-     * @param page Número de página
-     * @param pageSize Tamaño de página
      * @return Bloque de recetas guardadas
      * @throws EntityNotFoundException No se encuentra la lista privada
      */
-    Block<Recipe> getRecipesFromPrivateList(UUID listID, int page, int pageSize) throws EntityNotFoundException;
+    List<Recipe> getRecipesFromPrivateList(UUID listID) throws EntityNotFoundException;
+    
     
 }

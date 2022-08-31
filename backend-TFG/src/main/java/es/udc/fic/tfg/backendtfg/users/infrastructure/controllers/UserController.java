@@ -2,6 +2,8 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -257,8 +259,12 @@ public class UserController {
         
         // Llamada al servicio
         PrivateList list = userService.findPrivateListByID(listID);
+        List<Recipe> recipesInList = userService.getRecipesFromPrivateList(listID);
         
         // Convertir datos y generar respuesta
+        PrivateListDTO dto = PrivateListConversor.toPrivateListDTO(list);
+        dto.setRecipes(RecipeConversor.toRecipeSummaryListDTO(recipesInList));
+        
         return PrivateListConversor.toPrivateListDTO(list);
     }
     

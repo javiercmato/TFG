@@ -1,6 +1,5 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
-import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.PrivateListRecipeRepository;
@@ -11,7 +10,6 @@ import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordExcept
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -163,17 +161,13 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
-    public Block<Recipe> getRecipesFromPrivateList(UUID listID, int page, int pageSize) throws EntityNotFoundException {
+    public List<Recipe> getRecipesFromPrivateList(UUID listID) throws EntityNotFoundException {
         // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
         if (!listRepository.existsById(listID))
             throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
         
         // Recupera las recetas pertencientes a la lista
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Slice<Recipe> recipeSlice = listRecipeRepository.getRecipesFromPrivateList(listID, pageable);
-        
-        // Devuelve resultados
-        return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
+        return listRecipeRepository.getRecipesFromPrivateList(listID);
     }
     
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */

@@ -1,12 +1,12 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import javax.validation.constraints.*;
 import java.util.UUID;
 
 @Getter
-@Setter
 @AllArgsConstructor
 public class PrivateListSummaryDTO {
     @NotNull

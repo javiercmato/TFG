@@ -1,10 +1,10 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
-import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeSummaryDTO;
 import lombok.*;
 
 import javax.validation.constraints.*;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,5 +22,5 @@ public class PrivateListDTO {
     private String description;
     
     @NotNull
-    private BlockDTO<RecipeSummaryDTO> recipes;
+    private List<RecipeSummaryDTO> recipes;
 }

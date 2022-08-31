@@ -6,6 +6,7 @@ import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.PrivateListSummaryDTO
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,7 @@ public class PrivateListConversor {
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setDescription(entity.getDescription());
+        dto.setRecipes(Collections.emptyList());
         
         return dto;
     }
@@ -29,7 +31,7 @@ public class PrivateListConversor {
     /* ******************** Convertir a conjunto de DTO ******************** */
     public static List<PrivateListSummaryDTO> toPrivateListSummaryDTOList(List<PrivateList> entitiesList) {
         return entitiesList.stream()
-                           .map(item -> toPrivateListSummaryDTO(item))
+                           .map(PrivateListConversor::toPrivateListSummaryDTO)
                            .collect(Collectors.toList());
     }
     
