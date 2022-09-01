@@ -142,4 +142,12 @@ public interface UserService {
      * @throws EntityNotFoundException No se encuentra la lista o la receta
      */
     void removeRecipeFromPrivateList(UUID listID, UUID recipeID) throws EntityNotFoundException;
+    
+    /**
+     * Elimina la lista privada recibida
+     * @param listID ID de la lista privada
+     * @throws EntityNotFoundException No existe la lista privada
+     */
+    void deletePrivateList(UUID listID) throws EntityNotFoundException;
+    
 }
