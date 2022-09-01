@@ -116,4 +116,10 @@ public class Recipe {
         privateListRecipes.add(plr);
         plr.setRecipe(this);
     }
+    
+    /** Indica que la receta ha sido retirada de la lista privada */
+    public void removeFromPrivateList(PrivateListRecipe plr) {
+        plr.setRecipe(null);
+        privateListRecipes.remove(plr);
+    }
 }

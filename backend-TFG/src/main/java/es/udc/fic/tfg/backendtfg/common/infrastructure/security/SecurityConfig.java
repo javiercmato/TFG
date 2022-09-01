@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/users/*/lists").permitAll()                                       // getPrivateListsByUser
                 .antMatchers(HttpMethod.GET,    "/api/users/*/lists/*").permitAll()                                     // getPrivateListDetails
                 .antMatchers(HttpMethod.POST,   "/api/users/*/lists/*/add/*").permitAll()                               // addRecipeToPrivateList
+                .antMatchers(HttpMethod.DELETE, "/api/users/*/lists/*/remove/*").permitAll()                            // removeRecipeFromPrivateList
                 // INGREDIENT ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/").permitAll()                                        // createIngredient
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/").permitAll()                                        // findAllIngredients
