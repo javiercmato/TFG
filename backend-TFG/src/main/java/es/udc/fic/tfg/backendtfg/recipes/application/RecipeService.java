@@ -81,11 +81,5 @@ public interface RecipeService {
      */
     boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException;
     
-    /**
-     * Añade la receta recibida a la lista privada recibida.
-     * @param listID ID de la lista privada
-     * @param recipeID ID de la receta a añadir
-     * @throws EntityNotFoundException No se encuentra la lista o la receta
-     */
-    void addRecipeToPrivateList(UUID listID, UUID recipeID) throws EntityNotFoundException;
+    
 }

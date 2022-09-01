@@ -10,7 +10,6 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListE
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
-import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -277,28 +276,6 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
     
-    @Override
-    public void addRecipeToPrivateList(UUID listID, UUID recipeID) throws EntityNotFoundException {
-        // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
-        Optional<PrivateList> optionalList = listRepo.findById(listID);
-        if ( optionalList.isEmpty())
-            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
-        PrivateList list = optionalList.get();
-        
-        // Comprueba si existe la receta. Si no existe lanza EntityNotFoundException
-        Optional<Recipe> optionalRecipe = recipeRepo.findById(recipeID);
-        if (optionalRecipe.isEmpty())
-            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
-        Recipe recipe = optionalRecipe.get();
-        
-        // Añadir receta a la lista
-        PrivateListRecipe listRecipe = new PrivateListRecipe();
-        listRecipe.setId(new PrivateListRecipeID(listID, recipeID));
-        listRecipe.setRecipe(recipe);
-        listRecipe.setInsertionDate(LocalDateTime.now());
-        listRecipeRepo.save(listRecipe);
-        
-        list.insertRecipe(listRecipe);
-    }
+    
     
 }
