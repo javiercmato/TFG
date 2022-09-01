@@ -49,9 +49,9 @@ public class PrivateList {
         plr.setPrivateList(this);
     }
     
-//    /** Elimina la receta de la lista */
-//    public void removeRecipe(PrivateListRecipe recipe) {
-//        privateListRecipes.remove(recipe);
-//        recipe.setPrivateList(null);
-//    }
+    /** Elimina la receta de la lista */
+    public void removeRecipe(PrivateListRecipe recipe) {
+        recipe.setPrivateList(null);
+        privateListRecipes.remove(recipe);
+    }
 }
