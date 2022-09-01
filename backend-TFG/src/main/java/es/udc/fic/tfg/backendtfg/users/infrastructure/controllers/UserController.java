@@ -297,4 +297,19 @@ public class UserController {
         // Llamada al servicio
         userService.removeRecipeFromPrivateList(listID, recipeID);
     }
+    
+    @DeleteMapping(path = "/{userID}/lists/{listID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePrivateList(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @PathVariable("listID") UUID listID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        userService.deletePrivateList(listID);
+    }
+    
 }
