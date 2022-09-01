@@ -42,11 +42,12 @@ public class PrivateList {
     private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
     
     /* *************** DOMAIN-MODEL *************** */
-//    /** Inserta la receta recibida en la lista */
-//    public void insertRecipe(PrivateListRecipe recipe) {
-//        privateListRecipes.add(recipe);
-//        recipe.setPrivateList(this);
-//    }
+    /** Inserta la receta recibida en la lista */
+    public void insertRecipe(PrivateListRecipe recipe) {
+        privateListRecipes.add(recipe);
+        recipe.setPrivateList(this);
+    }
+    
 //    /** Elimina la receta de la lista */
 //    public void removeRecipe(PrivateListRecipe recipe) {
 //        privateListRecipes.remove(recipe);

@@ -126,6 +126,6 @@ public interface UserService {
      * @throws EntityNotFoundException No se encuentra la lista privada
      */
     List<Recipe> getRecipesFromPrivateList(UUID listID) throws EntityNotFoundException;
-    
+
     
 }

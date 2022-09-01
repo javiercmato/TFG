@@ -170,6 +170,8 @@ public class UserServiceImpl implements UserService {
         return listRecipeRepository.getRecipesFromPrivateList(listID);
     }
     
+    
+    
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
     @Override
     public boolean banUserAsAdmin(UUID adminID, UUID targetUserID) throws EntityNotFoundException, PermissionException {
