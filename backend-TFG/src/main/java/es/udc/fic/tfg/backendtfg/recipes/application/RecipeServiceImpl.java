@@ -11,6 +11,7 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
+import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -28,24 +29,22 @@ public class RecipeServiceImpl implements RecipeService {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
     private CategoryRepository categoryRepo;
-    
     @Autowired
     private UserUtils userUtils;
-    
     @Autowired
     private IngredientRepository ingredientRepo;
-    
     @Autowired
     private RecipeRepository recipeRepo;
-    
     @Autowired
     private RecipeStepRepository stepRepo;
-    
     @Autowired
     private RecipePictureRepository pictureRepo;
-    
     @Autowired
     private RecipeIngredientRepository recipeIngredientRepo;
+    @Autowired
+    private PrivateListRepository listRepo;
+    @Autowired
+    private PrivateListRecipeRepository listRecipeRepo;
     
     
     /* ******************** FUNCIONALIDADES INGREDIENTES ******************** */
@@ -276,6 +275,7 @@ public class RecipeServiceImpl implements RecipeService {
             recipe.addIngredient(recipeIngredient);
         }
     }
+    
     
     
 }

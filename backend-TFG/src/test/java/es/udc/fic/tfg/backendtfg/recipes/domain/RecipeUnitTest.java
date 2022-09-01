@@ -3,6 +3,7 @@ package es.udc.fic.tfg.backendtfg.recipes.domain;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -176,6 +177,36 @@ class RecipeUnitTest {
                 () -> assertEquals(quantity, recipeIngredient.getQuantity()),
                 // Constructor sin argumentos funciona
                 () -> assertNotNull(noArgsEntity)
+        );
+    }
+    
+    @Test
+    void createPrivateListRecipe() {
+        // Crear datos de prueba
+        UUID privateListID = UUID.randomUUID();
+        UUID recipeID = UUID.randomUUID();
+        LocalDateTime insertionDate = LocalDateTime.now();
+        Recipe recipe = new Recipe();
+        PrivateList privateList = new PrivateList();
+    
+        // Ejecutar código
+        PrivateListRecipeID privateListRecipeID = new PrivateListRecipeID(privateListID, recipeID);
+        PrivateListRecipe privateListRecipe = new PrivateListRecipe();
+        privateListRecipe.setId(privateListRecipeID);
+        privateListRecipe.setInsertionDate(insertionDate);
+        privateListRecipe.setRecipe(recipe);
+        privateListRecipe.setPrivateList(privateList);
+    
+        // Comprobar resultados
+        assertAll(
+                // La clave primaria compuesta coincide
+                () -> assertEquals(privateListRecipeID, privateListRecipe.getId()),
+                () -> assertEquals(privateListID, privateListRecipeID.getPrivateListID()),
+                () -> assertEquals(recipeID, privateListRecipeID.getRecipeID()),
+                // Los datos son correctos
+                () -> assertEquals(recipe, privateListRecipe.getRecipe()),
+                () -> assertEquals(privateList, privateListRecipe.getPrivateList()),
+                () -> assertEquals(insertionDate, privateListRecipe.getInsertionDate())
         );
     }
 }

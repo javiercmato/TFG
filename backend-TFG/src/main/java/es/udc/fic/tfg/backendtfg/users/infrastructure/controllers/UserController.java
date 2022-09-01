@@ -268,4 +268,19 @@ public class UserController {
         return PrivateListConversor.toPrivateListDTO(list);
     }
     
+    @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void addRecipeToPrivateList(@RequestAttribute("userID") UUID userID,
+                                       @PathVariable("userID") UUID pathUserID,
+                                       @PathVariable("listID") UUID listID,
+                                       @PathVariable("recipeID") UUID recipeID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        userService.addRecipeToPrivateList(listID, recipeID);
+    }
 }

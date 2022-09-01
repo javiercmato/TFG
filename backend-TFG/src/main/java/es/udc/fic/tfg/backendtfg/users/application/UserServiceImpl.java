@@ -1,8 +1,9 @@
 package es.udc.fic.tfg.backendtfg.users.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.PrivateListRecipeRepository;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
     private PrivateListRepository listRepository;
     @Autowired
     private PrivateListRecipeRepository listRecipeRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
     
     
     /* ******************** FUNCIONALIDADES USUARIO ******************** */
@@ -169,6 +172,33 @@ public class UserServiceImpl implements UserService {
         // Recupera las recetas pertencientes a la lista
         return listRecipeRepository.getRecipesFromPrivateList(listID);
     }
+    
+    @Override
+    public void addRecipeToPrivateList(UUID listID, UUID recipeID) throws EntityNotFoundException {
+        // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
+        Optional<PrivateList> optionalList = listRepository.findById(listID);
+        if ( optionalList.isEmpty())
+            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+        PrivateList list = optionalList.get();
+        
+        // Comprueba si existe la receta. Si no existe lanza EntityNotFoundException
+        Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeID);
+        if (optionalRecipe.isEmpty())
+            throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
+        Recipe recipe = optionalRecipe.get();
+        
+        // Añadir receta a la lista
+        PrivateListRecipe plr = new PrivateListRecipe();
+        plr.setId(new PrivateListRecipeID(listID, recipeID));
+        plr.setInsertionDate(LocalDateTime.now());
+        list.insertRecipe(plr);             // Indica a la lista que tiene una nueva receta
+        recipe.insertToPrivateList(plr);    // Indica a la receta que ha sido añadida en una nueva lista
+        
+        listRecipeRepository.save(plr);
+        listRepository.save(list);
+        recipeRepository.save(recipe);
+    }
+    
     
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
     @Override

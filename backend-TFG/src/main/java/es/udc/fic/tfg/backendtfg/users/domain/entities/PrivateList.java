@@ -10,6 +10,7 @@ import java.util.*;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @Entity
 @Table(schema = "users", name = "privatelist")
@@ -39,14 +40,15 @@ public class PrivateList {
     @OneToMany(mappedBy = "privateList",
             orphanRemoval = true
     )
-    private List<PrivateListRecipe> privateListRecipes = new ArrayList<>();
+    private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
     
     /* *************** DOMAIN-MODEL *************** */
-//    /** Inserta la receta recibida en la lista */
-//    public void insertRecipe(PrivateListRecipe recipe) {
-//        privateListRecipes.add(recipe);
-//        recipe.setPrivateList(this);
-//    }
+    /** Inserta la receta recibida en la lista */
+    public void insertRecipe(PrivateListRecipe plr) {
+        privateListRecipes.add(plr);
+        plr.setPrivateList(this);
+    }
+    
 //    /** Elimina la receta de la lista */
 //    public void removeRecipe(PrivateListRecipe recipe) {
 //        privateListRecipes.remove(recipe);

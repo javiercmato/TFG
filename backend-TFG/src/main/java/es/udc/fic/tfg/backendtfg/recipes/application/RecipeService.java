@@ -80,4 +80,6 @@ public interface RecipeService {
      * @throws PermissionException El usuario no es administrador
      */
     boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException;
+    
+    
 }

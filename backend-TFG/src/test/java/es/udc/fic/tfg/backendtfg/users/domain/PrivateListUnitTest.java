@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.domain;
 
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,30 @@ class PrivateListUnitTest {
                 () -> assertEquals(creator, privateList.getCreator()),
                 () -> assertTrue(privateList.getPrivateListRecipes().isEmpty())
         );
-        
+    }
+    
+    @Test
+    void createPrivateListAndAddRecipe() {
+        // Crear datos de prueba
+        UUID privateListID = UUID.randomUUID();
+        Recipe recipe = new Recipe();
+        recipe.setId(UUID.randomUUID());
+        PrivateListRecipe plr = new PrivateListRecipe();
+        plr.setId(new PrivateListRecipeID(privateListID, recipe.getId()));
+    
+        // Ejecutar código
+        PrivateList privateList = new PrivateList();
+        privateList.setId(privateListID);
+        privateList.insertRecipe(plr);
+        recipe.insertToPrivateList(plr);
+    
+        // Comprobar resultados
+        assertAll(
+                // Hay recetas añadidas a la lista
+                () -> assertFalse(privateList.getPrivateListRecipes().isEmpty()),
+                // Los datos son correctos
+                () -> assertEquals(recipe, plr.getRecipe()),
+                () -> assertEquals(privateList, plr.getPrivateList())
+        );
     }
 }
