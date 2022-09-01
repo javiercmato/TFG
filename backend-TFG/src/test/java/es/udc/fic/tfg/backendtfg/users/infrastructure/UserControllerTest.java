@@ -6,8 +6,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
-import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
@@ -1071,4 +1070,128 @@ class UserControllerTest {
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
+    
+    @Test
+    void whenRemoveRecipeFromPrivateList_thenNoContent() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        userService.addRecipeToPrivateList(privateList.getId(), recipe.getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/remove/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        action.andExpect(status().isNoContent());
+    }
+    
+    @Test
+    void whenRemoveRecipeFromPrivateList_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        userService.addRecipeToPrivateList(privateList.getId(), recipe.getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/remove/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenRemoveRecipeFromPrivateList_andPrivateListDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        userService.addRecipeToPrivateList(privateList.getId(), recipe.getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + NON_EXISTENT_UUID + "/remove/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {PrivateList.class.getSimpleName(), NON_EXISTENT_UUID},
+                PrivateList.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenRemoveRecipeFromPrivateList_andRecipeNotInPrivateList_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/remove/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        PrivateListRecipeID compositeID = new PrivateListRecipeID(privateList.getId(), recipe.getId());
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] { PrivateListRecipe.class.getSimpleName(), compositeID},
+                PrivateListRecipe.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+
 }

@@ -10,7 +10,6 @@ import java.util.*;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(schema = "users", name = "privatelist")
