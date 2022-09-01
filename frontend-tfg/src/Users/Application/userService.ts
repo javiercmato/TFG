@@ -190,6 +190,45 @@ export const getPrivateListDetails = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const addRecipeToPrivateList = (userID: string,
+                                       privateListID: string,
+                                       recipeID: string,
+                                       onSuccessCallback: CallbackFunction,
+                                       onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}/add/${recipeID}`;
+    const requestConfig = configFetchParameters('POST');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const removeRecipeFromPrivateList = (userID: string,
+                                            privateListID: string,
+                                            recipeID: string,
+                                            onSuccessCallback: CallbackFunction,
+                                            onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}/remove/${recipeID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const deletePrivateList = (userID: string,
+                                  privateListID: string,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
 const processAuthenticatedUser = (authUser: AuthenticatedUser,
