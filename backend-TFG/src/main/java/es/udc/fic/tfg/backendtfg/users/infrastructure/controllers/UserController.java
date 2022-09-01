@@ -268,9 +268,7 @@ public class UserController {
         return PrivateListConversor.toPrivateListDTO(list);
     }
     
-    @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void addRecipeToPrivateList(@RequestAttribute("userID") UUID userID,

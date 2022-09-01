@@ -84,7 +84,6 @@ public class Recipe {
     
     
     /* *************** Domain-Model *************** */
-    
     /**
      * Añade el paso recibido a la receta
      * @param step Paso a añadir
@@ -110,5 +109,11 @@ public class Recipe {
     public void addIngredient(RecipeIngredient ingredient) {
         ingredients.add(ingredient);
         ingredient.setRecipe(this);
+    }
+    
+    /** Indica que la receta ha sido añadida a una lista privada */
+    public void insertToPrivateList(PrivateListRecipe plr) {
+        privateListRecipes.add(plr);
+        plr.setRecipe(this);
     }
 }

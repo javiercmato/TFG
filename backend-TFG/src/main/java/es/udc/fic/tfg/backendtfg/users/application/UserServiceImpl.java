@@ -184,17 +184,19 @@ public class UserServiceImpl implements UserService {
         // Comprueba si existe la receta. Si no existe lanza EntityNotFoundException
         Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeID);
         if (optionalRecipe.isEmpty())
-            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+            throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
         Recipe recipe = optionalRecipe.get();
         
         // Añadir receta a la lista
-        PrivateListRecipe listRecipe = new PrivateListRecipe();
-        listRecipe.setId(new PrivateListRecipeID(listID, recipeID));
-        listRecipe.setRecipe(recipe);
-        listRecipe.setInsertionDate(LocalDateTime.now());
-        listRecipeRepository.save(listRecipe);
+        PrivateListRecipe plr = new PrivateListRecipe();
+        plr.setId(new PrivateListRecipeID(listID, recipeID));
+        plr.setInsertionDate(LocalDateTime.now());
+        list.insertRecipe(plr);             // Indica a la lista que tiene una nueva receta
+        recipe.insertToPrivateList(plr);    // Indica a la receta que ha sido añadida en una nueva lista
         
-        list.insertRecipe(listRecipe);
+        listRecipeRepository.save(plr);
+        listRepository.save(list);
+        recipeRepository.save(recipe);
     }
     
     

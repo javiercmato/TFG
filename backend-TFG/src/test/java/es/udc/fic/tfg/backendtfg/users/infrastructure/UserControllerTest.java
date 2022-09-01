@@ -5,8 +5,12 @@ import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -64,6 +68,10 @@ class UserControllerTest {
     private UserController userController;
     @Autowired
     private PrivateListRepository privateListRepository;
+    @Autowired
+    private RecipeService recipeService;
+    @Autowired
+    private CategoryRepository categoryRepo;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -120,14 +128,37 @@ class UserControllerTest {
         return dto;
     }
     
-    /** Crea una lista privada con datos válidos */
-    private PrivateList generatePrivateList(User creator) {
-        PrivateList list = new PrivateList();
-        list.setCreator(creator);
-        list.setTitle(DEFAULT_PRIVATE_LIST_TITLE);
-        list.setDescription(DEFAULT_PRIVATE_LIST_DESCRIPTION);
+    private Recipe registerRecipe(UUID authorID, UUID categoryID) throws Exception {
+        // Crear pasos
+        List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
+        stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
+        // Crear imágenes
+        List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        String encodedImage = Base64.getEncoder()
+                                    .encodeToString(
+                                            loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION));
+        picturesParams.add(new CreateRecipePictureParamsDTO(1, encodedImage));
+    
+        CreateRecipeParamsDTO paramsDTO = new CreateRecipeParamsDTO();
+        paramsDTO.setName(DEFAULT_RECIPE_NAME);
+        paramsDTO.setDescription(DEFAULT_RECIPE_DESCRIPTION);
+        paramsDTO.setDuration(DEFAULT_RECIPE_DURATION);
+        paramsDTO.setDiners(DEFAULT_RECIPE_DINERS);
+        paramsDTO.setAuthorID(authorID);
+        paramsDTO.setCategoryID(categoryID);
+        paramsDTO.setPictures(picturesParams);
+        paramsDTO.setSteps(stepsParams);
+        paramsDTO.setIngredients(Collections.emptyList());
         
-        return list;
+        return recipeService.createRecipe(paramsDTO);
+    }
+    
+    /** Registra una categoría válida */
+    private Category registerCategory() {
+        Category category = new Category();
+        category.setName(DEFAULT_CATEGORY_NAME);
+        
+        return categoryRepo.save(category);
     }
     
     /** Recupera el texto asociado a la propiedad recibida a partir del fichero de I18N en el idioma indicado. */
@@ -925,6 +956,118 @@ class UserControllerTest {
         // Comprobar resultados
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
         action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenAddRecipeToPrivateList_thenOK() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/add/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        
+        // Comprobar resultados
+        action.andExpect(status().isOk());
+    }
+    
+    @Test
+    void whenAddRecipeToPrivateList_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/add/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenAddRecipeToPrivateList_andPrivateListDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + NON_EXISTENT_UUID + "/add/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {PrivateList.class.getSimpleName(), NON_EXISTENT_UUID},
+                PrivateList.class
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenAddRecipeToPrivateListAsOtherUser_thenForbidden_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        String nickname = "Foo";
+        AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        PrivateList privateList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe recipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + privateList.getId() + "/add/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
