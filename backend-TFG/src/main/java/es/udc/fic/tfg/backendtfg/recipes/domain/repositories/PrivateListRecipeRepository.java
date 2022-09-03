@@ -13,6 +13,7 @@ public interface PrivateListRecipeRepository extends PagingAndSortingRepository<
             "FROM PrivateListRecipe plr \n" +
                 "JOIN plr.privateList pls \n" +
                 "JOIN plr.recipe r \n" +
+                "JOIN FETCH r.pictures pictures \n" +
             "WHERE plr.id.privateListID = ?1 \n" +
             "ORDER BY plr.insertionDate DESC";
     

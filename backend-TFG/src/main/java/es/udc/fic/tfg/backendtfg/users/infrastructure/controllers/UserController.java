@@ -260,12 +260,13 @@ public class UserController {
         // Llamada al servicio
         PrivateList list = userService.findPrivateListByID(listID);
         List<Recipe> recipesInList = userService.getRecipesFromPrivateList(listID);
+        //recipesInList.forEach((r) -> r.getPrivateListRecipes());            // Código para cargar datos del proxy
         
         // Convertir datos y generar respuesta
         PrivateListDTO dto = PrivateListConversor.toPrivateListDTO(list);
         dto.setRecipes(RecipeConversor.toRecipeSummaryListDTO(recipesInList));
         
-        return PrivateListConversor.toPrivateListDTO(list);
+        return dto;
     }
     
     @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")

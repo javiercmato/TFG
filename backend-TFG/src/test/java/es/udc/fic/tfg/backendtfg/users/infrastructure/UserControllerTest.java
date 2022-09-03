@@ -883,6 +883,8 @@ class UserControllerTest {
         AuthenticatedUserDTO userDTO = createAuthenticatedUser(generateValidUser(nickname));
         JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
         PrivateList createdList = userService.createPrivateList(jwtData.getUserID(), DEFAULT_PRIVATE_LIST_TITLE, DEFAULT_PRIVATE_LIST_DESCRIPTION);
+        Recipe registeredRecipe = registerRecipe(jwtData.getUserID(), registerCategory().getId());
+        userService.addRecipeToPrivateList(createdList.getId(), registeredRecipe.getId());
         
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/" + jwtData.getUserID() + "/lists/" + createdList.getId();

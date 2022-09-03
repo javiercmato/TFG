@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -166,7 +167,13 @@ public class UserServiceImpl implements UserService {
             throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
         
         // Recupera las recetas pertencientes a la lista
-        return listRecipeRepository.getRecipesFromPrivateList(listID);
+        List<Recipe> recipes = listRecipeRepository.getRecipesFromPrivateList(listID);
+        // Para cada receta, obtener sus detalles
+        return recipes.stream()
+                      .map(r -> recipeRepository
+                              .retrieveRecipeDetails(r.getId())
+                              .get())
+                      .collect(Collectors.toList());
     }
     
     @Override
