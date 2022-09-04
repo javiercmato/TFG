@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -161,12 +162,14 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public List<Recipe> getRecipesFromPrivateList(UUID listID) throws EntityNotFoundException {
-        // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
-        if (!listRepository.existsById(listID))
-            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+        // Obtiene la lista. Si no existe lanza EntityNotFoundException
+        PrivateList list = fetchPrivateList(listID);
         
-        // Recupera las recetas pertencientes a la lista
-        return listRecipeRepository.getRecipesFromPrivateList(listID);
+        // Recupera las imágenes almacenadas en la lista navegando por las entidades asociadas
+        return list.getPrivateListRecipes()
+                   .stream()
+                   .map(PrivateListRecipe::getRecipe)
+                   .collect(Collectors.toList());
     }
     
     @Override

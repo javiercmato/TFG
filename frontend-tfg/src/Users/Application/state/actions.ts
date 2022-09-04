@@ -62,6 +62,18 @@ export const getPrivateListDetailsAction = (list: PrivateList) : UserDispatchTyp
     payload: list,
 })
 
+export const addRecipeToPrivateListAction = () : UserDispatchType => ({
+    type: actionTypes.ADD_RECIPE_TO_PRIVATE_LIST,
+})
+
+export const removeRecipeFromPrivateListAction = () : UserDispatchType => ({
+    type: actionTypes.REMOVE_RECIPE_FROM_PRIVATE_LIST,
+})
+
+export const deletePrivateListAction = () : UserDispatchType => ({
+    type: actionTypes.DELETE_PRIVATE_LIST,
+})
+
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
@@ -380,4 +392,99 @@ export const getPrivateListDetailsAsyncAction = (userID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     userService.getPrivateListDetails(userID, privateListID, onSuccess, onError);
+}
+
+export const addRecipeToPrivateListAsyncAction = (userID: string,
+                                                 privateListID: string,
+                                                 recipeID: string,
+                                                 onSuccessCallback: NoArgsCallbackFunction,
+                                                 onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = () : void => {
+        // Actualiza estado de aplicación
+        dispatch(addRecipeToPrivateListAction());
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.addRecipeToPrivateList(userID, privateListID, recipeID, onSuccess, onError);
+}
+
+export const removeRecipeFromPrivateListAsyncAction = (userID: string,
+                                                  privateListID: string,
+                                                  recipeID: string,
+                                                  onSuccessCallback: NoArgsCallbackFunction,
+                                                  onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = () : void => {
+        // Actualiza estado de aplicación
+        dispatch(removeRecipeFromPrivateListAction());
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.removeRecipeFromPrivateList(userID, privateListID, recipeID, onSuccess, onError);
+}
+
+export const deletePrivateListAsyncAction = (userID: string,
+                                             privateListID: string,
+                                             onSuccessCallback: NoArgsCallbackFunction,
+                                             onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = () : void => {
+        // Actualiza estado de aplicación
+        dispatch(deletePrivateListAction());
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(app.actions.error(error));
+        dispatch(app.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    userService.deletePrivateList(userID, privateListID, onSuccess, onError);
 }

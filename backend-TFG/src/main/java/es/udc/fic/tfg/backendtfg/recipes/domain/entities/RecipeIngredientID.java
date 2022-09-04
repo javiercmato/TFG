@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Embeddable
 public class RecipeIngredientID implements Serializable {
     @Column(table = "recipeingredient", name = "recipe_id")

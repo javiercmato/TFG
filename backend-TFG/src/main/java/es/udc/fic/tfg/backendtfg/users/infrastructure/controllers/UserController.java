@@ -4,6 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeSummaryDTO;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -263,9 +264,10 @@ public class UserController {
         
         // Convertir datos y generar respuesta
         PrivateListDTO dto = PrivateListConversor.toPrivateListDTO(list);
-        dto.setRecipes(RecipeConversor.toRecipeSummaryListDTO(recipesInList));
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesInList);
+        dto.setRecipes(recipeSummaryDTOList);
         
-        return PrivateListConversor.toPrivateListDTO(list);
+        return dto;
     }
     
     @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")

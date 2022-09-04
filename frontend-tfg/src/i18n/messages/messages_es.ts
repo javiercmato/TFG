@@ -47,10 +47,12 @@ const translations = {
     'common.fields.steps': 'Pasos',
     'common.fields.minutes': 'minutos',
     'common.fields.diners': 'raciones',
+    'common.fields.privateLists': 'Listas privadas',
 
 
     'common.Components.WarningModal.title': 'Aviso',
     'common.alerts.noResults': 'Sin resultados',
+    'common.alerts.listWithoutItems': 'Esta lista no tiene ningún elemento',
     'common.alerts.notLoggedIn': 'No puedes realizar esta operación sin estar registrado',
 
     /* ******************** App ******************** */
@@ -122,6 +124,7 @@ const translations = {
     'recipes.components.BanRecipeButton.banButton': 'Inhabillitar receta',
     'recipes.components.BanRecipeButton.unbanButton': 'Rehabillitar receta',
     'recipes.warning.RecipeIsBannedByAdmin': 'Receta ha sido moderada por el administrador',
+    'recipes.components.AddToPrivateListButton.text': 'Añadir receta a lista privada',
 
 
 

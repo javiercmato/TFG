@@ -17,6 +17,7 @@ import {FormattedMessage} from "react-intl";
 import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
+import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -51,6 +52,11 @@ const RecipeDetails = () => {
     }
 
     let banButtonProps: BanRecipeButtonProps = {
+        recipe: recipeData!,
+        onErrorCallback: setBackendErrors,
+    }
+
+    let addToListProps: AddToPrivateListButtonProps = {
         recipe: recipeData!,
         onErrorCallback: setBackendErrors,
     }
@@ -114,9 +120,10 @@ const RecipeDetails = () => {
                     </Col>
 
                     {/* Botones para editar y banear receta */}
-                    {(isLoggedIn) &&
-                        <Col md={(isLoggedIn) ? 2: 0}></Col>
-                    }
+                    <Col md={(isLoggedIn) ? 3: 0}>
+                        <BanRecipeButton {...banButtonProps} />
+                        <AddToPrivateListButton {...addToListProps} />
+                    </Col>
                 </Row>
 
                 {/* Información básica de la receta */}
@@ -174,9 +181,6 @@ const RecipeDetails = () => {
                             <FormattedMessage id="common.buttons.delete" />
                         </span>
                     </Button>
-                </Row>
-                <Row>
-                    <BanRecipeButton {...banButtonProps} />
                 </Row>
             </Container>
         </div>

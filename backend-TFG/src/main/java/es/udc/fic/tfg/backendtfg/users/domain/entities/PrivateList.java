@@ -37,7 +37,8 @@ public class PrivateList {
     private User creator;
     
     @OneToMany(mappedBy = "privateList",
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
     

@@ -49,7 +49,7 @@ const RecipeCard = ({recipe}: Props) => {
 
                         <Row>
                             <span>
-                                <MdFastfood/> {recipe.duration} <FormattedMessage id="common.fields.minutes"/>
+                                <MdFastfood/> {recipe.ingredientsCount} <FormattedMessage id="common.fields.ingredients"/>
                             </span>
                         </Row>
                     </Col>

@@ -65,13 +65,15 @@ public class Recipe {
     
     
     @OneToMany(mappedBy = "recipe",
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private Set<RecipePicture> pictures = new HashSet<>();
     
     
     @OneToMany(mappedBy = "recipe",
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
     private Set<RecipeIngredient> ingredients = new HashSet<>();
     

@@ -75,6 +75,18 @@ const privateList = (state: Array<PrivateListSummaryDTO> = initialState.privateL
             return payload;
         }
 
+        case actionTypes.ADD_RECIPE_TO_PRIVATE_LIST: {
+            return state;
+        }
+
+        case actionTypes.REMOVE_RECIPE_FROM_PRIVATE_LIST: {
+            return state;
+        }
+
+        case actionTypes.DELETE_PRIVATE_LIST: {
+            return state;
+        }
+
         default:
             return state;
     }

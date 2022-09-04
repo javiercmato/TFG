@@ -8,3 +8,4 @@ export {default as UpdateProfile} from './UpdateProfile';
 export {default as BanUserButton} from './BanUserButton';
 export {default as PrivateListsPage} from './PrivateListsPage';
 export {default as PrivateListDetails} from './PrivateListDetails';
+export {default as PrivateListSelector} from './PrivateListSelector';

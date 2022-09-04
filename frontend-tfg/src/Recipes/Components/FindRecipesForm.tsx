@@ -1,5 +1,5 @@
 import {Button, Col, Container, FormControl, FormLabel, Row} from "react-bootstrap";
-import {ChangeEvent, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {FormattedMessage, useIntl} from "react-intl";
 import CategorySelector from "./CategorySelector";
 import FindIngredients from "../../Ingredients/Components/FindIngredients";
@@ -49,6 +49,14 @@ const FindRecipesForm = () => {
         setIngredientIDList: setIngredientIDListQuery,
         onCheckItemCallback: addIngredientsToQuery,
     }
+
+
+    useEffect(() => {
+
+        return () => {
+            dispatch(recipesRedux.actions.clearRecipesSearchAction());
+        };
+    }, )
 
 
     return (
