@@ -11,7 +11,7 @@ const PrivateListsPage = () => {
     const dispatch = useAppDispatch();
     const privateLists = useAppSelector(userRedux.selectors.selectPrivateLists);
     const userID = useAppSelector(userRedux.selectors.selectUserID);
-    let hasPrivateLists: boolean = privateLists.length !== 0;
+    let hasPrivateLists: boolean = privateLists && privateLists.length !== 0;
     const [selectedListID, setSelectedListId] = useState<string>('');
 
     const onOpenListDetails = (listId: string) => {
@@ -67,7 +67,9 @@ const PrivateListsPage = () => {
                 </Col>
 
                 <Col>
-                    <PrivateListDetails {...privateListDetailsProps} />
+                    {selectedListID &&
+                        <PrivateListDetails {...privateListDetailsProps} />
+                    }
                 </Col>
             </Row>
         </Container>

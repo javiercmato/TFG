@@ -11,10 +11,10 @@ public interface PrivateListRecipeRepository extends PagingAndSortingRepository<
     String getRecipesFromPrivateListQuery =
             "SELECT r \n" +
             "FROM PrivateListRecipe plr \n" +
-                "JOIN plr.privateList pls \n" +
+                "JOIN plr.privateList pl \n" +
                 "JOIN plr.recipe r \n" +
                 "JOIN FETCH r.pictures pictures \n" +
-            "WHERE plr.id.privateListID = ?1 \n" +
+            "WHERE pl.id = ?1 \n" +
             "ORDER BY plr.insertionDate DESC";
     
     String getRecipesFromPrivateListQueryCount = String.format(

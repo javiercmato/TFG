@@ -14,4 +14,4 @@ export type {UserSummaryDTO, CreatePrivateListParamsDTO} from './Infrastructure'
 
 /* ********** Components ********** */
 export {SignUp, Login, Logout, ChangePassword, UserAvatar, UserProfile, UpdateProfile, BanUserButton} from './Components';
-export {PrivateListsPage, PrivateListDetails} from './Components';
+export {PrivateListsPage, PrivateListDetails, PrivateListSelector} from './Components';

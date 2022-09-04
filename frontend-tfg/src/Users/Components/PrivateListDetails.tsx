@@ -57,7 +57,7 @@ const PrivateListDetails = ({listID}: Props) => {
                             })
                         :
                         <Alert variant="warning">
-                            <FormattedMessage id="common.alerts.noResults" />
+                            <FormattedMessage id="common.alerts.listWithoutItems" />
                         </Alert>
                     }
                 </Card.Body>

@@ -162,18 +162,14 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public List<Recipe> getRecipesFromPrivateList(UUID listID) throws EntityNotFoundException {
-        // Comprueba si existe la lista privada. Si no existe lanza EntityNotFoundException
-        if (!listRepository.existsById(listID))
-            throw new EntityNotFoundException(PrivateList.class.getSimpleName(), listID);
+        // Obtiene la lista. Si no existe lanza EntityNotFoundException
+        PrivateList list = fetchPrivateList(listID);
         
-        // Recupera las recetas pertencientes a la lista
-        List<Recipe> recipes = listRecipeRepository.getRecipesFromPrivateList(listID);
-        // Para cada receta, obtener sus detalles
-        return recipes.stream()
-                      .map(r -> recipeRepository
-                              .retrieveRecipeDetails(r.getId())
-                              .get())
-                      .collect(Collectors.toList());
+        // Recupera las imágenes almacenadas en la lista navegando por las entidades asociadas
+        return list.getPrivateListRecipes()
+                   .stream()
+                   .map(PrivateListRecipe::getRecipe)
+                   .collect(Collectors.toList());
     }
     
     @Override

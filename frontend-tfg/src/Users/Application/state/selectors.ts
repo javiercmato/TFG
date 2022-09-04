@@ -42,15 +42,10 @@ export const isUserSearchBannedByAdmin = (state: RootState) : boolean => getUser
 
 export const selectPrivateLists = (state: RootState) : Array<PrivateListSummaryDTO> => getPrivateListsModule(state);
 
-export const selectPrivateListById = (listID: string, lists: Array<PrivateListSummaryDTO>) => {
-    if (!lists) return null;
 
-    const list = lists.find((l) => l.id === listID);
-    if (!list) return null;
 
-    return list;
-}
 
+/* ******************** DATOS DE LA LISTA PRIVADA SELECCIONADA ******************** */
 export const selectRecipeDetailsFromList = (recipeID: string, list: Array<RecipeSummaryDTO>) => {
     if (!list) return null;
 
@@ -59,7 +54,3 @@ export const selectRecipeDetailsFromList = (recipeID: string, list: Array<Recipe
 
     return recipe;
 }
-
-
-/* ******************** DATOS DE LA LISTA PRIVADA SELECCIONADA ******************** */
-
