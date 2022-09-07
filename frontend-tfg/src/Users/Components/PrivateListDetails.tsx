@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
-import {Alert, Card} from "react-bootstrap";
+import {Alert, Button, Card} from "react-bootstrap";
 import {RecipeCard, RecipeCardProps} from "../../Ingredients/Components";
 import {RecipeSummaryDTO} from "../../Recipes";
 import {card, cardHeader, cardSubtitle} from './styles/privateListDetails';
@@ -18,6 +18,12 @@ const PrivateListDetails = ({listID}: Props) => {
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const listDetails = useAppSelector(userRedux.selectors.getPrivateListDetailsModule);
     const hasRecipes: boolean = listDetails?.recipes.length !== 0;
+
+    const handleRemoveRecipeFromListClick = (recipeID: string): any => {
+        let onSuccess: NoArgsCallbackFunction = () => {};
+        let onError = (error: ErrorDto) => {setBackendErrors(error)};
+        dispatch(userRedux.actions.removeRecipeFromPrivateListAsyncAction(userID, String(listID), recipeID, onSuccess, onError));
+    }
 
 
     useEffect(() => {
@@ -49,8 +55,17 @@ const PrivateListDetails = ({listID}: Props) => {
                 <Card.Body>
                     {(hasRecipes) ?
                             listDetails?.recipes.map((recipe: RecipeSummaryDTO) => {
+                                let removeFromListButton =
+                                    <Button
+                                        variant="outline-danger"
+                                        onClick={() => handleRemoveRecipeFromListClick(recipe.id)}
+                                    >
+                                        <FormattedMessage id="recipes.components.RecipeCard.button.removeFromList" />
+                                    </Button>
+
                                 let recipeCardProps: RecipeCardProps = {
-                                    recipe: recipe
+                                    recipe: recipe,
+                                    privateListRemoveButton: removeFromListButton,
                                 }
 
                                 return <RecipeCard key={recipe.id} {...recipeCardProps} />

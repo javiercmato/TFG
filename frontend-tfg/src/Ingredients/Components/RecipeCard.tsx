@@ -10,10 +10,11 @@ import {MdFastfood} from "react-icons/md";
 import {Link} from "react-router-dom";
 
 interface Props {
-    recipe: RecipeSummaryDTO
+    recipe: RecipeSummaryDTO,
+    privateListRemoveButton?: JSX.Element,
 }
 
-const RecipeCard = ({recipe}: Props) => {
+const RecipeCard = ({recipe, privateListRemoveButton}: Props) => {
     const categories = useAppSelector(recipesRedux.selectors.selectCategories);
     const categoryName = recipesRedux.selectors.selectCategoryName(categories, recipe.categoryID);
 
@@ -65,11 +66,21 @@ const RecipeCard = ({recipe}: Props) => {
             </Card.Body>
 
             <Card.Footer>
-                <Link to={`/recipes/${recipe.id}`}>
-                    <Button>
-                        <FormattedMessage id="recipes.components.RecipeCard.button" />
-                    </Button>
-                </Link>
+                <Row>
+                    <Col>
+                        <Link to={`/recipes/${recipe.id}`}>
+                            <Button>
+                                <FormattedMessage id="recipes.components.RecipeCard.button.recipeDetails" />
+                            </Button>
+                        </Link>
+                    </Col>
+
+                    {(privateListRemoveButton) &&
+                        <Col>
+                            {privateListRemoveButton}
+                        </Col>
+                    }
+                </Row>
             </Card.Footer>
         </Card>
     )
