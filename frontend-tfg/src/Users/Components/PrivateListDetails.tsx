@@ -25,6 +25,12 @@ const PrivateListDetails = ({listID}: Props) => {
         dispatch(userRedux.actions.removeRecipeFromPrivateListAsyncAction(userID, String(listID), recipeID, onSuccess, onError));
     }
 
+    const handleDeleteListClick = (): any => {
+        let onSuccess: NoArgsCallbackFunction = () => {};
+        let onError = (error: ErrorDto) => {setBackendErrors(error)};
+        dispatch(userRedux.actions.deletePrivateListAsyncAction(userID, String(listID), onSuccess, onError));
+    }
+
 
     useEffect(() => {
         let onSuccess: CallbackFunction = () => {};
@@ -76,6 +82,15 @@ const PrivateListDetails = ({listID}: Props) => {
                         </Alert>
                     }
                 </Card.Body>
+
+                <Card.Footer>
+                    <Button
+                        variant="danger"
+                        onClick={() => handleDeleteListClick()}
+                    >
+                        <FormattedMessage id="common.buttons.delete" />
+                    </Button>
+                </Card.Footer>
             </Card>
         </div>
     )
