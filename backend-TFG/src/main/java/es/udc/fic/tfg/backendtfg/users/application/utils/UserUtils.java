@@ -41,7 +41,7 @@ public class UserUtils {
         // Comprobar si existe el usuario con el ID recibido
         Optional<User> optionalUser = userRepository.findById(userID);
         if ( optionalUser.isEmpty() )
-            throw new EntityNotFoundException(User.class.getName(), userID);
+            throw new EntityNotFoundException(User.class.getSimpleName(), userID);
         
         return optionalUser.get();
     }
@@ -56,7 +56,7 @@ public class UserUtils {
         // Comprobar si existe el usuario con el ID recibido
         Optional<User> optionalUser = userRepository.findByNicknameIgnoreCase(nickname);
         if ( optionalUser.isEmpty() )
-            throw new EntityNotFoundException(User.class.getName(), nickname);
+            throw new EntityNotFoundException(User.class.getSimpleName(), nickname);
         
         return optionalUser.get();
     }

@@ -2,8 +2,7 @@ package es.udc.fic.tfg.backendtfg.ingredients.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
-import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.IngredientType;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -74,6 +74,7 @@ public class IngredientServiceImpl implements IngredientService {
         return ingredientTypeRepo.save(type);
     }
     
+    @Transactional(readOnly = true)
     @Override
     public List<IngredientType> getIngredientTypes() {
         List<IngredientType> results = new ArrayList<>();
@@ -87,6 +88,7 @@ public class IngredientServiceImpl implements IngredientService {
         return results;
     }
     
+    @Transactional(readOnly = true)
     @Override
     public Block<Ingredient> findAllIngredients(int page, int pageSize) {
         // Buscar los ingredientes
@@ -96,6 +98,7 @@ public class IngredientServiceImpl implements IngredientService {
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
     }
     
+    @Transactional(readOnly = true)
     @Override
     public Block<Ingredient> findIngredientsByName(String name, int page, int pageSize) {
         // Busca los ingredientes por nombre en orden alfabético ascendente
@@ -105,6 +108,7 @@ public class IngredientServiceImpl implements IngredientService {
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
     }
     
+    @Transactional(readOnly = true)
     @Override
     public Block<Ingredient> findIngredientsByType(UUID ingredientTypeID, int page, int pageSize) {
         // Busca los ingredientes por tipo en orden alfabético ascendente
@@ -114,6 +118,7 @@ public class IngredientServiceImpl implements IngredientService {
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
     }
     
+    @Transactional(readOnly = true)
     @Override
     public Block<Ingredient> findIngredientsByNameAndType(String name, UUID ingredientTypeID, int page, int pageSize) {
         // Busca los ingredientes por nombre y tipo en orden alfabético ascendente
@@ -122,6 +127,14 @@ public class IngredientServiceImpl implements IngredientService {
     
         // Devuelve resultados
         return new Block<>(ingredientSlice.getContent(), ingredientSlice.hasNext(), ingredientSlice.getNumberOfElements());
+    }
+    
+    @Transactional(readOnly = true)
+    @Override
+    public List<MeasureUnit> getAllMeasureUnits( ) {
+        return Arrays.stream(MeasureUnit.values())
+                     .sorted()
+                     .collect(Collectors.toList());
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

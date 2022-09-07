@@ -6,7 +6,9 @@ import {
     setOnReauthenticationCallback,
     setServiceToken
 } from "../../proxy";
-import {AuthenticatedUser, User} from "../Domain";
+import {AuthenticatedUser, PrivateList, User} from "../Domain";
+import {CreatePrivateListParamsDTO} from "../Infrastructure";
+import {RecipeSummaryDTO} from "../../Recipes";
 
 const USERS_ENDPOINT = '/users';
 
@@ -154,6 +156,91 @@ export const deleteUser = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const createPrivateList = (userID: string,
+                                  params: CreatePrivateListParamsDTO,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists`;
+    const requestConfig = configFetchParameters('POST', params);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const getPrivateLists = (userID: string,
+                                onSuccessCallback: CallbackFunction,
+                                onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const getPrivateListDetails = (userID: string,
+                                      privateListID: string,
+                                      onSuccessCallback: CallbackFunction,
+                                      onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Añade la cabecera a las imágenes para poder mostrarlas correctamente
+    let onSuccess = (privateList: PrivateList) => {
+        privateList.recipes.forEach((dto: RecipeSummaryDTO) => {
+
+            if (dto.picture !== null)
+                dto.picture = addBase64ImageHeader(dto.picture);
+        })
+
+        onSuccessCallback(privateList);
+    }
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
+export const addRecipeToPrivateList = (userID: string,
+                                       privateListID: string,
+                                       recipeID: string,
+                                       onSuccessCallback: CallbackFunction,
+                                       onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}/add/${recipeID}`;
+    const requestConfig = configFetchParameters('POST');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const removeRecipeFromPrivateList = (userID: string,
+                                            privateListID: string,
+                                            recipeID: string,
+                                            onSuccessCallback: CallbackFunction,
+                                            onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}/remove/${recipeID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const deletePrivateList = (userID: string,
+                                  privateListID: string,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = USERS_ENDPOINT + `/${userID}/lists/${privateListID}`;
+    const requestConfig = configFetchParameters('DELETE');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+
 /* ************************* FUNCIONES AUXILIARES ************************* */
 /** Guarda el JWT en el navegador, da formato al usuario y asigna los callbacks */
 const processAuthenticatedUser = (authUser: AuthenticatedUser,
@@ -163,16 +250,19 @@ const processAuthenticatedUser = (authUser: AuthenticatedUser,
     setOnReauthenticationCallback(onReauthenticateCallback);
     authUser.user = formatUserData(authUser.user);
     onSuccessCallback(authUser);
-    }
+}
 
 /** Función que limpia y formatea los datos del usuario recibido */
 const formatUserData = (user: User) : User => {
     // Añadir cabecera de Base64 al avatar del usuario para visualizarlo correctamente
     //https://stackoverflow.com/a/40196009/11295728
     if (user?.avatar) {
-        user.avatar = "data:image/*;base64," + user.avatar;
+        user.avatar = addBase64ImageHeader(user.avatar);
     }
 
     return user;
 }
 
+const addBase64ImageHeader = (imageB64StringData: string) : string => {
+    return "data:image/*;base64," + imageB64StringData;
+}

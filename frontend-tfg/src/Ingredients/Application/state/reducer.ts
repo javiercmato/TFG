@@ -1,10 +1,10 @@
 import {combineReducers} from '@reduxjs/toolkit'
 import * as actionTypes from './actionTypes';
 import {
-    CreateIngredientTypeActionType,
     FindAllIngredientsActionType,
     FindAllIngredientTypesActionType,
     FindIngredientsActionType,
+    GetMeasureUnitsActionType,
     IngredientDispatchType
 } from './actionTypes';
 import {IIngredientState, initialState} from "./IIngredientState";
@@ -19,9 +19,20 @@ const ingredientTypes = (state: Array<IngredientType> = initialState.types,
             return (action as FindAllIngredientTypesActionType).payload;
 
         case actionTypes.CREATE_INGREDIENT_TYPE:
-            let payload: IngredientType = (action as CreateIngredientTypeActionType).payload;
+            //let payload: IngredientType = (action as CreateIngredientTypeActionType).payload;
 
-            return [...state, payload]
+            return state;
+
+        default:
+            return state;
+    }
+}
+
+const measures = (state: Array<string> = initialState.measures,
+                  action: IngredientDispatchType): Array<string> => {
+    switch (action.type) {
+        case actionTypes.GET_MEASURE_UNITS:
+            return (action as GetMeasureUnitsActionType).payload;
 
         default:
             return state;
@@ -55,6 +66,7 @@ const ingredientSearch = (state: Search<Ingredient> = initialState.ingredientSea
 
 const ingredientsReducer = combineReducers<IIngredientState>({
     types: ingredientTypes,
+    measures: measures,
     ingredientSearch: ingredientSearch,
 });
 

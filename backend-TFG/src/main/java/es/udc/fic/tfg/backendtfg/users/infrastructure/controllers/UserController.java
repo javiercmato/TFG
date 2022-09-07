@@ -2,11 +2,16 @@ package es.udc.fic.tfg.backendtfg.users.infrastructure.controllers;
 
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeSummaryDTO;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
+import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectPasswordException;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.PrivateListConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -183,6 +187,7 @@ public class UserController {
         return UserConversor.toUserDTO(user);
     }
     
+    
     @GetMapping(path = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -198,6 +203,115 @@ public class UserController {
             @PathVariable("userID") UUID targetUserID) throws EntityNotFoundException, PermissionException {
         // Banear al usuario
         return userService.banUserAsAdmin(adminID, targetUserID);
+    }
+    
+    
+    
+    /* ****************************** LISTAS PRIVADAS ****************************** */
+    @PostMapping(path = "/{userID}/lists",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public PrivateListDTO createPrivateList(@Validated @RequestBody CreatePrivateListParamsDTO params,
+                                            @RequestAttribute("userID") UUID userID,
+                                            @PathVariable("userID") UUID pathUserID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        PrivateList list = userService.createPrivateList(userID, params.getTitle(), params.getDescription());
+        
+        
+        // Convertir datos y generar respuesta
+        return PrivateListConversor.toPrivateListDTO(list);
+    }
+    
+    @GetMapping(path = "/{userID}/lists",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<PrivateListSummaryDTO> getPrivateListsByUser(@RequestAttribute("userID") UUID userID,
+                                                            @PathVariable("userID") UUID pathUserID)
+            throws PermissionException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        List<PrivateList> userLists = userService.getPrivateListsByUser(userID);
+        
+        // Convertir datos y generar respuesta
+        return PrivateListConversor.toPrivateListSummaryDTOList(userLists);
+    }
+    
+    @GetMapping(path = "/{userID}/lists/{listID}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public PrivateListDTO getPrivateListDetails(@RequestAttribute("userID") UUID userID,
+                                                            @PathVariable("userID") UUID pathUserID,
+                                                            @PathVariable("listID") UUID listID)
+            throws PermissionException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el propietario de la lista son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        PrivateList list = userService.findPrivateListByID(listID);
+        List<Recipe> recipesInList = userService.getRecipesFromPrivateList(listID);
+        
+        // Convertir datos y generar respuesta
+        PrivateListDTO dto = PrivateListConversor.toPrivateListDTO(list);
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesInList);
+        dto.setRecipes(recipeSummaryDTOList);
+        
+        return dto;
+    }
+    
+    @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")
+    @ResponseStatus(HttpStatus.OK)
+    public void addRecipeToPrivateList(@RequestAttribute("userID") UUID userID,
+                                       @PathVariable("userID") UUID pathUserID,
+                                       @PathVariable("listID") UUID listID,
+                                       @PathVariable("recipeID") UUID recipeID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        userService.addRecipeToPrivateList(listID, recipeID);
+    }
+    
+    @DeleteMapping(path = "/{userID}/lists/{listID}/remove/{recipeID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeRecipeFromPrivateList(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @PathVariable("listID") UUID listID,
+            @PathVariable("recipeID") UUID recipeID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        userService.removeRecipeFromPrivateList(listID, recipeID);
+    }
+    
+    @DeleteMapping(path = "/{userID}/lists/{listID}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletePrivateList(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @PathVariable("listID") UUID listID)
+            throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        userService.deletePrivateList(listID);
     }
     
 }

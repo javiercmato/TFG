@@ -1,11 +1,12 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.PrivateListRecipe;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
@@ -26,10 +27,31 @@ public class PrivateList {
     @Column(name = "description", length = 100)
     private String description;
     
+    
+    
+    /* *************** Asociaciones con otras entidades *************** */
     @ManyToOne(optional = false,
-            cascade = CascadeType.PERSIST,
+            //cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY)
     @JoinColumn(name = "creatorID")
     private User creator;
     
+    @OneToMany(mappedBy = "privateList",
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
+    )
+    private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
+    
+    /* *************** DOMAIN-MODEL *************** */
+    /** Inserta la receta recibida en la lista */
+    public void insertRecipe(PrivateListRecipe plr) {
+        privateListRecipes.add(plr);
+        plr.setPrivateList(this);
+    }
+    
+    /** Elimina la receta de la lista */
+    public void removeRecipe(PrivateListRecipe recipe) {
+        recipe.setPrivateList(null);
+        privateListRecipes.remove(recipe);
+    }
 }

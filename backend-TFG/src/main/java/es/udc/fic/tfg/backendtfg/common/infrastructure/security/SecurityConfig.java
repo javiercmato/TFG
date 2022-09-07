@@ -42,12 +42,27 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/users/*").permitAll()                                             // deleteUser
                 .antMatchers(HttpMethod.PUT,    "/api/users/*").permitAll()                                             // updateProfile
                 .antMatchers(HttpMethod.PUT,    "/api/users/admin/ban/*").hasRole(UserRole.ADMIN.toString())            // banUserAsAdmin
-                // USER ENDPOINTS
+                .antMatchers(HttpMethod.POST,   "/api/users/*/lists").permitAll()                                       // createPrivateList
+                .antMatchers(HttpMethod.GET,    "/api/users/*/lists").permitAll()                                       // getPrivateListsByUser
+                .antMatchers(HttpMethod.GET,    "/api/users/*/lists/*").permitAll()                                     // getPrivateListDetails
+                .antMatchers(HttpMethod.POST,   "/api/users/*/lists/*/add/*").permitAll()                               // addRecipeToPrivateList
+                .antMatchers(HttpMethod.DELETE, "/api/users/*/lists/*/remove/*").permitAll()                            // removeRecipeFromPrivateList
+                .antMatchers(HttpMethod.DELETE, "/api/users/*/lists/*").permitAll()                                     // deletePrivateList
+                // INGREDIENT ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/").permitAll()                                        // createIngredient
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/").permitAll()                                        // findAllIngredients
                 .antMatchers(HttpMethod.GET,    "/api/ingredients/find").permitAll()                                    // findIngredientsByName, findIngredientsByType
                 .antMatchers(HttpMethod.POST,   "/api/ingredients/types").permitAll()                                   // createIngredientTypeAsAdmin
-                .antMatchers(HttpMethod.GET,    "/api/ingredients/types").permitAll()                                   // createIngredientTypeAsAdmin
+                .antMatchers(HttpMethod.GET,    "/api/ingredients/types").permitAll()                                   // getAllIngredientTypes
+                .antMatchers(HttpMethod.GET,    "/api/ingredients/measures").permitAll()                                // getAllMeasureUnits
+                // RECIPE ENDPOINTS
+                .antMatchers(HttpMethod.POST,   "/api/recipes/categories").permitAll()                                  // createCategoryAsAdmin
+                .antMatchers(HttpMethod.GET,    "/api/recipes/categories").permitAll()                                  // getAllCategories
+                .antMatchers(HttpMethod.POST,   "/api/recipes/").permitAll()                                            // createRecipe
+                .antMatchers(HttpMethod.GET,    "/api/recipes/*").permitAll()                                           // getRecipeDetails
+                .antMatchers(HttpMethod.GET,    "/api/recipes/find/").permitAll()                                       // findRecipes
+                .antMatchers(HttpMethod.DELETE, "/api/recipes/*").permitAll()                                           // deleteRecipe
+                .antMatchers(HttpMethod.PUT,    "/api/recipes/admin/ban/*").hasRole(UserRole.ADMIN.toString())          // banRecipeAsAdmin
                 
         
         

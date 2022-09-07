@@ -6,7 +6,6 @@ logging:
         SQL: error
 
 
-# Es necesario ejecutar 'docker-compose up -d' sobre el fichero src/main/docker/docker-compose.dev.yml
 spring:
   datasource:
     url: jdbc:postgresql://ec2-44-206-214-233.compute-1.amazonaws.com:5432/d9uarajnqds1ul

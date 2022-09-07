@@ -4,8 +4,7 @@ import {FormattedMessage} from "react-intl";
 import {Alert, Col, ListGroup, ListGroupItem, Row} from "react-bootstrap";
 import IngredientItem from "./IngredientItem";
 import {pagerRow, resultItem, resultsRow, titleRow} from './styles/findIngredientsResults';
-import {Block, Pager, PagerProps, SearchCriteria} from "../../App";
-import {Ingredient} from "../Domain";
+import {Pager, PagerProps, SearchCriteria} from "../../App";
 
 
 const FindIngredientsResults = () => {
@@ -16,15 +15,11 @@ const FindIngredientsResults = () => {
     const handlePreviousPageClick = (event: any) => {
         event.preventDefault();
 
-        console.log('PREVIOUS CLICKED');
         let criteria: SearchCriteria = {
             ...searchCriteria,
             page: searchCriteria.page - 1
         }
-        let onSuccess = (block: Block<Ingredient>) => {
-            console.log('PREVIOUS RESULTS:');
-            console.table(block.items)
-        };
+        let onSuccess = () => {};
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);
         let action = (hasCriteria) ?
@@ -36,14 +31,11 @@ const FindIngredientsResults = () => {
     const handleNextPageClick = (event: any) => {
         event.preventDefault();
 
-        console.log('NEXT CLICKED');
         let criteria: SearchCriteria = {
             ...searchCriteria,
             page: searchCriteria.page + 1
         }
-        let onSuccess = (block: Block<Ingredient>) => {
-            console.log('NEXT RESULTS:');
-            console.table(block.items)
+        let onSuccess = () => {
         };
         // Distinguir si hay una búsqueda por criterios o si se buscan todos los ingredientes
         let hasCriteria = (criteria.type === null) || (criteria.name === null);
@@ -54,7 +46,7 @@ const FindIngredientsResults = () => {
     }
 
     let pagerProps: PagerProps = {
-        currentPage: searchCriteria.page,
+        currentPage: searchCriteria.page + 1,
         previous: {
             enabled: searchCriteria.page > 0,
             onClickCallback: handlePreviousPageClick

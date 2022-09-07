@@ -31,6 +31,10 @@ public class UserConversor {
         return dto;
     }
     
+    public static UserSummaryDTO toUserSummaryDTO(User entity) {
+        return new UserSummaryDTO(entity.getId(), entity.getName(), entity.getNickname());
+    }
+    
     public static AuthenticatedUserDTO toAuthenticatedUserDTO(User entity, String token) {
         return new AuthenticatedUserDTO(token, toUserDTO(entity));
     }

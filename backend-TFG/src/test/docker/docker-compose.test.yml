@@ -24,6 +24,7 @@ services:
       # Ficheros en docker-entrypoint-initdb.d se ejecutan por orden alfabético, por eso se añaden números al principio
       - ../../main/sql/user-schema.sql:/docker-entrypoint-initdb.d/1-user-schema.sql                # Crear tablas de subsistema de gestión de usuarios
       - ../../main/sql/ingredient-schema.sql:/docker-entrypoint-initdb.d/2-ingredient-schema.sql    # Crear tablas de subsistema de gestión de ingredientes
+      - ../../main/sql/recipe-schema.sql:/docker-entrypoint-initdb.d/3-recipe-schema.sql            # Crear tablas de subsistema de gestión de recetas
 
 
 

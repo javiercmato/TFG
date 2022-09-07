@@ -80,3 +80,13 @@ export const findIngredients = (name: Nullable<string>,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const getMeasureUnits = (onSuccessCallback: CallbackFunction,
+                                onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = INGREDIENTS_ENDPOINT + '/measures';
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}

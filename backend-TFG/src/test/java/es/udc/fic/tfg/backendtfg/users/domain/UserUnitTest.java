@@ -2,7 +2,7 @@ package es.udc.fic.tfg.backendtfg.users.domain;
 
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -13,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class UserUnitTest {
+class UserUnitTest {
     
     @Test
-    public void createUser() {
+    void createUser() {
         // Crear datos de prueba
         UUID id = UUID.randomUUID();
         String nickname = "nickname";
@@ -57,6 +57,5 @@ public class UserUnitTest {
                 () -> assertEquals(isBannedByAdmin, user.isBannedByAdmin()),
                 () -> assertTrue(user.getPrivateLists().isEmpty())
         );
-        
     }
 }
