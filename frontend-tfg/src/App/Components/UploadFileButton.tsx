@@ -1,7 +1,7 @@
 import {FormattedMessage} from "react-intl";
 import {Button} from "react-bootstrap";
 import {input} from './styles/uploadFileButton';
-import {useRef, useState} from "react";
+import {useRef} from "react";
 
 interface Props {
     fileTipe: string,
@@ -11,7 +11,6 @@ interface Props {
 // https://medium.com/codex/use-a-button-to-upload-files-on-your-react-app-with-bootstrap-ef963cbe8280
 const UploadFileButton = ({fileTipe, onUploadCallback}: Props) => {
     const inputRef = useRef<HTMLInputElement>(null);                                    // Referencia al input para subir fichero
-    const [inputFileName, setInputFileName] = useState<Nullable<string>>(null);         // Nombre del fichero subido
 
     const handleSelectFile = () => {
         inputRef.current?.click()
@@ -21,7 +20,6 @@ const UploadFileButton = ({fileTipe, onUploadCallback}: Props) => {
         // Si hay ficheros subidos
         if (inputRef.current?.files) {
             let uploadedFile: File = inputRef.current.files[0];
-            setInputFileName(uploadedFile.name);       // Asigna nombre del fichero al botón
             onUploadCallback(uploadedFile);
         }
     }
@@ -39,9 +37,9 @@ const UploadFileButton = ({fileTipe, onUploadCallback}: Props) => {
 
             <Button
                 onClick={handleSelectFile}
-                variant={(inputFileName) ? "success" : "primary"}
+                variant="primary"
             >
-                {(inputFileName) ?? <FormattedMessage id="common.buttons.uploadFile"/>}
+                <FormattedMessage id="common.buttons.uploadFile"/>
             </Button>
         </div>
     )

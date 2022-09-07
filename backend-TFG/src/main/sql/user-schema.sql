@@ -10,7 +10,7 @@ CREATE SCHEMA users;
 
 -- User es una palabra reservada.
 CREATE TABLE IF NOT EXISTS users.UserTable (
-    id              uuid            DEFAULT uuid_generate_v1(),
+    id              uuid            DEFAULT public.uuid_generate_v1(),
     nickname        VARCHAR(30)     NOT NULL,
     password        VARCHAR         NOT NULL,
     name            VARCHAR(50)     NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users.UserTable (
 );
 
 CREATE TABLE IF NOT EXISTS users.PrivateList (
-    id                  uuid            DEFAULT uuid_generate_v1(),
+    id                  uuid            DEFAULT public.uuid_generate_v1(),
     title               varchar(50)     NOT NULL,
     description         varchar(100),
     creatorID           uuid,

@@ -10,4 +10,6 @@ export type {IIngredientState} from './Application';
 
 
 /* ********** Components ********** */
-export {IngredientsPage, IngredientTypeSelector} from './Components';
+export {IngredientsPage, IngredientTypeSelector, MeasureUnitSelector, IngredientsChecklist} from './Components';
+export type {MeasureUnitSelectorProps} from './Components';
+export type {IngredientsChecklistProps} from './Components';

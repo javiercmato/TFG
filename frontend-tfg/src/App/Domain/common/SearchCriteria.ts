@@ -4,6 +4,8 @@ const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE
 interface SearchCriteria {
     name: Nullable<string>,
     type: Nullable<string>,
+    category: Nullable<string>,
+    ingredients: Nullable<Array<string>>,
     page: number,
     pageSize: number,
 }
@@ -12,7 +14,9 @@ const defaultSearchCriteria: SearchCriteria = {
     page: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     name: null,
-    type: null
+    type: null,
+    category: null,
+    ingredients: null,
 }
 
 export type {SearchCriteria};

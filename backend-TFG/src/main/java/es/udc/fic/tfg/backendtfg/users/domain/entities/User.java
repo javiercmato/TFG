@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -63,8 +65,21 @@ public class User {
     
     /* *************** Asociaciones con otras entidades *************** */
     @OneToMany(mappedBy = "creator",
-            cascade = CascadeType.PERSIST,
-            fetch = FetchType.LAZY)
+            //cascade = CascadeType.PERSIST,
+            orphanRemoval = true                // Borrar al usuario elimina también sus listas privadas
+    )
     private Set<PrivateList> privateLists = new HashSet<>();
     
+    @OneToMany(mappedBy = "author")
+    private Set<Recipe> recipes = new HashSet<>();
+
+    
+    /* *************** DOMAIN-MODEL *************** */
+    @Transient
+    /** Devuelve las listas privadas del usuario */
+    public List<PrivateList> getAllPrivateLists() {
+        return privateLists.stream()
+                .sorted((pl1, pl2) -> pl1.getTitle().compareToIgnoreCase(pl2.getTitle()))
+                .collect(Collectors.toList());
+    }
 }

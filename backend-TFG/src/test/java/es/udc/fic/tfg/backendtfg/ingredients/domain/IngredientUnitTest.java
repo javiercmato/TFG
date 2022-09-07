@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Collections;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -33,13 +33,15 @@ public class IngredientUnitTest {
         ingredient.setName(name);
         ingredient.setIngredientType(type);
         ingredient.setCreator(creator);
+        ingredient.setRecipeIngredients(Collections.emptyList());
         
         // Comprobar resultados
         assertAll(
                 () -> assertEquals(id, ingredient.getId()),
                 () -> assertEquals(name, ingredient.getName()),
                 () -> assertEquals(type, ingredient.getIngredientType()),
-                () -> assertEquals(creator, ingredient.getCreator())
+                () -> assertEquals(creator, ingredient.getCreator()),
+                () -> assertTrue(ingredient.getRecipeIngredients().isEmpty())
         );
     }
 }

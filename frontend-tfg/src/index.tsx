@@ -9,6 +9,7 @@ import {NetworkErrorException} from "./proxy/exceptions";
 import {initReactI18N} from "./i18n";
 import {IntlProvider} from "react-intl";
 import {ingredientsRedux} from "./Ingredients";
+import {recipesRedux} from "./Recipes";
 
 
 /* Configurar I18N */
@@ -23,8 +24,11 @@ initializeBackend( () => {
     );
 });
 
+
 /* Acciones a ejecutar tan pronto arranque la aplicación */
 store.dispatch(ingredientsRedux.actions.findAllIngredientTypesAsyncAction(() => {}));
+store.dispatch(ingredientsRedux.actions.getMeasureUnitsAsyncAction(() => {}));
+store.dispatch(recipesRedux.actions.getCategoriesAsyncAction(() => {}, () => {}));
 
 
 const root = ReactDOM.createRoot(

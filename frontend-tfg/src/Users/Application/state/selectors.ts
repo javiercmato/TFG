@@ -1,12 +1,18 @@
 import {RootState} from "../../../store";
 import {IUserState} from "./IUserState";
-import {User} from "../../Domain";
+import {PrivateList, User} from "../../Domain";
+import {RecipeSummaryDTO} from "../../../Recipes";
+import PrivateListSummaryDTO from "../../Infrastructure/PrivateListSummaryDTO";
 
 const getModuleState = (state: RootState) : IUserState => state.users;
 
 const getUserModule = (state: RootState) : Nullable<User> => getModuleState(state).user;
 
 const getUserSearchModule = (state: RootState) : Nullable<User> => getModuleState(state).userSearch;
+
+const getPrivateListsModule = (state: RootState) : Array<PrivateListSummaryDTO> => getModuleState(state).privateLists;
+
+export const getPrivateListDetailsModule = (state: RootState) : Nullable<PrivateList> => getModuleState(state).privateListDetails;
 
 /* ******************** DATOS DE USUARIO ******************** */
 
@@ -30,3 +36,21 @@ export const selectUserSearch = (state: RootState) : User => getUserSearchModule
 export const isUserSearchAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.role! === 'ADMIN';
 
 export const isUserSearchBannedByAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.isBannedByAdmin!;
+
+
+/* ******************** DATOS DE LISTAS PRIVADAS ******************** */
+
+export const selectPrivateLists = (state: RootState) : Array<PrivateListSummaryDTO> => getPrivateListsModule(state);
+
+
+
+
+/* ******************** DATOS DE LA LISTA PRIVADA SELECCIONADA ******************** */
+export const selectRecipeDetailsFromList = (recipeID: string, list: Array<RecipeSummaryDTO>) => {
+    if (!list) return null;
+
+    const recipe = list.find((r: RecipeSummaryDTO) => r.id === recipeID);
+    if (!recipe) return null;
+
+    return recipe;
+}

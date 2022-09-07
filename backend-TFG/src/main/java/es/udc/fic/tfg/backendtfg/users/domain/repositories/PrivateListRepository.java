@@ -7,4 +7,5 @@ import java.util.UUID;
 
 public interface PrivateListRepository extends PagingAndSortingRepository<PrivateList, UUID> {
 
+
 }

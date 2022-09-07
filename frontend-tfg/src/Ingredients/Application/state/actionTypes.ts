@@ -1,7 +1,7 @@
-/* ******************** Nombres de las acciones ******************** */
-
 import {Ingredient, IngredientType} from "../../Domain";
 import {Search} from "../../../App";
+
+/* ******************** Nombres de las acciones ******************** */
 
 export const FIND_ALL_INGREDIENT_TYPES: string = 'ingredients/findAllIngredientTypes';
 export const CREATE_INGREDIENT_TYPE : string = 'ingredients/createIngredientType';
@@ -9,6 +9,7 @@ export const CREATE_INGREDIENT : string = 'ingredients/createIngredient';
 export const FIND_ALL_INGREDIENTS : string = 'ingredients/findAllIngredients';
 export const FIND_INGREDIENTS : string = 'ingredients/findIngredients';
 export const CLEAR_INGREDIENTS_SEARCH : string = 'ingredients/clearIngredientsSearch';
+export const GET_MEASURE_UNITS: string = 'ingredients/getMeasureUnits';
 
 
 
@@ -43,6 +44,11 @@ export interface ClearIngredientsSearchActionType {
     type: string,
 }
 
+export interface GetMeasureUnitsActionType {
+    type: string,
+    payload: Array<string>
+}
+
 
 export type IngredientDispatchType = CreateIngredientTypeActionType
     | FindAllIngredientTypesActionType
@@ -50,4 +56,5 @@ export type IngredientDispatchType = CreateIngredientTypeActionType
     | FindAllIngredientsActionType
     | FindIngredientsActionType
     | ClearIngredientsSearchActionType
+    | GetMeasureUnitsActionType
 ;
