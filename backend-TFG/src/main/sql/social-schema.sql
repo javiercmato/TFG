@@ -9,13 +9,14 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 CREATE TABLE IF NOT EXISTS social.Comment (
+    id                  uuid            DEFAULT public.uuid_generate_v1(),
     author_id           uuid,
     recipe_id           uuid,
     creationDate        TIMESTAMP       NOT NULL        DEFAULT CURRENT_TIMESTAMP,
     text                TEXT            NOT NULL,
     isBannedByAdmin     bool            NOT NULL        DEFAULT false,
 
-    CONSTRAINT PK_Comment PRIMARY KEY (author_id, recipe_id),
+    CONSTRAINT PK_Comment PRIMARY KEY (id),
     CONSTRAINT FK_Comment_TO_User FOREIGN KEY (author_id) REFERENCES users.usertable(id)
             ON DELETE CASCADE
             ON UPDATE CASCADE,

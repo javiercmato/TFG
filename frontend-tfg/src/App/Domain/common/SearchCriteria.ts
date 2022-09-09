@@ -8,6 +8,7 @@ interface SearchCriteria {
     ingredients: Nullable<Array<string>>,
     page: number,
     pageSize: number,
+    recipeID: Nullable<string>,
 }
 
 const defaultSearchCriteria: SearchCriteria = {
@@ -17,6 +18,7 @@ const defaultSearchCriteria: SearchCriteria = {
     type: null,
     category: null,
     ingredients: null,
+    recipeID: null
 }
 
 export type {SearchCriteria};

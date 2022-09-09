@@ -14,8 +14,6 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.CommentID;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -42,6 +40,7 @@ import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,10 +50,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-public class SocialControllerTest {
+class SocialControllerTest {
     private static final String API_ENDPOINT = "/api/social";
     private final ObjectMapper jsonMapper = new ObjectMapper();
     private final Locale locale = Locale.getDefault();
+    private final int INITIAL_PAGE = 0;
+    private final int PAGE_SIZE = 5;
     
     
     @Autowired
@@ -217,8 +218,8 @@ public class SocialControllerTest {
         );
     
         // Comprobar resultados
-        CommentID commentID = new CommentID(jwtData.getUserID(), recipe.getId());
-        Comment expectedResponse = commentRepository.findById(commentID).get();
+//        CommentID commentID = new CommentID(jwtData.getUserID(), recipe.getId());
+//        Comment expectedResponse = commentRepository.findById(commentID).get();
 //        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isCreated())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON));
@@ -292,5 +293,68 @@ public class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    
+    @Test
+    void whenGetRecipeComments_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        socialService.commentRecipe(jwtData.getUserID(), recipe.getId(), DEFAULT_COMMENT_TEXT);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/" + recipe.getId();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        
+        // Comprobar resultados
+        // Block<Comment> expectedResponse = socialService.getRecipeComments(recipe.getId(), INITIAL_PAGE, PAGE_SIZE);
+        // String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        //      .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetRecipeComments_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
     
 }
