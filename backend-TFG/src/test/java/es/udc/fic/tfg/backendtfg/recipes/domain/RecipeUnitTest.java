@@ -4,7 +4,6 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.CommentID;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.junit.jupiter.api.Test;
@@ -82,13 +81,13 @@ class RecipeUnitTest {
         // Crear datos de prueba
         UUID recipeID = UUID.randomUUID();
         UUID userID = UUID.randomUUID();
+        UUID commentID = UUID.randomUUID();
         LocalDateTime now = LocalDateTime.now();
         Recipe recipe = new Recipe();
         recipe.setId(recipeID);
         User author = new User();
         author.setId(userID);
         Set<Comment> comments = new HashSet<>();
-        CommentID commentID = new CommentID(userID, recipeID);
         Comment comment = new Comment(commentID, now, DEFAULT_COMMENT_TEXT, false, author, recipe);
         
         // Ejecutar código
@@ -98,11 +97,8 @@ class RecipeUnitTest {
         // Comprobar resultados
         // Comprobar resultados
         assertAll(
-                // La clave primaria compuesta coincide
-                () -> assertEquals(commentID, comment.getId()),
-                () -> assertEquals(userID, commentID.getAuthorID()),
-                () -> assertEquals(recipeID, commentID.getRecipeID()),
                 // Los datos son correctos
+                () -> assertEquals(commentID, comment.getId()),
                 () -> assertEquals(now, comment.getCreationDate()),
                 () -> assertEquals(DEFAULT_COMMENT_TEXT, comment.getText()),
                 () -> assertEquals(author, comment.getAuthor()),

@@ -5,7 +5,6 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundExceptio
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.CommentID;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -38,14 +37,14 @@ public class SocialServiceImpl implements SocialService {
         Recipe recipe = fetchRecipeByID(recipeID);
         
         // Crear el comentario
-        CommentID commentID = new CommentID(userID, recipeID);
         LocalDateTime now = LocalDateTime.now();
-        Comment comment = new Comment(commentID, now, text.trim(), false, author, recipe);
+        Comment comment = new Comment(now, text.trim(), false, author, recipe);
         
         // Guardar comentario y asignárselo a la receta
+        comment = commentRepo.save(comment);
         recipe.addComment(comment);
         
-        return commentRepo.save(comment);
+        return comment;
     }
     
     @Override
@@ -56,7 +55,7 @@ public class SocialServiceImpl implements SocialService {
         
         // Buscar los comentarios
         Pageable pageable = PageRequest.of(page, pageSize);
-        Slice<Comment> commentsSlice = commentRepo.findById_RecipeIDOrderByCreationDateDesc(recipeID, pageable);
+        Slice<Comment> commentsSlice = commentRepo.findByRecipe_IdOrderByCreationDateDesc(recipeID, pageable);
         
         
         return new Block<>(commentsSlice.getContent(), commentsSlice.hasNext(), commentsSlice.getNumberOfElements());
