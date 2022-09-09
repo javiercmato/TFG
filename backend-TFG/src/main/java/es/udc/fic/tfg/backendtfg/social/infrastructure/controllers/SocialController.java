@@ -1,8 +1,10 @@
 package es.udc.fic.tfg.backendtfg.social.infrastructure.controllers;
 
 
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
@@ -44,7 +46,7 @@ public class SocialController {
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDTO commentRecipe(@Validated @RequestBody CreateCommentParamsDTO params,
             @PathVariable("recipeID") UUID recipeID,
-            @RequestAttribute("userID")UUID userID)
+            @RequestAttribute("userID") UUID userID)
             throws PermissionException, EntityNotFoundException {
         // Comprobar que el usuario actual y el usuario objetivo son el mismo
         if (!controllerUtils.doUsersMatch(userID, params.getUserID()))
@@ -55,6 +57,20 @@ public class SocialController {
         
         // Generar respuesta
         return CommentConversor.toCommentDTO(comment);
+    }
+    
+    @GetMapping(path = "/comments/{recipeID}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<CommentDTO> getRecipeComments(@PathVariable("recipeID") UUID recipeID,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("pageSize") int pageSize)
+        throws EntityNotFoundException {
+        // Llamada al servicio
+        Block<Comment> block = socialService.getRecipeComments(recipeID, page, pageSize);
+        
+        // Generar respuesta
+        return CommentConversor.toCommentBlockDTO(block);
     }
     
     

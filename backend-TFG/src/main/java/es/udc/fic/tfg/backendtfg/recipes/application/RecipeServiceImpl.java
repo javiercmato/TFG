@@ -9,9 +9,9 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
+import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
-import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -42,9 +42,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private RecipeIngredientRepository recipeIngredientRepo;
     @Autowired
-    private PrivateListRepository listRepo;
-    @Autowired
-    private PrivateListRecipeRepository listRecipeRepo;
+    private CommentRepository commentRepo;
     
     
     /* ******************** FUNCIONALIDADES INGREDIENTES ******************** */
@@ -153,6 +151,7 @@ public class RecipeServiceImpl implements RecipeService {
         // Eliminar la receta
         recipeRepo.delete(recipe);
     }
+    
     
     /* ******************** FUNCIONALIDADES ADMINISTRADOR ******************** */
     @Override
@@ -275,7 +274,6 @@ public class RecipeServiceImpl implements RecipeService {
             recipe.addIngredient(recipeIngredient);
         }
     }
-    
     
     
 }

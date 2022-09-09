@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CommentDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -50,6 +51,8 @@ public class RecipeDTO {
     private List<RecipePictureDTO> pictures;
     
     private List<RecipeStepDTO> steps;
+    
+    private List<CommentDTO> comments;
     
     private Long totalVotes;
     

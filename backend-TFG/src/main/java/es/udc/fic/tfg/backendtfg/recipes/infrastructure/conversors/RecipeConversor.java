@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -49,6 +50,7 @@ public class RecipeConversor {
         dto.setTotalVotes(entity.getTotalVotes());
         dto.setAverageRating(entity.getAverageRating());
         dto.setVersion(entity.getVersion());
+        dto.setComments(CommentConversor.toCommentDTOList(entity.getComments()));
         
         return dto;
     }
@@ -124,7 +126,5 @@ public class RecipeConversor {
                          .collect(Collectors.toList());
     }
     /* ******************** Convertir a Entidad ******************** */
-    
-    
     
 }
