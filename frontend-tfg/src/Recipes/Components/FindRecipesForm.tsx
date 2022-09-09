@@ -4,7 +4,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import CategorySelector from "./CategorySelector";
 import FindIngredients from "../../Ingredients/Components/FindIngredients";
 import {IngredientsChecklist, IngredientsChecklistProps} from "../../Ingredients";
-import {SearchCriteria} from "../../App";
+import {defaultSearchCriteria, SearchCriteria} from "../../App";
 import {useAppDispatch} from "../../store";
 import {recipesRedux} from "../Application";
 
@@ -32,12 +32,12 @@ const FindRecipesForm = () => {
         e.preventDefault();
 
         let criteria: SearchCriteria = {
+            ...defaultSearchCriteria,
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
             name: (nameQuery !== '') ? nameQuery : null,
             category: (categoryIDQuery !== '') ? categoryIDQuery : null,
             ingredients: (ingredientIDListQuery.length > 0) ? ingredientIDListQuery: null,
-            type: null
         }
 
         let onSuccess = () => {};

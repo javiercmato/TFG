@@ -5,7 +5,7 @@ import {Alert, Button, Col, FormControl, InputGroup, Modal, Row} from "react-boo
 import {FaSearch} from "react-icons/fa";
 import CreateIngredient from "../../../Ingredients/Components/CreateIngredient";
 import {findRecipeIngredientTitle} from "../styles/findRecipeIngredient";
-import {SearchCriteria} from "../../../App";
+import {defaultSearchCriteria, SearchCriteria} from "../../../App";
 import {ingredientsRedux} from "../../../Ingredients";
 import {userRedux} from "../../../Users";
 
@@ -23,12 +23,10 @@ const FindRecipeIngredient = () => {
         e.preventDefault();
 
         let criteria: SearchCriteria = {
+            ...defaultSearchCriteria,
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
             name: (queryName !== '') ? queryName : null,
-            type: null,
-            ingredients: null,
-            category: null
         }
 
         let onSuccess = () => {};

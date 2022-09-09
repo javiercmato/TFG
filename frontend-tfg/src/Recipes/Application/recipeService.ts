@@ -1,8 +1,9 @@
 import {appFetch, configFetchParameters} from "../../proxy";
-import {CreateCategoryParamsDTO, CreateRecipeParamsDTO} from "../Infrastructure";
+import {CreateCategoryParamsDTO, CreateCommentParamsDTO, CreateRecipeParamsDTO} from "../Infrastructure";
 import {Recipe, RecipeStep} from "../Domain";
 import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
 import {Block} from "../../App";
+
 
 const RECIPES_ENDPOINT = '/recipes';
 const DEFAULT_PAGE_SIZE = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
@@ -121,6 +122,32 @@ export const banRecipeAsAdmin = (recipeID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const getRecipeComments = (recipeID: string,
+                                  page: number = 0,
+                                  pageSize: number = DEFAULT_PAGE_SIZE,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = RECIPES_ENDPOINT + `/comments/${recipeID}` + '?';
+    endpoint += `page=${page}`;
+    endpoint += `&pageSize=${pageSize}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
+export const addComment = (recipeID: string,
+                           params: CreateCommentParamsDTO,
+                           onSuccessCallback: CallbackFunction,
+                           onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = RECIPES_ENDPOINT + `/comments/${recipeID}`;
+    const requestConfig = configFetchParameters('POST', params);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
 
 
 /* ************************* FUNCIONES AUXILIARES ************************* */

@@ -1,9 +1,11 @@
 import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
 import {
+    AddCommentActionType,
     BanRecipeActionType,
     FindRecipesActionType,
     GetCategoriesActionType,
+    GetRecipeCommentsActionType,
     GetRecipeDetailsActionType,
     RecipeDispatchType
 } from './actionTypes';
@@ -11,6 +13,7 @@ import {initialState, IRecipeState} from "./IRecipeState";
 import {Category, Recipe} from "../../Domain";
 import {Search} from "../../../App";
 import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
+import {Comment} from "../../../Social";
 
 
 const categories = (state: Array<Category> = initialState.categories,
@@ -40,6 +43,28 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             let payload: Recipe = (action as GetRecipeDetailsActionType).payload;
 
             return payload;
+        }
+
+        case actionTypes.ADD_COMMENT: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Comment = (action as AddCommentActionType).payload;
+            let commentsList = (state.comments) ? [...state.comments, payload] : [payload]
+
+            return ({...state,
+                comments: commentsList,
+            })
+        }
+
+        case actionTypes.GET_RECIPE_COMMENTS: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Search<Comment> = (action as GetRecipeCommentsActionType).payload;
+            let items: Nullable<Array<Comment>> = payload?.result?.items ?? null;
+
+            return ({...state, comments: items});
         }
 
         case actionTypes.CLEAR_RECIPE_DETAILS:

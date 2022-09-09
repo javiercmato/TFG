@@ -5,7 +5,7 @@ import {FormattedMessage, useIntl} from "react-intl";
 import {rowIngredientsSearch} from "./styles/findIngredients";
 import IngredientTypeSelector, {IngredientTypeSelectorProps} from "./IngredientTypeSelector";
 import {ingredientsRedux} from "../Application";
-import {SearchCriteria} from "../../App";
+import {defaultSearchCriteria, SearchCriteria} from "../../App";
 
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
@@ -34,12 +34,11 @@ const FindIngredients = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let criteria: SearchCriteria = {
-            category: null,
-            ingredients: null,
+            ...defaultSearchCriteria,
             page: 0,
             pageSize: DEFAULT_PAGE_SIZE,
             name: (queryName !== '') ? queryName : null,
-            type: (typeIDQuery !== '') ? typeIDQuery : null
+            type: (typeIDQuery !== '') ? typeIDQuery : null,
         }
 
         let onSuccess = () => {};
