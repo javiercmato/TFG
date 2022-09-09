@@ -46,6 +46,9 @@ public class RecipeConversor {
         dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
         dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
+        dto.setTotalVotes(entity.getTotalVotes());
+        dto.setAverageRating(entity.getAverageRating());
+        dto.setVersion(entity.getVersion());
         
         return dto;
     }
@@ -64,6 +67,9 @@ public class RecipeConversor {
         dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
         dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
+        dto.setTotalVotes(entity.getTotalVotes());
+        dto.setAverageRating(entity.getAverageRating());
+        dto.setVersion(entity.getVersion());
         
         return dto;
     }
@@ -88,6 +94,7 @@ public class RecipeConversor {
             dto.setPicture(null);
         }
         dto.setIngredientsCount(entity.getIngredients().size());
+        dto.setAverageRating(entity.getAverageRating());
         
         return dto;
     }

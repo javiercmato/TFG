@@ -50,4 +50,10 @@ public class RecipeDTO {
     private List<RecipePictureDTO> pictures;
     
     private List<RecipeStepDTO> steps;
+    
+    private Long totalVotes;
+    
+    private Float averageRating;
+    
+    private Integer version;
 }

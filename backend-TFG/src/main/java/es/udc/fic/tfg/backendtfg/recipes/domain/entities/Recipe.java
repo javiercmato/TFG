@@ -45,6 +45,18 @@ public class Recipe {
     @Column(name = "isbannedbyadmin", nullable = false)
     private boolean isBannedByAdmin;
     
+    @Type(type = "org.hibernate.type.LongType")
+    @Column(name = "totalvotes", nullable = false)
+    private Long totalVotes = Long.valueOf(0);
+    
+    @Type(type = "org.hibernate.type.FloatType")
+    @Column(name= "averagerating", nullable = false)
+    private Float averageRating = Float.valueOf(0);
+    
+    @Version
+    @Column(name = "version")
+    private Integer version;
+    
     
     /* *************** Asociaciones con otras entidades *************** */
     @ManyToOne(cascade = CascadeType.PERSIST)
@@ -82,6 +94,7 @@ public class Recipe {
             orphanRemoval = true
     )
     private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
+    
     
     
     
