@@ -1,5 +1,6 @@
 package es.udc.fic.tfg.backendtfg.recipes.domain.entities;
 
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -95,7 +96,9 @@ public class Recipe {
     )
     private Set<PrivateListRecipe> privateListRecipes = new HashSet<>();
     
-    
+    @OneToMany(mappedBy = "recipe",
+            orphanRemoval = true)
+    private Set<Comment> comments = new HashSet<>();
     
     
     /* *************** Domain-Model *************** */
@@ -136,5 +139,14 @@ public class Recipe {
     public void removeFromPrivateList(PrivateListRecipe plr) {
         plr.setRecipe(null);
         privateListRecipes.remove(plr);
+    }
+    
+    /**
+     * Añade el comentario recibido a la receta.
+     * @param comment Comentario a añadir
+     */
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setRecipe(this);
     }
 }
