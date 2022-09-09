@@ -6,6 +6,7 @@ import {Block} from "../../App";
 
 
 const RECIPES_ENDPOINT = '/recipes';
+const SOCIAL_ENDPOINT = '/social';
 const DEFAULT_PAGE_SIZE = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
 
@@ -142,7 +143,7 @@ export const addComment = (recipeID: string,
                            onSuccessCallback: CallbackFunction,
                            onErrorCallback: CallbackFunction) : void => {
     // Configurar petición al servicio
-    const endpoint = RECIPES_ENDPOINT + `/comments/${recipeID}`;
+    const endpoint = SOCIAL_ENDPOINT + `/comments/${recipeID}`;
     const requestConfig = configFetchParameters('POST', params);
 
     // Realizar la petición

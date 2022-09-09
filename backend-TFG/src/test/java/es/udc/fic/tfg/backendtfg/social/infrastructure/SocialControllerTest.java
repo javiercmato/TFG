@@ -14,8 +14,6 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.CommentID;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -220,8 +218,8 @@ class SocialControllerTest {
         );
     
         // Comprobar resultados
-        CommentID commentID = new CommentID(jwtData.getUserID(), recipe.getId());
-        Comment expectedResponse = commentRepository.findById(commentID).get();
+//        CommentID commentID = new CommentID(jwtData.getUserID(), recipe.getId());
+//        Comment expectedResponse = commentRepository.findById(commentID).get();
 //        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isCreated())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON));

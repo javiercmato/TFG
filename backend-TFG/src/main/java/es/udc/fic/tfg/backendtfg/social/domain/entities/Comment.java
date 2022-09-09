@@ -37,4 +37,11 @@ public class Comment {
     @ManyToOne
     @MapsId("recipeID")
     private Recipe recipe;
+    
+    
+    /* *************** Domain-Model *************** */
+    public void assignToRecipe(Recipe recipe) {
+        recipe.addComment(this);
+        this.setRecipe(recipe);
+    }
 }

@@ -50,10 +50,9 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             if (state === null) return state;
 
             let payload: Comment = (action as AddCommentActionType).payload;
-            let commentsList = (state.comments) ? [...state.comments, payload] : [payload]
 
             return ({...state,
-                comments: commentsList,
+                comments: [...state.comments, payload],
             })
         }
 
@@ -62,7 +61,7 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             if (state === null) return state;
 
             let payload: Search<Comment> = (action as GetRecipeCommentsActionType).payload;
-            let items: Nullable<Array<Comment>> = payload?.result?.items ?? null;
+            let items: Array<Comment> = payload?.result?.items ?? [];
 
             return ({...state, comments: items});
         }

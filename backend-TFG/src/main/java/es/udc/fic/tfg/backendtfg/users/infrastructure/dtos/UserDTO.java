@@ -1,10 +1,8 @@
 package es.udc.fic.tfg.backendtfg.users.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.JacksonLocalDateTimeSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -51,8 +49,7 @@ public class UserDTO {
     private String avatar;
     
     @DateTimeFormat(iso = ISO.DATE_TIME)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = JacksonLocalDateTimeSerializer.class)
     @PastOrPresent(groups = {UpdateValidations.class})
     private LocalDateTime registerDate;
     

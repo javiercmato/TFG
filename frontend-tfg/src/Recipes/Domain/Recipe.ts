@@ -14,9 +14,9 @@ interface Recipe {
     authorID: string,
     categoryID: string,
     ingredients: Array<RecipeIngredient>,
-    pictures: Nullable<Array<RecipePicture>>,
+    pictures: Array<RecipePicture>,
     steps: Array<RecipeStep>,
-    comments: Nullable<Array<Comment>>,
+    comments: Array<Comment>,
     totalVotes: number,
     averageRating: number,
     version: number

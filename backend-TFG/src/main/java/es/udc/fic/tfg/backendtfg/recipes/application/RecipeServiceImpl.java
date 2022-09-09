@@ -126,7 +126,10 @@ public class RecipeServiceImpl implements RecipeService {
             throw new EntityNotFoundException(Recipe.class.getSimpleName(), recipeID);
         
         // Devolver la receta
-        return optionalRecipe.get();
+        Recipe recipe = optionalRecipe.get();
+        recipe.getComments().forEach((c) -> c.getText());
+        
+        return recipe;
     }
     
     @Transactional(readOnly = true)

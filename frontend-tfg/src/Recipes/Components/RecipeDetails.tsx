@@ -18,6 +18,7 @@ import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
+import CommentForm from "./Comments/CommentForm";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -108,6 +109,16 @@ const RecipeDetails = () => {
             />
 
             <Container>
+                {/* Borrar receta */}
+                <Row>
+                    <Button variant="danger" onClick={handleDeleteClick}>
+                        <span>
+                            <FaTrash />
+                            <FormattedMessage id="common.buttons.delete" />
+                        </span>
+                    </Button>
+                </Row>
+
                 {/* Nombre y descripción*/}
                 <Row>
                     <Col>
@@ -155,32 +166,31 @@ const RecipeDetails = () => {
                     <h4>
                         <FormattedMessage id="common.fields.pictures" />
                     </h4>
-                    <Carousel>
-                        {recipeData.pictures?.map((picture) =>
-                            <Carousel.Item key={picture.order}>
-                                <Image
-                                    src={picture.pictureData}
-                                    style={carouselPicture}
-                                />
-                            </Carousel.Item>
-                        )}
-                    </Carousel>
+                    {(recipeData.pictures?.length === 0) ?
+                        <Alert variant="warning">
+                            <FormattedMessage id="common.alerts.noResults" />
+                        </Alert>
+                        :
+                        <Carousel>
+                            {recipeData.pictures?.map((picture) =>
+                                <Carousel.Item key={picture.order}>
+                                    <Image
+                                        src={picture.pictureData}
+                                        style={carouselPicture}
+                                    />
+                                </Carousel.Item>
+                            )}
+                        </Carousel>
+                    }
 
                 </Row>
 
                 {/* Comentarios */}
                 <Row>
-                    COMENTARIOS
-                </Row>
-
-                {/* Borrar receta */}
-                <Row>
-                    <Button variant="danger" onClick={handleDeleteClick}>
-                        <span>
-                            <FaTrash />
-                            <FormattedMessage id="common.buttons.delete" />
-                        </span>
-                    </Button>
+                    <h4>
+                        <FormattedMessage id="common.fields.comments" />
+                    </h4>
+                    <CommentForm comments={recipeData.comments} onErrorCallback={setBackendErrors}/>
                 </Row>
             </Container>
         </div>

@@ -43,10 +43,9 @@ public class SocialServiceImpl implements SocialService {
         Comment comment = new Comment(commentID, now, text.trim(), false, author, recipe);
         
         // Guardar comentario y asignárselo a la receta
-        comment = commentRepo.save(comment);
         recipe.addComment(comment);
         
-        return comment;
+        return commentRepo.save(comment);
     }
     
     @Override
