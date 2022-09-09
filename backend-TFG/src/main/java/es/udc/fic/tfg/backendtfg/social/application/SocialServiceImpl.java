@@ -9,11 +9,15 @@ import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
+@Transactional
 public class SocialServiceImpl implements SocialService {
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
@@ -33,11 +37,8 @@ public class SocialServiceImpl implements SocialService {
         
         // Crear el comentario
         CommentID commentID = new CommentID(userID, recipeID);
-        Comment comment = new Comment();
-        comment.setId(commentID);
-        comment.setCreationDate(LocalDateTime.now());
-        comment.setText(text.trim());
-        comment.setAuthor(author);
+        LocalDateTime now = LocalDateTime.now();
+        Comment comment = new Comment(commentID, now, text.trim(), false, author, recipe);
         
         // Guardar comentario y asignárselo a la receta
         comment = commentRepo.save(comment);
