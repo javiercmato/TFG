@@ -26,6 +26,9 @@ CREATE TABLE IF NOT EXISTS recipes.Recipe (
     author              uuid,
     isBannedByAdmin     bool            NOT NULL        DEFAULT false,
     category_id         uuid,
+    totalVotes          BIGINT          NOT NULL        DEFAULT 0,
+    averageRating       FLOAT           NOT NULL        DEFAULT 0,
+    version             INT,
 
     CONSTRAINT PK_Recipe PRIMARY KEY (id),
     CONSTRAINT FK_Recipe_TO_User

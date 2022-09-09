@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -15,10 +16,10 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(schema = "users", name = "usertable")
+@Table(name = "usertable", schema = "users")
 public class User {
     @Id
-    @GeneratedValue(generator = "postgresql-uuid-generator")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "postgresql-uuid-generator")
     @GenericGenerator(name="postgresql-uuid-generator", strategy = "org.hibernate.id.UUIDGenerator")
     @Type(type = "org.hibernate.type.PostgresUUIDType")
     @Column(name = "id", nullable = false)
@@ -68,11 +69,13 @@ public class User {
             //cascade = CascadeType.PERSIST,
             orphanRemoval = true                // Borrar al usuario elimina también sus listas privadas
     )
-    private Set<PrivateList> privateLists = new HashSet<>();
+    private Set<PrivateList> privateLists = new LinkedHashSet<>();
     
     @OneToMany(mappedBy = "author")
-    private Set<Recipe> recipes = new HashSet<>();
-
+    private Set<Recipe> recipes = new LinkedHashSet<>();
+    
+    @OneToMany(mappedBy = "author")
+    private Set<Comment> comments = new LinkedHashSet<>();
     
     /* *************** DOMAIN-MODEL *************** */
     @Transient
@@ -82,4 +85,5 @@ public class User {
                 .sorted((pl1, pl2) -> pl1.getTitle().compareToIgnoreCase(pl2.getTitle()))
                 .collect(Collectors.toList());
     }
+    
 }

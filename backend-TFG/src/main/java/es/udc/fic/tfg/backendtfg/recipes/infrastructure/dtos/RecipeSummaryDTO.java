@@ -34,4 +34,6 @@ public class RecipeSummaryDTO {
     
     @NotNull
     private Integer ingredientsCount;
+    
+    private Float averageRating;
 }
