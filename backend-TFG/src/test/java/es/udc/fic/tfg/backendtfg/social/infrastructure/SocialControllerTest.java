@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
@@ -221,7 +223,73 @@ public class SocialControllerTest {
         action.andExpect(status().isCreated())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 //              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateComment_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        String recipeID = recipe.getId().toString();
+        CreateCommentParamsDTO paramsDTO = new CreateCommentParamsDTO(DEFAULT_COMMENT_TEXT, jwtData.getUserID());
         
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/" + recipeID;
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenCreateComment_andRecipeDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        CreateCommentParamsDTO paramsDTO = new CreateCommentParamsDTO(DEFAULT_COMMENT_TEXT, jwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/" + NON_EXISTENT_UUID;
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Recipe.class.getSimpleName(), NON_EXISTENT_UUID},
+                Recipe.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
     }
     
     
