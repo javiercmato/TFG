@@ -49,7 +49,6 @@ public class RecipeConversor {
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
         dto.setTotalVotes(entity.getTotalVotes());
         dto.setAverageRating(entity.getAverageRating());
-        dto.setVersion(entity.getVersion());
         dto.setComments(CommentConversor.toCommentDTOList(entity.getComments()));
         
         return dto;
@@ -71,7 +70,6 @@ public class RecipeConversor {
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
         dto.setTotalVotes(entity.getTotalVotes());
         dto.setAverageRating(entity.getAverageRating());
-        dto.setVersion(entity.getVersion());
         dto.setComments(CommentConversor.toCommentDTOList(entity.getComments()));
         
         return dto;

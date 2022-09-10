@@ -11,11 +11,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
+@ToString
 @Embeddable
 public class RatingID implements Serializable {
-    @Column(table = "rating", name = "author_id")
+    @Column(table = "rating", name = "author_id", nullable = false)
     private UUID authorID;
     
-    @Column(table = "rating", name = "recipe_id")
+    @Column(table = "rating", name = "recipe_id", nullable = false)
     private UUID recipeID;
 }

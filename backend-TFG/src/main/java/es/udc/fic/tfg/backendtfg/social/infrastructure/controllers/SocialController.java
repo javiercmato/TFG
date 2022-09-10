@@ -5,6 +5,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeDetailsDTO;
@@ -21,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -36,9 +38,21 @@ public class SocialController {
     
     
     /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
-    
+    // Referencias a los errores en los ficheros de i18n
+    public static final String RECIPE_ALREADY_RATED_EXCEPTION_KEY         = "social.domain.exceptions.RecipeAlreadyRatedException";
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
+    @ExceptionHandler(RecipeAlreadyRatedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleRecipeAlreadyRatedException(RecipeAlreadyRatedException exception, Locale locale) {
+        String errorMessage = messageSource.getMessage(
+                RECIPE_ALREADY_RATED_EXCEPTION_KEY, null, RECIPE_ALREADY_RATED_EXCEPTION_KEY, locale
+        );
+    
+        return new ErrorsDTO(errorMessage);
+    }
+    
     
     
     /* ******************** ENDPOINTS ******************** */

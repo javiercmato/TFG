@@ -16,7 +16,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude = "version")
 @Table(name = "recipe", schema = "recipes")
 public class Recipe {
     @Id
@@ -55,10 +55,6 @@ public class Recipe {
     @Type(type = "org.hibernate.type.FloatType")
     @Column(name= "averagerating", nullable = false)
     private Float averageRating = Float.valueOf(0);
-    
-    @Version
-    @Column(name = "version")
-    private Integer version;
     
     
     /* *************** Asociaciones con otras entidades *************** */
@@ -102,7 +98,8 @@ public class Recipe {
             orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
     
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(mappedBy = "recipe",
+            orphanRemoval = true)
     private Set<Rating> ratings = new LinkedHashSet<>();
     
     
@@ -160,8 +157,8 @@ public class Recipe {
         ratings.add(rate);
         rate.setRecipe(this);
         
-        //this.totalVotes += 1;
         long votesCount = ratings.size();
+        this.totalVotes = votesCount;
         float average = ((averageRating*(votesCount - 1) + rate.getValue())) / votesCount;
         this.averageRating = average;
         

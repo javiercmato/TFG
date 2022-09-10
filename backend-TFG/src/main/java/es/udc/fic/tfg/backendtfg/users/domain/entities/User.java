@@ -78,8 +78,7 @@ public class User {
     @OneToMany(mappedBy = "author")
     private Set<Comment> comments = new LinkedHashSet<>();
     
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "author_id")
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
     private Set<Rating> ratings = new LinkedHashSet<>();
     
     /* *************** DOMAIN-MODEL *************** */

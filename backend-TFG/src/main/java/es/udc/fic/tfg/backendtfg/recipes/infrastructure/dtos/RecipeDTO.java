@@ -51,6 +51,4 @@ public class RecipeDTO {
     private Long totalVotes;
     
     private Float averageRating;
-    
-    private Integer version;
 }

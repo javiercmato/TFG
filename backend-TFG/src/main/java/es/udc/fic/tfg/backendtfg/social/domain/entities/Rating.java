@@ -23,11 +23,11 @@ public class Rating {
     @Column(name = "rating", nullable = false)
     private Integer value;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     @MapsId("recipeID")
     private Recipe recipe;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     @MapsId("authorID")
     private User author;
     

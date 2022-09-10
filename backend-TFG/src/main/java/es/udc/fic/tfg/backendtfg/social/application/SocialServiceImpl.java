@@ -92,7 +92,7 @@ public class SocialServiceImpl implements SocialService {
         Recipe recipe = fetchRecipeByID(recipeID);
         
         // Comprobar que la receta no haya sido puntuada ya por el usuario. Sino lanza RecipeAlreadyRatedException
-        RatingID ratingID = new RatingID(userID, recipeID);
+        RatingID ratingID = new RatingID(author.getId(), recipe.getId());
         if (ratingRepo.existsById(ratingID))
             throw new RecipeAlreadyRatedException();
         
@@ -102,9 +102,9 @@ public class SocialServiceImpl implements SocialService {
         rating.setValue(value);
         
         // Guardar puntuación y asignárselo a receta e indicar usuario que puntúa
-        rating = ratingRepo.save(rating);
         author.addRating(rating);
         recipe.rate(rating);
+        ratingRepo.save(rating);
         
         return recipeRepo.save(recipe);
     }

@@ -12,13 +12,14 @@ import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.controllers.SocialController;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CommentDTO;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
@@ -40,8 +41,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
-import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
-import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -155,10 +154,6 @@ class SocialControllerTest {
         stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         // Crear imágenes
         List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
-        String encodedImage = Base64.getEncoder()
-                                    .encodeToString(
-                                            loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION));
-        picturesParams.add(new CreateRecipePictureParamsDTO(1, encodedImage));
         
         CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(authorID, categoryID);
         paramsDTO.setPictures(picturesParams);
@@ -451,6 +446,72 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenRateRecipe_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        int ratingValue = 10;
+        RateRecipeParamsDTO paramsDTO = new RateRecipeParamsDTO(ratingValue, jwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/rate/" + recipe.getId();
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        
+        // Comprobar resultados
+        Recipe ratedRecipe = recipeService.getRecipeDetails(recipe.getId());
+        RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(ratedRecipe);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        System.out.println("expectedResponse (\n" + encodedResponseBodyContent);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenRateRecipeTwice_thenBadRequest_becauseRecipeAlreadyRatedException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        int ratingValue = 10;
+        RateRecipeParamsDTO paramsDTO = new RateRecipeParamsDTO(ratingValue, jwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        socialService.rateRecipe(jwtData.getUserID(), recipe.getId(), ratingValue);
+        String endpointAddress = API_ENDPOINT + "/rate/" + recipe.getId();
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(SocialController.RECIPE_ALREADY_RATED_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isBadRequest())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
     
     
 }
