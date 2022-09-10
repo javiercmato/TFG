@@ -16,7 +16,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode(exclude = "version")
+@EqualsAndHashCode
 @Table(name = "recipe", schema = "recipes")
 public class Recipe {
     @Id

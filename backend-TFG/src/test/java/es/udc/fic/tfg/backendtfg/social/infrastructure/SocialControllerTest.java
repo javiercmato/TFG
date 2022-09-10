@@ -252,7 +252,8 @@ class SocialControllerTest {
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
         action.andExpect(status().isForbidden())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-              .andExpect(content().string(encodedResponseBodyContent));
+              .andExpect(content().string(encodedResponseBodyContent)
+        );
     }
     
     @Test
@@ -513,5 +514,37 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenRateRecipe_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData jwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        int ratingValue = 10;
+        RateRecipeParamsDTO paramsDTO = new RateRecipeParamsDTO(ratingValue, jwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/rate/" + recipe.getId();
+        String encodedBodyContent = this.jsonMapper.writeValueAsString(paramsDTO);
+        ResultActions action = mockMvc.perform(
+                post(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(encodedBodyContent)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent)
+        );
+    }
     
 }

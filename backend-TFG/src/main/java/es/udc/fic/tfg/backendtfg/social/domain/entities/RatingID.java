@@ -11,7 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@ToString
 @Embeddable
 public class RatingID implements Serializable {
     @Column(table = "rating", name = "author_id", nullable = false)
