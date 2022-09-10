@@ -38,6 +38,7 @@ const RecipeDetails = () => {
         dispatch(recipesRedux.actions.deleteRecipeAsyncAction(String(recipeID), onSuccess, onError));
     }
 
+    const handleBanCommentError = (error: ErrorDto) => setBackendErrors(error);
 
 
     let ingredientsListProps: RecipeIngredientsListProps = {
@@ -59,7 +60,7 @@ const RecipeDetails = () => {
 
     let addToListProps: AddToPrivateListButtonProps = {
         recipe: recipeData!,
-        onErrorCallback: setBackendErrors,
+        onErrorCallback: handleBanCommentError,
     }
 
 

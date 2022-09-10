@@ -6,10 +6,11 @@ import {userRedux} from "../../../Users";
 import {FormattedMessage} from "react-intl";
 import React, {MouseEventHandler} from "react";
 import {recipesRedux} from "../../Application";
+import {ErrorDto} from "../../../App";
 
 interface Props {
     comment: Comment,
-    onErrorCallback: CallbackFunction,
+    onErrorCallback: (err: ErrorDto) => void,
 }
 
 const CommentBox = ({comment, onErrorCallback}: Props) => {
@@ -22,6 +23,8 @@ const CommentBox = ({comment, onErrorCallback}: Props) => {
 
         let onSuccess: NoArgsCallbackFunction = () => {};
         let onErrors: CallbackFunction = (err) => {
+
+            console.log(err);
             onErrorCallback(err)
         };
 
@@ -40,23 +43,25 @@ const CommentBox = ({comment, onErrorCallback}: Props) => {
                             </Alert>
                             :
                             <Row>
-                                <Col md={10}>
-                                    <Link to={`/users/${comment.author.nickname}`}>
-                                        {comment.author.name}
-                                    </Link>
-                                </Col>
-                                <Col>
-                                    {comment.creationDate.toString()}
-                                </Col>
-                            </Row>
-                    }
+                                <Row>
+                                    <Col md={10}>
+                                        <Link to={`/users/${comment.author.nickname}`}>
+                                            {comment.author.name}
+                                        </Link>
+                                    </Col>
+                                    <Col>
+                                        {comment.creationDate.toString()}
+                                    </Col>
+                                </Row>
 
-                        {/* Texto del comentario */}
-                        <Row>
-                            <Col>
-                                {comment.text}
-                            </Col>
-                        </Row>
+                                {/* Texto del comentario */}
+                                <Row>
+                                    <Col>
+                                        {comment.text}
+                                    </Col>
+                                </Row>
+                            </Row>
+                        }
                     </Row>
                 </Col>
 
@@ -68,7 +73,7 @@ const CommentBox = ({comment, onErrorCallback}: Props) => {
                             onClick={handleClick}
                         >
                             {(isBanned) ?
-                                <FormattedMessage id="recipes.components.CommentBox.banButton" />
+                                <FormattedMessage id="recipes.components.CommentBox.unbanButton" />
                                 :
                                 <FormattedMessage id="recipes.components.CommentBox.banButton"/>
                             }

@@ -74,10 +74,20 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             let payload: Comment = (action as BanCommentActionType).payload;
 
             // Reemplazar el comentario baneado por la respuesta recibida
-            let bannedCommentIndex = state.comments.findIndex((c) => c.id === payload.id);
-            state.comments[bannedCommentIndex] = payload;
+            let recipeComments: Array<Comment> = [...state.comments];
+            recipeComments.forEach((c: Comment, i: number) => {
+                recipeComments[i] = {...state.comments[i]};
+                if (recipeComments[i].id === payload.id) {
+                    recipeComments[i] = payload;
+                }
+            });
 
-            return state;
+            // Clonar el estado para evitar problemas con Redux
+            let updatedState = Object.assign({}, state, {
+                comments: recipeComments
+            });
+
+            return updatedState;
         }
 
         case actionTypes.CLEAR_RECIPE_DETAILS:

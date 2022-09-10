@@ -28,5 +28,5 @@ public class CommentDTO {
     private String text;
     
     @JsonProperty(value = "isBannedByAdmin")
-    private boolean isBannedByAdmin;
+    private boolean banned;
 }

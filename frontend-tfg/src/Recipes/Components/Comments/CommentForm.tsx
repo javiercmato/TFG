@@ -14,6 +14,7 @@ interface Props {
 const CommentForm = ({comments, onErrorCallback}: Props) => {
     const hasComments = (comments.length !== 0);
 
+
     return (
         <Container>
             <Row>
@@ -23,7 +24,10 @@ const CommentForm = ({comments, onErrorCallback}: Props) => {
             <Row>
                 {(hasComments) ?
                     comments.map((comment: Comment, index: number) =>
-                        <CommentBox key={index} comment={comment} onErrorCallback={onErrorCallback} />
+                        <CommentBox key={index}
+                                    comment={comment}
+                                    onErrorCallback={onErrorCallback}
+                        />
                     )
                     :
                     <Alert variant="info">
