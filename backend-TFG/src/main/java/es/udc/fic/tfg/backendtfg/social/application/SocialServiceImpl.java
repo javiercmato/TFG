@@ -62,7 +62,7 @@ public class SocialServiceImpl implements SocialService {
     }
     
     @Override
-    public boolean banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException {
+    public Comment banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException {
         // Commprobar si existe el administrador
         try {
             userUtils.fetchAdministrator(adminID);
@@ -75,9 +75,8 @@ public class SocialServiceImpl implements SocialService {
         
         // Aplicar/retirar baneo
         targetComment.setBannedByAdmin(!targetComment.isBannedByAdmin());
-        commentRepo.save(targetComment);
         
-        return targetComment.isBannedByAdmin();
+        return commentRepo.save(targetComment);
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

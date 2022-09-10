@@ -16,6 +16,8 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CommentDTO;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -379,7 +381,8 @@ class SocialControllerTest {
         );
         
         // Comprobar resultados
-        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(true);
+        CommentDTO expectedResponse = CommentConversor.toCommentDTO(comment);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isOk())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
@@ -391,7 +394,7 @@ class SocialControllerTest {
         AuthenticatedUserDTO adminDTO = loginAsAdmin();
         JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
         Category category = registerCategory();
-        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        registerRecipe(jwtData.getUserID(), category.getId());
         
         // Ejecutar funcionalidades
         String endpointAddress = API_ENDPOINT + "/comments/admin/ban/" + NON_EXISTENT_UUID;
