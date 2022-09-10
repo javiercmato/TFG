@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Rating;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -77,6 +78,9 @@ public class User {
     @OneToMany(mappedBy = "author")
     private Set<Comment> comments = new LinkedHashSet<>();
     
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
+    private Set<Rating> ratings = new LinkedHashSet<>();
+    
     /* *************** DOMAIN-MODEL *************** */
     @Transient
     /** Devuelve las listas privadas del usuario */
@@ -86,4 +90,9 @@ public class User {
                 .collect(Collectors.toList());
     }
     
+    /** Indica que la puntuación ha sido realizada por el usuario actual */
+    public void addRating(Rating rate) {
+        ratings.add(rate);
+        rate.setAuthor(this);
+    }
 }

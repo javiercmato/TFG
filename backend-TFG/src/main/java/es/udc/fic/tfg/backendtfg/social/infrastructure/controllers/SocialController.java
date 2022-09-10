@@ -5,11 +5,15 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
+import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeDetailsDTO;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CommentDTO;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -18,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -33,9 +38,21 @@ public class SocialController {
     
     
     /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
-    
+    // Referencias a los errores en los ficheros de i18n
+    public static final String RECIPE_ALREADY_RATED_EXCEPTION_KEY         = "social.domain.exceptions.RecipeAlreadyRatedException";
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
+    @ExceptionHandler(RecipeAlreadyRatedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleRecipeAlreadyRatedException(RecipeAlreadyRatedException exception, Locale locale) {
+        String errorMessage = messageSource.getMessage(
+                RECIPE_ALREADY_RATED_EXCEPTION_KEY, null, RECIPE_ALREADY_RATED_EXCEPTION_KEY, locale
+        );
+    
+        return new ErrorsDTO(errorMessage);
+    }
+    
     
     
     /* ******************** ENDPOINTS ******************** */
@@ -82,6 +99,25 @@ public class SocialController {
         
         // Generar respuesta
         return CommentConversor.toCommentDTO(comment);
+    }
+    
+    @PostMapping(path = "/rate/{recipeID}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public RecipeDetailsDTO rateRecipe(@Validated @RequestBody RateRecipeParamsDTO params,
+                                       @RequestAttribute("userID") UUID userID,
+                                       @PathVariable("recipeID") UUID recipeID)
+            throws PermissionException, EntityNotFoundException, RecipeAlreadyRatedException {
+        // Comprobar que el usuario actual y el usuario objetivo son el mismo
+        if (!controllerUtils.doUsersMatch(userID, params.getUserID()))
+            throw new PermissionException();
+    
+        // Llamada al servicio
+        Recipe ratedRecipe = socialService.rateRecipe(userID, recipeID, params.getRating());
+        
+        // Generar respuesta
+        return RecipeConversor.toRecipeDetailsDTO(ratedRecipe);
     }
     
 }

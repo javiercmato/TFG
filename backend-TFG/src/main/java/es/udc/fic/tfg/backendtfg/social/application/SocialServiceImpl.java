@@ -5,8 +5,10 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundExceptio
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
+import es.udc.fic.tfg.backendtfg.social.domain.repositories.RatingRepository;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class SocialServiceImpl implements SocialService {
     private RecipeRepository recipeRepo;
     @Autowired
     private CommentRepository commentRepo;
+    @Autowired
+    private RatingRepository ratingRepo;
+    
     
     /* ******************** FUNCIONALIDADES COMENTARIOS ******************** */
     @Override
@@ -77,6 +82,31 @@ public class SocialServiceImpl implements SocialService {
         targetComment.setBannedByAdmin(!targetComment.isBannedByAdmin());
         
         return commentRepo.save(targetComment);
+    }
+    
+    @Override
+    public Recipe rateRecipe(UUID userID, UUID recipeID, int value) throws EntityNotFoundException, RecipeAlreadyRatedException {
+        // Buscar el usuario. Si no existe lanza EntityNotFoundException
+        User author = userUtils.fetchUserByID(userID);
+        // Buscar la receta. Si no existe lanza EntityNotFoundException
+        Recipe recipe = fetchRecipeByID(recipeID);
+        
+        // Comprobar que la receta no haya sido puntuada ya por el usuario. Sino lanza RecipeAlreadyRatedException
+        RatingID ratingID = new RatingID(author.getId(), recipe.getId());
+        if (ratingRepo.existsById(ratingID))
+            throw new RecipeAlreadyRatedException();
+        
+        // Puntuar la receta
+        Rating rating = new Rating();
+        rating.setId(ratingID);
+        rating.setValue(value);
+        
+        // Guardar puntuación y asignárselo a receta e indicar usuario que puntúa
+        author.addRating(rating);
+        recipe.rate(rating);
+        ratingRepo.save(rating);
+        
+        return recipeRepo.save(recipe);
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
