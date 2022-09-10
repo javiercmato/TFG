@@ -4,3 +4,5 @@ export type {FieldErrorDto} from './errors/FieldErrorDto';
 export type {Block} from './common/Block';
 export type {SearchCriteria} from './common/SearchCriteria';
 export type {Search} from './common/Search';
+
+export {default as defaultSearchCriteria} from './common/SearchCriteria';

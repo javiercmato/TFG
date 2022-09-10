@@ -1,5 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.domain;
 
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Rating;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
 import org.junit.jupiter.api.Test;
@@ -7,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,6 +30,8 @@ class UserUnitTest {
         LocalDateTime registerDate = LocalDateTime.now();
         UserRole role = UserRole.USER;
         boolean isBannedByAdmin = false;
+        Set<Comment> comments = new LinkedHashSet<>();
+        Set<Rating> ratings = new LinkedHashSet<>();
         
         // Ejecutar código
         User user = new User();
@@ -41,6 +45,8 @@ class UserUnitTest {
         user.setRole(role);
         user.setRegisterDate(registerDate);
         user.setBannedByAdmin(isBannedByAdmin);
+        user.setComments(comments);
+        user.setRatings(ratings);
         
         
         // Comprobar resultados
@@ -55,6 +61,8 @@ class UserUnitTest {
                 () -> assertEquals(role, user.getRole()),
                 () -> assertEquals(registerDate, user.getRegisterDate()),
                 () -> assertEquals(isBannedByAdmin, user.isBannedByAdmin()),
+                () -> assertEquals(comments, user.getComments()),
+                () -> assertEquals(ratings, user.getRatings()),
                 () -> assertTrue(user.getPrivateLists().isEmpty())
         );
     }

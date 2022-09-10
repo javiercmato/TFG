@@ -8,7 +8,7 @@ export {recipesRedux, recipesInitialState} from './Application';
 export {recipeService} from './Application';
 
 /* ********** Infrastructure ********** */
-export type {CreateCategoryParamsDTO, CreateRecipeParamsDTO, CreateRecipeIngredientParamsDTO, CreateRecipeStepParamsDTO, CreateRecipePictureParamsDTO} from './Infrastructure';
+export type {CreateCategoryParamsDTO, CreateRecipeParamsDTO, CreateRecipeIngredientParamsDTO, CreateRecipeStepParamsDTO, CreateRecipePictureParamsDTO, CreateCommentParamsDTO} from './Infrastructure';
 export type {RecipeSummaryDTO} from './Infrastructure';
 
 /* ********** Components ********** */

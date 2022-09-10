@@ -39,6 +39,7 @@ public class TestConstants {
     public static final String DEFAULT_RECIPESTEP_TEXT = "This is a recipe step text";
     public static final String DEFAULT_RECIPE_IMAGE_1 = "foto_comida_1.png";
     
-    
+    /* ************************* SOCIAL ************************* */
+    public static final String DEFAULT_COMMENT_TEXT = "This is a comment";
     
 }

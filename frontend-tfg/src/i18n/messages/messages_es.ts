@@ -21,6 +21,8 @@ const translations = {
     'common.buttons.add': 'Añadir',
     'common.buttons.remove': 'Retirar',
     'common.buttons.delete': 'Borrar',
+    'common.buttons.publish': 'Publicar',
+
 
 
 
@@ -47,7 +49,10 @@ const translations = {
     'common.fields.steps': 'Pasos',
     'common.fields.minutes': 'minutos',
     'common.fields.diners': 'raciones',
+    'common.fields.averageRating': 'puntos',
     'common.fields.privateLists': 'Listas privadas',
+    'common.fields.rating': 'Puntuación',
+    'common.fields.comments': 'Comentarios',
 
 
     'common.Components.WarningModal.title': 'Aviso',
@@ -125,7 +130,12 @@ const translations = {
     'recipes.components.BanRecipeButton.banButton': 'Inhabillitar receta',
     'recipes.components.BanRecipeButton.unbanButton': 'Rehabillitar receta',
     'recipes.warning.RecipeIsBannedByAdmin': 'Receta ha sido moderada por el administrador',
-    'recipes.components.AddToPrivateListButton.text': 'Añadir receta a lista privada',
+    'recipes.components.AddToPrivateListButton.text': 'Añadir a lista privada',
+    'recipes.components.CommentInput.placeholder': 'P. ej.: ¡Me gusta mucho tu receta!',
+    'recipes.components.CommentBox.banButton': 'Inhabillitar comentario',
+    'recipes.components.CommentBox.unbanButton': 'Rehabilitar comentario',
+    'recipes.components.RateRecipe.': 'Seleccionar puntuación',
+    'recipes.warning.CommentIsBannedByAdmin': 'Comentario ha sido moderado por el administrador',
 
 
 

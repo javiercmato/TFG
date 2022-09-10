@@ -8,6 +8,7 @@ interface RecipeSummaryDTO {
     duration: number,
     diners: Nullable<number>,
     ingredientsCount: number,
+    averageRating: number,
 }
 
 

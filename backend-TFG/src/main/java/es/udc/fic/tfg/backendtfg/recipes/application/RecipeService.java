@@ -81,5 +81,5 @@ public interface RecipeService {
      */
     boolean banRecipeAsAdmin(UUID adminID, UUID recipeID) throws EntityNotFoundException, PermissionException;
     
-    
+
 }
