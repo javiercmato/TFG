@@ -16,6 +16,7 @@ export const DELETE_RECIPE: string = 'recipes/deleteRecipe';
 export const BAN_RECIPE: string = 'recipes/banRecipe';
 export const GET_RECIPE_COMMENTS: string = "social/getRecipeComments";
 export const ADD_COMMENT: string = "social/addComment";
+export const BAN_COMMENT: string = "social/banComment";
 
 /* ******************** Tipos de las acciones ******************** */
 
@@ -71,6 +72,11 @@ export interface AddCommentActionType {
     payload: Comment
 }
 
+export interface BanCommentActionType {
+    type: string,
+    payload: Comment
+}
+
 
 
 export type RecipeDispatchType = CreateCategoryActionType
@@ -84,4 +90,5 @@ export type RecipeDispatchType = CreateCategoryActionType
     | BanRecipeActionType
     | GetRecipeCommentsActionType
     | AddCommentActionType
+    | BanCommentActionType
 ;

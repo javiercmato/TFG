@@ -2,6 +2,7 @@ import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
 import {
     AddCommentActionType,
+    BanCommentActionType,
     BanRecipeActionType,
     FindRecipesActionType,
     GetCategoriesActionType,
@@ -64,6 +65,19 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
             let items: Array<Comment> = payload?.result?.items ?? [];
 
             return ({...state, comments: items});
+        }
+
+        case actionTypes.BAN_COMMENT: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Comment = (action as BanCommentActionType).payload;
+
+            // Reemplazar el comentario baneado por la respuesta recibida
+            let bannedCommentIndex = state.comments.findIndex((c) => c.id === payload.id);
+            state.comments[bannedCommentIndex] = payload;
+
+            return state;
         }
 
         case actionTypes.CLEAR_RECIPE_DETAILS:

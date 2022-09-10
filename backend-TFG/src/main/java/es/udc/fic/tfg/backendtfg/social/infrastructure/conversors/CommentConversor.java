@@ -19,7 +19,12 @@ public class CommentConversor {
     public static CommentDTO toCommentDTO(Comment entity) {
         UserSummaryDTO author = UserConversor.toUserSummaryDTO(entity.getAuthor());
         
-        return new CommentDTO(author, entity.getCreationDate(), entity.getText());
+        return new CommentDTO(entity.getId(),
+                              author,
+                              entity.getCreationDate(),
+                              entity.getText(),
+                              entity.isBannedByAdmin()
+        );
     }
     
     /* ******************** Convertir a conjunto de DTO ******************** */

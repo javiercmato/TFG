@@ -23,7 +23,7 @@ const CommentForm = ({comments, onErrorCallback}: Props) => {
             <Row>
                 {(hasComments) ?
                     comments.map((comment: Comment, index: number) =>
-                        <CommentBox key={index} comment={comment} />
+                        <CommentBox key={index} comment={comment} onErrorCallback={onErrorCallback} />
                     )
                     :
                     <Alert variant="info">

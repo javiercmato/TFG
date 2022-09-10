@@ -130,6 +130,9 @@ const translations = {
     'recipes.warning.RecipeIsBannedByAdmin': 'Receta ha sido moderada por el administrador',
     'recipes.components.AddToPrivateListButton.text': 'Añadir a lista privada',
     'recipes.components.CommentInput.placeholder': 'P. ej.: ¡Me gusta mucho tu receta!',
+    'recipes.components.CommentBox.banButton': 'Inhabillitar comentario',
+    'recipes.components.CommentBox.unbanButton': 'Rehabilitar comentario',
+    'recipes.warning.CommentIsBannedByAdmin': 'Comentario ha sido moderada por el administrador',
 
 
 
