@@ -8,6 +8,7 @@ import {
     CreateCategoryParamsDTO,
     CreateCommentParamsDTO,
     CreateRecipeParamsDTO,
+    RateRecipeParamsDTO,
     RecipeSummaryDTO
 } from "../../Infrastructure";
 import {Comment} from "../../../Social";
@@ -70,6 +71,11 @@ export const addCommentAction = (comment: Comment) : RecipeDispatchType => ({
 export const banCommentAction = (comment: Comment) : RecipeDispatchType => ({
     type: actionTypes.BAN_COMMENT,
     payload: comment,
+})
+
+export const rateRecipeAction = (recipe: Recipe) : RecipeDispatchType => ({
+    type: actionTypes.RATE_RECIPE,
+    payload: recipe,
 })
 
 /* ************************* ASYNC ACTIONS ******************** */
@@ -360,4 +366,34 @@ export const banCommentAsyncAction = (commentID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     recipeService.banCommentAsAdmin(commentID, onSuccess, onError);
+}
+
+export const rateRecipeAsyncAction = (recipeID: string,
+                                      params: RateRecipeParamsDTO,
+                                      onSuccessCallback: NoArgsCallbackFunction,
+                                      onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (recipe: Recipe) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(rateRecipeAction(recipe));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    recipeService.rateRecipe(recipeID, params, onSuccess, onError);
 }

@@ -1,5 +1,10 @@
 import {appFetch, configFetchParameters} from "../../proxy";
-import {CreateCategoryParamsDTO, CreateCommentParamsDTO, CreateRecipeParamsDTO} from "../Infrastructure";
+import {
+    CreateCategoryParamsDTO,
+    CreateCommentParamsDTO,
+    CreateRecipeParamsDTO,
+    RateRecipeParamsDTO
+} from "../Infrastructure";
 import {Recipe, RecipeStep} from "../Domain";
 import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
 import {Block} from "../../App";
@@ -160,6 +165,19 @@ export const banCommentAsAdmin = (commentID: string,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const rateRecipe = (recipeID: string,
+                           params: RateRecipeParamsDTO,
+                           onSuccessCallback: CallbackFunction,
+                           onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = SOCIAL_ENDPOINT + `/rate/${recipeID}`;
+    const requestConfig = configFetchParameters('POST', params);
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
