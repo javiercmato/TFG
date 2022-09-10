@@ -3,7 +3,9 @@ package es.udc.fic.tfg.backendtfg.social.application;
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
+import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
 
 import java.util.UUID;
 
@@ -37,4 +39,15 @@ public interface SocialService {
      * @throws PermissionException El usuario no es administrador
      */
     Comment banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException;
+    
+    /**
+     * Permite puntuar una receta.
+     * @param userID ID del usuario que puntúa
+     * @param recipeID ID de la receta a puntuar
+     * @param value Puntuación a añadir (>= 0)
+     * @return Receta con la puntuación actualizada
+     * @throws EntityNotFoundException No se encuentra la receta o el usuario
+     * @throws RecipeAlreadyRatedException Receta ya ha sido puntuada por el usuario
+     */
+    Recipe rateRecipe(UUID userID, UUID recipeID, int value) throws EntityNotFoundException, RecipeAlreadyRatedException;
 }

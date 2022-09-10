@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.recipes.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Rating;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,6 +16,7 @@ import java.util.*;
 @Setter
 @NoArgsConstructor
 @Entity
+@EqualsAndHashCode
 @Table(name = "recipe", schema = "recipes")
 public class Recipe {
     @Id
@@ -100,6 +102,9 @@ public class Recipe {
             orphanRemoval = true)
     private Set<Comment> comments = new HashSet<>();
     
+    @OneToMany(orphanRemoval = true)
+    private Set<Rating> ratings = new LinkedHashSet<>();
+    
     
     /* *************** Domain-Model *************** */
     /**
@@ -149,4 +154,18 @@ public class Recipe {
         comments.add(comment);
         comment.setRecipe(this);
     }
+    
+    /** Añade una nueva votación y calcula el valor medio */
+    public float rate(Rating rate) {
+        ratings.add(rate);
+        rate.setRecipe(this);
+        
+        //this.totalVotes += 1;
+        long votesCount = ratings.size();
+        float average = ((averageRating*(votesCount - 1) + rate.getValue())) / votesCount;
+        this.averageRating = average;
+        
+        return average;
+    }
+    
 }

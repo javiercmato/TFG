@@ -9,7 +9,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 
 CREATE TABLE IF NOT EXISTS social.Comment (
-    id                  uuid            DEFAULT public.uuid_generate_v1(),
+    id                  uuid            DEFAULT users.uuid_generate_v1(),
     author_id           uuid,
     recipe_id           uuid,
     creationDate        TIMESTAMP       NOT NULL        DEFAULT CURRENT_TIMESTAMP,
