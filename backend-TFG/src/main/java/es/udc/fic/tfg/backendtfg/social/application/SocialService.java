@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.social.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 
 import java.util.UUID;
@@ -27,4 +28,13 @@ public interface SocialService {
      */
     Block<Comment> getRecipeComments(UUID recipeID, int page, int pageSize) throws EntityNotFoundException;
     
+    /**
+     * Banea un comentario del sistema.
+     * @param adminID ID del administrador
+     * @param commentID ID del comentario a banear
+     * @return True si el comentario está baneado; false si no lo está
+     * @throws EntityNotFoundException No se encuentra el comentario
+     * @throws PermissionException El usuario no es administrador
+     */
+    boolean banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException;
 }

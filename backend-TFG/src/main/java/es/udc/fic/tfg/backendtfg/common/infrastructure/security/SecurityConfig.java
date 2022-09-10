@@ -66,6 +66,7 @@ public class SecurityConfig {
                 // SOCIAL ENDPOINTS
                 .antMatchers(HttpMethod.POST,   "/api/social/comments/*").permitAll()                                   // addComment
                 .antMatchers(HttpMethod.GET,    "/api/social/comments/*").permitAll()                                   // getRecipeComments
+                .antMatchers(HttpMethod.PUT,    "/api/social/comments/admin/ban/*").permitAll()                         // banCommentAsAdmin
                 
         
         
