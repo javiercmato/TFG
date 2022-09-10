@@ -8,6 +8,7 @@ import {
     GetCategoriesActionType,
     GetRecipeCommentsActionType,
     GetRecipeDetailsActionType,
+    RateRecipeActionType,
     RecipeDispatchType
 } from './actionTypes';
 import {initialState, IRecipeState} from "./IRecipeState";
@@ -89,6 +90,16 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
 
             return updatedState;
         }
+
+        case actionTypes.RATE_RECIPE: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Recipe = (action as RateRecipeActionType).payload;
+
+            return payload;
+        }
+
 
         case actionTypes.CLEAR_RECIPE_DETAILS:
             return initialState.recipe;

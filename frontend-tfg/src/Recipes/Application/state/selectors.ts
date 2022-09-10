@@ -34,6 +34,10 @@ export const selectSearchResultBlock = (state: RootState) : Nullable<Block<Recip
 
 export const isBannedByAdmin = (state: RootState) : boolean => selectRecipe(state)?.isBannedByAdmin!;
 
+export const selectAverageRating = (state: RootState) : number => selectRecipe(state)?.averageRating!;
+
+export const selectTotalVotes = (state: RootState) : number => selectRecipe(state)?.totalVotes!;
+
 
 /* ******************** DATOS DE COMENTARIOS EN RECETA ******************** */
 

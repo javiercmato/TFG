@@ -5,3 +5,4 @@ export type {default as CreateRecipePictureParamsDTO} from './CreateRecipePictur
 export type {default as CreateRecipeIngredientParamsDTO} from './CreateRecipeIngredientParamsDTO';
 export type {default as RecipeSummaryDTO} from './RecipeSummaryDTO';
 export type {default as CreateCommentParamsDTO} from './CreateCommentParamsDTO';
+export type {default as RateRecipeParamsDTO} from './RateRecipeParamsDTO';

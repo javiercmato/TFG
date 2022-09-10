@@ -17,6 +17,7 @@ export const BAN_RECIPE: string = 'recipes/banRecipe';
 export const GET_RECIPE_COMMENTS: string = "social/getRecipeComments";
 export const ADD_COMMENT: string = "social/addComment";
 export const BAN_COMMENT: string = "social/banComment";
+export const RATE_RECIPE: string = "social/rateRecipe";
 
 /* ******************** Tipos de las acciones ******************** */
 
@@ -77,6 +78,11 @@ export interface BanCommentActionType {
     payload: Comment
 }
 
+export interface RateRecipeActionType {
+    type: string,
+    payload: Recipe
+}
+
 
 
 export type RecipeDispatchType = CreateCategoryActionType
@@ -91,4 +97,5 @@ export type RecipeDispatchType = CreateCategoryActionType
     | GetRecipeCommentsActionType
     | AddCommentActionType
     | BanCommentActionType
+    | RateRecipeActionType
 ;
