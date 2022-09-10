@@ -1,16 +1,21 @@
 import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
 import {
+    AddCommentActionType,
+    BanCommentActionType,
     BanRecipeActionType,
     FindRecipesActionType,
     GetCategoriesActionType,
+    GetRecipeCommentsActionType,
     GetRecipeDetailsActionType,
+    RateRecipeActionType,
     RecipeDispatchType
 } from './actionTypes';
 import {initialState, IRecipeState} from "./IRecipeState";
 import {Category, Recipe} from "../../Domain";
 import {Search} from "../../../App";
 import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
+import {Comment} from "../../../Social";
 
 
 const categories = (state: Array<Category> = initialState.categories,
@@ -41,6 +46,60 @@ const recipes = (state: Nullable<Recipe> = initialState.recipe,
 
             return payload;
         }
+
+        case actionTypes.ADD_COMMENT: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Comment = (action as AddCommentActionType).payload;
+
+            return ({...state,
+                comments: [...state.comments, payload],
+            })
+        }
+
+        case actionTypes.GET_RECIPE_COMMENTS: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Search<Comment> = (action as GetRecipeCommentsActionType).payload;
+            let items: Array<Comment> = payload?.result?.items ?? [];
+
+            return ({...state, comments: items});
+        }
+
+        case actionTypes.BAN_COMMENT: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Comment = (action as BanCommentActionType).payload;
+
+            // Reemplazar el comentario baneado por la respuesta recibida
+            let recipeComments: Array<Comment> = [...state.comments];
+            recipeComments.forEach((c: Comment, i: number) => {
+                recipeComments[i] = {...state.comments[i]};
+                if (recipeComments[i].id === payload.id) {
+                    recipeComments[i] = payload;
+                }
+            });
+
+            // Clonar el estado para evitar problemas con Redux
+            let updatedState = Object.assign({}, state, {
+                comments: recipeComments
+            });
+
+            return updatedState;
+        }
+
+        case actionTypes.RATE_RECIPE: {
+            // Si no hay receta cargada, se devuelve el estado (nulo)
+            if (state === null) return state;
+
+            let payload: Recipe = (action as RateRecipeActionType).payload;
+
+            return payload;
+        }
+
 
         case actionTypes.CLEAR_RECIPE_DETAILS:
             return initialState.recipe;

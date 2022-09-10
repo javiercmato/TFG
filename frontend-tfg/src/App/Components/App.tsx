@@ -4,7 +4,6 @@ import 'bootstrap';
 import {BrowserRouter as Router} from "react-router-dom";
 import Body from "./Body";
 import Header from "./Header";
-import Footer from "./Footer";
 import {useAppDispatch} from "../../store";
 import {userRedux} from "../../Users";
 
@@ -23,7 +22,7 @@ const App = () => {
             <Router>
                 <Header />
                 <Body />
-                <Footer />
+                {/*<Footer />*/}
             </Router>
         </div>
   );

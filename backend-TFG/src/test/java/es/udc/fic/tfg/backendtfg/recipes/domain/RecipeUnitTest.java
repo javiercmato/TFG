@@ -3,6 +3,7 @@ package es.udc.fic.tfg.backendtfg.recipes.domain;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.PrivateList;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ class RecipeUnitTest {
         Set<RecipePicture> pictures = new HashSet<>();
         Set<RecipeIngredient> ingredients = new HashSet<>();
         Set<PrivateListRecipe> privateLists = new HashSet<>();
+        Set<Comment> comments = new HashSet<>();
         
         // Ejecutar código
         Recipe recipe = new Recipe();
@@ -52,6 +54,7 @@ class RecipeUnitTest {
         recipe.setIngredients(ingredients);
         recipe.setPrivateListRecipes(privateLists);
         author.getRecipes().add(recipe);
+        recipe.setComments(comments);
         
         // Comprobar resultados
         assertAll(
@@ -68,7 +71,38 @@ class RecipeUnitTest {
                 () -> assertEquals(pictures, recipe.getPictures()),
                 () -> assertEquals(ingredients, recipe.getIngredients()),
                 () -> assertEquals(privateLists, recipe.getPrivateListRecipes()),
+                () -> assertEquals(comments, recipe.getComments()),
                 () -> assertTrue(author.getRecipes().contains(recipe))
+        );
+    }
+    
+    @Test
+    void createRecipeAndAddComment () {
+        // Crear datos de prueba
+        UUID recipeID = UUID.randomUUID();
+        UUID userID = UUID.randomUUID();
+        UUID commentID = UUID.randomUUID();
+        LocalDateTime now = LocalDateTime.now();
+        Recipe recipe = new Recipe();
+        recipe.setId(recipeID);
+        User author = new User();
+        author.setId(userID);
+        Set<Comment> comments = new HashSet<>();
+        Comment comment = new Comment(commentID, now, DEFAULT_COMMENT_TEXT, false, author, recipe);
+        
+        // Ejecutar código
+        recipe.setComments(comments);
+        recipe.addComment(comment);
+        
+        // Comprobar resultados
+        assertAll(
+                // Los datos son correctos
+                () -> assertEquals(commentID, comment.getId()),
+                () -> assertEquals(now, comment.getCreationDate()),
+                () -> assertEquals(DEFAULT_COMMENT_TEXT, comment.getText()),
+                () -> assertEquals(author, comment.getAuthor()),
+                () -> assertEquals(recipe, comment.getRecipe()),
+                () -> assertFalse(comment.isBannedByAdmin())
         );
     }
     

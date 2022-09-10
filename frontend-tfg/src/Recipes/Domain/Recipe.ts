@@ -1,6 +1,7 @@
 import RecipeIngredient from "./RecipeIngredient";
 import RecipePicture from "./RecipePicture";
 import RecipeStep from "./RecipeStep";
+import {Comment} from "../../Social";
 
 interface Recipe {
     id: string,
@@ -13,8 +14,13 @@ interface Recipe {
     authorID: string,
     categoryID: string,
     ingredients: Array<RecipeIngredient>,
-    pictures: Nullable<Array<RecipePicture>>,
-    steps: Array<RecipeStep>
+    pictures: Array<RecipePicture>,
+    steps: Array<RecipeStep>,
+    comments: Array<Comment>,
+    totalVotes: number,
+    averageRating: number,
+    userHasRated: boolean,
+    userRating: number,
 }
 
 

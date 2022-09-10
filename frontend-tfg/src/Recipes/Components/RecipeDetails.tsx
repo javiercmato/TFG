@@ -18,6 +18,8 @@ import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
+import CommentForm from "./Comments/CommentForm";
+import {RateRecipeParamsDTO} from "../Infrastructure";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -26,6 +28,7 @@ const RecipeDetails = () => {
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const recipeData = useAppSelector(recipesRedux.selectors.selectRecipe);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
+    const userID = useAppSelector(userRedux.selectors.selectUserID);
     const isRecipeBanned = useAppSelector(recipesRedux.selectors.isBannedByAdmin);
 
 
@@ -37,6 +40,18 @@ const RecipeDetails = () => {
         dispatch(recipesRedux.actions.deleteRecipeAsyncAction(String(recipeID), onSuccess, onError));
     }
 
+    const handleBanCommentError = (error: ErrorDto) => setBackendErrors(error);
+
+    const handleRateRecipe = (value: number) => {
+        let rateParams: RateRecipeParamsDTO = {
+            rating: value,
+            userID: userID,
+        }
+
+        let onSuccess = () => {console.log("Receta puntuada")};
+        let onError = (error: ErrorDto) => setBackendErrors(error);
+        dispatch(recipesRedux.actions.rateRecipeAsyncAction(String(recipeID), rateParams, onSuccess, onError));
+    }
 
 
     let ingredientsListProps: RecipeIngredientsListProps = {
@@ -45,6 +60,7 @@ const RecipeDetails = () => {
 
     let recipeDataProps: RecipeDataProps = {
         recipe: recipeData!,
+        onRateCallback: handleRateRecipe,
     }
 
     let recipeStepsProps: RecipeStepsProps = {
@@ -58,7 +74,7 @@ const RecipeDetails = () => {
 
     let addToListProps: AddToPrivateListButtonProps = {
         recipe: recipeData!,
-        onErrorCallback: setBackendErrors,
+        onErrorCallback: handleBanCommentError,
     }
 
 
@@ -108,6 +124,16 @@ const RecipeDetails = () => {
             />
 
             <Container>
+                {/* Borrar receta */}
+                <Row>
+                    <Button variant="danger" onClick={handleDeleteClick}>
+                        <span>
+                            <FaTrash />
+                            <FormattedMessage id="common.buttons.delete" />
+                        </span>
+                    </Button>
+                </Row>
+
                 {/* Nombre y descripción*/}
                 <Row>
                     <Col>
@@ -138,7 +164,10 @@ const RecipeDetails = () => {
 
                     {/* Categoría, datos, votación y añadir a lista privada */}
                     <Col>
-                        <RecipeData {...recipeDataProps} />
+                        <Row>
+                            <RecipeData {...recipeDataProps} />
+                        </Row>
+
                     </Col>
                 </Row>
 
@@ -155,32 +184,31 @@ const RecipeDetails = () => {
                     <h4>
                         <FormattedMessage id="common.fields.pictures" />
                     </h4>
-                    <Carousel>
-                        {recipeData.pictures?.map((picture) =>
-                            <Carousel.Item key={picture.order}>
-                                <Image
-                                    src={picture.pictureData}
-                                    style={carouselPicture}
-                                />
-                            </Carousel.Item>
-                        )}
-                    </Carousel>
+                    {(recipeData.pictures?.length === 0) ?
+                        <Alert variant="warning">
+                            <FormattedMessage id="common.alerts.noResults" />
+                        </Alert>
+                        :
+                        <Carousel>
+                            {recipeData.pictures?.map((picture) =>
+                                <Carousel.Item key={picture.order}>
+                                    <Image
+                                        src={picture.pictureData}
+                                        style={carouselPicture}
+                                    />
+                                </Carousel.Item>
+                            )}
+                        </Carousel>
+                    }
 
                 </Row>
 
                 {/* Comentarios */}
                 <Row>
-                    COMENTARIOS
-                </Row>
-
-                {/* Borrar receta */}
-                <Row>
-                    <Button variant="danger" onClick={handleDeleteClick}>
-                        <span>
-                            <FaTrash />
-                            <FormattedMessage id="common.buttons.delete" />
-                        </span>
-                    </Button>
+                    <h4>
+                        <FormattedMessage id="common.fields.comments" />
+                    </h4>
+                    <CommentForm comments={recipeData.comments} onErrorCallback={setBackendErrors}/>
                 </Row>
             </Container>
         </div>

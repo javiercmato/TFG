@@ -579,7 +579,7 @@ class RecipeControllerTest {
     
         // Comprobar resultados
         //Recipe foundRecipe = recipeService.getRecipeDetails(createdRecipe.getId());
-        Recipe foundRecipe = recipeRepo.findById(createdRecipe.getId()).get();
+        Recipe foundRecipe = recipeRepo.retrieveRecipeDetails(createdRecipe.getId()).get();
         RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(foundRecipe);
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
         action.andExpect(status().isOk())

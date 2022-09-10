@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -46,6 +47,9 @@ public class RecipeConversor {
         dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
         dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
+        dto.setTotalVotes(entity.getTotalVotes());
+        dto.setAverageRating(entity.getAverageRating());
+        dto.setComments(CommentConversor.toCommentDTOList(entity.getComments()));
         
         return dto;
     }
@@ -64,6 +68,9 @@ public class RecipeConversor {
         dto.setIngredients(toRecipeIngredientListDTO(entity.getIngredients()));
         dto.setPictures(toRecipePictureListDTO(entity.getPictures()));
         dto.setSteps(toRecipeStepListDTO(entity.getSteps()));
+        dto.setTotalVotes(entity.getTotalVotes());
+        dto.setAverageRating(entity.getAverageRating());
+        dto.setComments(CommentConversor.toCommentDTOList(entity.getComments()));
         
         return dto;
     }
@@ -88,6 +95,7 @@ public class RecipeConversor {
             dto.setPicture(null);
         }
         dto.setIngredientsCount(entity.getIngredients().size());
+        dto.setAverageRating(entity.getAverageRating());
         
         return dto;
     }
@@ -117,7 +125,5 @@ public class RecipeConversor {
                          .collect(Collectors.toList());
     }
     /* ******************** Convertir a Entidad ******************** */
-    
-    
     
 }

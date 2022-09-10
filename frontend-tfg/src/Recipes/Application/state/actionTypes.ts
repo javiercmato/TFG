@@ -1,6 +1,7 @@
 import {Category, Recipe} from "../../Domain";
 import {Search} from "../../../App";
-import RecipeSummaryDTO from "../../Infrastructure/RecipeSummaryDTO";
+import {RecipeSummaryDTO} from "../../Infrastructure";
+import {Comment} from "../../../Social";
 
 /* ******************** Nombres de las acciones ******************** */
 
@@ -13,6 +14,10 @@ export const FIND_RECIPES: string = 'recipes/findRecipes';
 export const CLEAR_RECIPES_SEARCH: string = 'recipes/clearRecipesSearch';
 export const DELETE_RECIPE: string = 'recipes/deleteRecipe';
 export const BAN_RECIPE: string = 'recipes/banRecipe';
+export const GET_RECIPE_COMMENTS: string = "social/getRecipeComments";
+export const ADD_COMMENT: string = "social/addComment";
+export const BAN_COMMENT: string = "social/banComment";
+export const RATE_RECIPE: string = "social/rateRecipe";
 
 /* ******************** Tipos de las acciones ******************** */
 
@@ -58,6 +63,27 @@ export interface BanRecipeActionType {
     payload: boolean
 }
 
+export interface GetRecipeCommentsActionType {
+    type: string,
+    payload: Search<Comment>
+}
+
+export interface AddCommentActionType {
+    type: string,
+    payload: Comment
+}
+
+export interface BanCommentActionType {
+    type: string,
+    payload: Comment
+}
+
+export interface RateRecipeActionType {
+    type: string,
+    payload: Recipe
+}
+
+
 
 export type RecipeDispatchType = CreateCategoryActionType
     | GetCategoriesActionType
@@ -68,4 +94,8 @@ export type RecipeDispatchType = CreateCategoryActionType
     | ClearRecipesSearchActionType
     | DeleteRecipeActionType
     | BanRecipeActionType
+    | GetRecipeCommentsActionType
+    | AddCommentActionType
+    | BanCommentActionType
+    | RateRecipeActionType
 ;

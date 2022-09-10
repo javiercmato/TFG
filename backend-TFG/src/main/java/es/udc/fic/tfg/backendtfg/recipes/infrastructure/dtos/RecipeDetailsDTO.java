@@ -1,14 +1,11 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.JacksonLocalDateTimeSerializer;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CommentDTO;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.UserSummaryDTO;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -29,9 +26,7 @@ public class RecipeDetailsDTO {
     private String description;
     
     @NotNull
-    @DateTimeFormat(iso = ISO.DATE_TIME)
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonSerialize(using = JacksonLocalDateTimeSerializer.class)
     private LocalDateTime creationDate;
     
     @NotNull
@@ -51,4 +46,10 @@ public class RecipeDetailsDTO {
     private List<RecipeStepDTO> steps;
     
     private List<RecipePictureDTO> pictures;
+    
+    private List<CommentDTO> comments;
+    
+    private Long totalVotes;
+    
+    private Float averageRating;
 }
