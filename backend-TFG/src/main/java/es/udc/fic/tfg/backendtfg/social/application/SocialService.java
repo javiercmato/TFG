@@ -36,5 +36,5 @@ public interface SocialService {
      * @throws EntityNotFoundException No se encuentra el comentario
      * @throws PermissionException El usuario no es administrador
      */
-    boolean banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException;
+    Comment banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException;
 }

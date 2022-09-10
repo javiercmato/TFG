@@ -74,11 +74,14 @@ public class SocialController {
     }
     
     @PutMapping(path = "/comments/admin/ban/{commentID}")
-    public boolean banCommentAsAdmin(@RequestAttribute("userID") UUID adminID,
+    public CommentDTO banCommentAsAdmin(@RequestAttribute("userID") UUID adminID,
                                      @PathVariable("commentID") UUID targetCommentID)
             throws PermissionException, EntityNotFoundException {
         // Llamada al servicio
-        return socialService.banCommentAsAdmin(adminID, targetCommentID);
+        Comment comment = socialService.banCommentAsAdmin(adminID, targetCommentID);
+        
+        // Generar respuesta
+        return CommentConversor.toCommentDTO(comment);
     }
     
 }

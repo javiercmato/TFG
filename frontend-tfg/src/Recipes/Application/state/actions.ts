@@ -67,6 +67,11 @@ export const addCommentAction = (comment: Comment) : RecipeDispatchType => ({
     payload: comment,
 })
 
+export const banCommentAction = (comment: Comment) : RecipeDispatchType => ({
+    type: actionTypes.BAN_COMMENT,
+    payload: comment,
+})
+
 /* ************************* ASYNC ACTIONS ******************** */
 
 export const createCategoryAsyncAction = (category: CreateCategoryParamsDTO,
@@ -326,4 +331,33 @@ export const addCommentAsyncAction = (recipeID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     recipeService.addComment(recipeID, params, onSuccess, onError);
+}
+
+export const banCommentAsyncAction = (commentID: string,
+                                      onSuccessCallback: NoArgsCallbackFunction,
+                                      onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (comment: Comment) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(banCommentAction(comment));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback();
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    recipeService.banCommentAsAdmin(commentID, onSuccess, onError);
 }

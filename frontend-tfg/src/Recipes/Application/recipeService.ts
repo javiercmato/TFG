@@ -150,6 +150,17 @@ export const addComment = (recipeID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
+export const banCommentAsAdmin = (commentID: string,
+                                  onSuccessCallback: CallbackFunction,
+                                  onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    const endpoint = SOCIAL_ENDPOINT + `/comments/admin/ban/${commentID}`;
+    const requestConfig = configFetchParameters('PUT');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
+
 
 /* ************************* FUNCIONES AUXILIARES ************************* */
 const sortRecipeSteps = (steps: Array<RecipeStep>): Array<RecipeStep> => {

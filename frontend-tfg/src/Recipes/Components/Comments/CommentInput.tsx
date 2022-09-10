@@ -9,7 +9,7 @@ import {CreateCommentParamsDTO} from "../../Infrastructure";
 import {userRedux} from "../../../Users";
 
 interface Props {
-    onErrorCallback: any,
+    onErrorCallback: (error: ErrorDto) => void,
 }
 
 const CommentInput = ({onErrorCallback}: Props) => {
@@ -27,9 +27,11 @@ const CommentInput = ({onErrorCallback}: Props) => {
         }
 
         let onSuccess = () => {};
-        let onError = (error: ErrorDto) => onErrorCallback(error);
+        let onError = (error: ErrorDto) => {
+            onErrorCallback(error);
+        }
 
-        dispatch(recipesRedux.actions.addCommentAsyncAction(recipeID!, params, onSuccess, onErrorCallback))
+        dispatch(recipesRedux.actions.addCommentAsyncAction(recipeID!, params, onSuccess, onError))
     }
 
     // Si usuario no está logeado no puede añadir comentarios
