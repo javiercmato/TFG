@@ -19,6 +19,7 @@ import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
 import CommentForm from "./Comments/CommentForm";
+import {RateRecipeParamsDTO} from "../Infrastructure";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -27,6 +28,7 @@ const RecipeDetails = () => {
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const recipeData = useAppSelector(recipesRedux.selectors.selectRecipe);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
+    const userID = useAppSelector(userRedux.selectors.selectUserID);
     const isRecipeBanned = useAppSelector(recipesRedux.selectors.isBannedByAdmin);
 
 
@@ -40,6 +42,17 @@ const RecipeDetails = () => {
 
     const handleBanCommentError = (error: ErrorDto) => setBackendErrors(error);
 
+    const handleRateRecipe = (value: number) => {
+        let rateParams: RateRecipeParamsDTO = {
+            rating: value,
+            userID: userID,
+        }
+
+        let onSuccess = () => {console.log("Receta puntuada")};
+        let onError = (error: ErrorDto) => setBackendErrors(error);
+        dispatch(recipesRedux.actions.rateRecipeAsyncAction(String(recipeID), rateParams, onSuccess, onError));
+    }
+
 
     let ingredientsListProps: RecipeIngredientsListProps = {
         ingredients: recipeData?.ingredients!,
@@ -47,6 +60,7 @@ const RecipeDetails = () => {
 
     let recipeDataProps: RecipeDataProps = {
         recipe: recipeData!,
+        onRateCallback: handleRateRecipe,
     }
 
     let recipeStepsProps: RecipeStepsProps = {
@@ -150,7 +164,10 @@ const RecipeDetails = () => {
 
                     {/* Categoría, datos, votación y añadir a lista privada */}
                     <Col>
-                        <RecipeData {...recipeDataProps} />
+                        <Row>
+                            <RecipeData {...recipeDataProps} />
+                        </Row>
+
                     </Col>
                 </Row>
 

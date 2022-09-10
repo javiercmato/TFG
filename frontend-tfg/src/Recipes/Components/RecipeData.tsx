@@ -3,15 +3,19 @@ import {Badge, Col, Row} from "react-bootstrap";
 import {useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
 import {FormattedMessage} from "react-intl";
-import {FaClock} from "react-icons/fa";
+import {FaClock, FaStar} from "react-icons/fa";
 import {GiKnifeFork} from "react-icons/gi";
 import {userRedux} from "../../Users";
+import RateRecipe from "./RateRecipe";
+
+const MAX_RATING_VALUE = Number(process.env.REACT_APP_MAX_RATING_VALUE);
 
 interface Props {
-    recipe: Recipe
+    recipe: Recipe,
+    onRateCallback: (value: number) => void,
 }
 
-const RecipeData = ({recipe}: Props) => {
+const RecipeData = ({recipe, onRateCallback}: Props) => {
     const categories = useAppSelector(recipesRedux.selectors.selectCategories);
     const categoryName: string = recipesRedux.selectors.selectCategoryName(categories, recipe.categoryID);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
@@ -41,11 +45,19 @@ const RecipeData = ({recipe}: Props) => {
             </Row>
 
             {/* Puntuación media */}
-            <Row></Row>
+            <Row>
+                <Col>
+                    <span>
+                        <FaStar /> {recipe.averageRating.toFixed(2)} / {MAX_RATING_VALUE}  <FormattedMessage id="common.fields.averageRating" /> [{recipe.totalVotes}]
+                    </span>
+                </Col>
+            </Row>
 
             {/* Botones de acciones: puntuar, añadir a lista privada*/}
             {(isLoggedIn) &&
-                <Row></Row>
+                <Row className="mx-auto">
+                    <RateRecipe onRateCallback={onRateCallback} />
+                </Row>
             }
         </Col>
     )

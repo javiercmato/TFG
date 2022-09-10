@@ -19,6 +19,8 @@ interface Recipe {
     comments: Array<Comment>,
     totalVotes: number,
     averageRating: number,
+    userHasRated: boolean,
+    userRating: number,
 }
 
 

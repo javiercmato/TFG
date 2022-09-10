@@ -49,7 +49,9 @@ const translations = {
     'common.fields.steps': 'Pasos',
     'common.fields.minutes': 'minutos',
     'common.fields.diners': 'raciones',
+    'common.fields.averageRating': 'puntos',
     'common.fields.privateLists': 'Listas privadas',
+    'common.fields.rating': 'Puntuación',
     'common.fields.comments': 'Comentarios',
 
 
@@ -132,6 +134,7 @@ const translations = {
     'recipes.components.CommentInput.placeholder': 'P. ej.: ¡Me gusta mucho tu receta!',
     'recipes.components.CommentBox.banButton': 'Inhabillitar comentario',
     'recipes.components.CommentBox.unbanButton': 'Rehabilitar comentario',
+    'recipes.components.RateRecipe.': 'Seleccionar puntuación',
     'recipes.warning.CommentIsBannedByAdmin': 'Comentario ha sido moderado por el administrador',
 
 

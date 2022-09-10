@@ -105,8 +105,10 @@ public class SocialServiceImpl implements SocialService {
         author.addRating(rating);
         recipe.rate(rating);
         ratingRepo.save(rating);
+        recipeRepo.save(recipe);
         
-        return recipeRepo.save(recipe);
+        // Recuperar toda la información de la receta
+        return recipeRepo.retrieveRecipeDetails(recipeID).get();
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
