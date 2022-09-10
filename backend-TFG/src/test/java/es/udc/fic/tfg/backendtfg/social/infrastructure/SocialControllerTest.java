@@ -14,6 +14,7 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.CreateCommentParamsDTO;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -40,8 +41,7 @@ import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
 import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -356,5 +356,98 @@ class SocialControllerTest {
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
+    
+    @Test
+    void whenBanCommentAsAdmin_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        Comment comment = socialService.commentRecipe(jwtData.getUserID(), recipe.getId(), DEFAULT_COMMENT_TEXT);
+    
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/admin/ban/" + comment.getId();
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(true);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenBanCommentAsAdmin_andCommentDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        JwtData jwtData = jwtGenerator.extractInfo(adminDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(jwtData.getUserID(), category.getId());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/admin/ban/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", jwtData.getUserID())
+                        .requestAttr("token", jwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {Comment.class.getSimpleName(), NON_EXISTENT_UUID},
+                Comment.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenBanCommentAsAdmin_andCurrentUserIsNotAdmin_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO adminDTO = loginAsAdmin();
+        AuthenticatedUserDTO notAdminDTO = registerValidUser(DEFAULT_NICKNAME);
+        JwtData notAdminJWTData = jwtGenerator.extractInfo(notAdminDTO.getServiceToken());
+        Category category = registerCategory();
+        Recipe recipe = registerRecipe(notAdminJWTData.getUserID(), category.getId());
+        Comment comment = socialService.commentRecipe(notAdminJWTData.getUserID(), recipe.getId(), DEFAULT_COMMENT_TEXT);
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/comments/admin/ban/" + comment.getId();
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + adminDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", notAdminJWTData.getUserID())
+                        .requestAttr("token", notAdminJWTData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
     
 }

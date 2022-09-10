@@ -53,7 +53,7 @@ public class Comment {
     }
     
     /* *************** Domain-Model *************** */
-    public void assignToRecipe(Recipe recipe) {
+    public void attachToRecipe(Recipe recipe) {
         recipe.addComment(this);
         this.setRecipe(recipe);
     }

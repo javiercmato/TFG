@@ -95,7 +95,6 @@ class RecipeUnitTest {
         recipe.addComment(comment);
         
         // Comprobar resultados
-        // Comprobar resultados
         assertAll(
                 // Los datos son correctos
                 () -> assertEquals(commentID, comment.getId()),

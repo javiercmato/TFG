@@ -2,6 +2,7 @@ package es.udc.fic.tfg.backendtfg.social.application;
 
 import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
+import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
@@ -57,9 +58,26 @@ public class SocialServiceImpl implements SocialService {
         Pageable pageable = PageRequest.of(page, pageSize);
         Slice<Comment> commentsSlice = commentRepo.findByRecipe_IdOrderByCreationDateDesc(recipeID, pageable);
         
-        
         return new Block<>(commentsSlice.getContent(), commentsSlice.hasNext(), commentsSlice.getNumberOfElements());
+    }
+    
+    @Override
+    public boolean banCommentAsAdmin(UUID adminID, UUID commentID) throws EntityNotFoundException, PermissionException {
+        // Commprobar si existe el administrador
+        try {
+            userUtils.fetchAdministrator(adminID);
+        } catch ( EntityNotFoundException ex) {
+            throw new PermissionException();
+        }
         
+        // Obtener el comentario a banear
+        Comment targetComment = fetchCommentByID(commentID);
+        
+        // Aplicar/retirar baneo
+        targetComment.setBannedByAdmin(!targetComment.isBannedByAdmin());
+        commentRepo.save(targetComment);
+        
+        return targetComment.isBannedByAdmin();
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
@@ -71,5 +89,15 @@ public class SocialServiceImpl implements SocialService {
         }
         
         return optionalRecipe.get();
+    }
+    
+    /** Busca el comentario por el ID recibido */
+    private Comment fetchCommentByID(UUID commentID) throws EntityNotFoundException {
+        Optional<Comment> optionalComment = commentRepo.findById(commentID);
+        if (!optionalComment.isPresent()) {
+            throw new EntityNotFoundException(Comment.class.getSimpleName(), commentID);
+        }
+        
+        return optionalComment.get();
     }
 }
