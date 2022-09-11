@@ -10,6 +10,8 @@ import {
     UpdateProfileActionType,
     UserDispatchType
 } from './actionTypes';
+import * as socialActionTypes from '../../../Social/Application/state/actionTypes';
+import {CheckUserFollowsTargetActionType} from '../../../Social/Application/state/actionTypes';
 import {initialState, IUserState} from "./IUserState";
 import {User} from "../../Domain";
 import PrivateList from "../../Domain/PrivateList";
@@ -48,12 +50,23 @@ const userSearch = (state: Nullable<User> = initialState.userSearch,
         case actionTypes.FIND_USER_BY_NICKNAME:
             return (action as FindUserActionType).payload;
 
-        case actionTypes.BAN_USER:
+        case actionTypes.BAN_USER: {
+
             let payload: boolean = (action as BanUserActionType).payload;
             return {
                 ...state,
                 isBannedByAdmin: payload
             }
+        }
+
+        case socialActionTypes.CHECK_USER_FOLLOWS_TARGET: {
+            let payload: boolean = (action as CheckUserFollowsTargetActionType).payload;
+
+            return ({
+                ...state,
+                isFollowedByUser: payload
+            })
+        }
 
         default:
             return state;
