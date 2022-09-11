@@ -1,8 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Rating;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -80,6 +79,15 @@ public class User {
     
     @OneToMany(mappedBy = "author", orphanRemoval = true)
     private Set<Rating> ratings = new LinkedHashSet<>();
+    
+    @OneToMany(mappedBy = "following", orphanRemoval = true)
+    /** Usuarios a los que sigue el usuario actual */
+    private Set<Follow> followings = new LinkedHashSet<>();
+    
+    @OneToMany(mappedBy = "followed", orphanRemoval = true)
+    /** Seguidores del usuario actual */
+    private Set<Follow> followers = new LinkedHashSet<>();
+    
     
     /* *************** DOMAIN-MODEL *************** */
     @Transient
