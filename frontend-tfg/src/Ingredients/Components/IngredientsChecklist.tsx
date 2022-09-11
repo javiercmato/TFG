@@ -46,7 +46,7 @@ const IngredientsChecklist = ({ingredientIDList, setIngredientIDList, onCheckIte
                 {ingredientsSearch.items.map( (item) =>
                     <ListGroupItem key={item.id}>
                         <Form.Check
-                            label={item.name + ' -- ' + item.id}
+                            label={item.name}
                             value={item.id}
                             onChange={handleChange}
                         />

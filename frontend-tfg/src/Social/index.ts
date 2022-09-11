@@ -12,5 +12,5 @@ export {socialService} from './Application';
 /* ********** Components ********** */
 export type {FollowButtonProps, UnfollowButtonProps} from './Components';
 
-export {FollowButton, UnfollowButton} from './Components';
+export {FollowButton, UnfollowButton, FollowersPage} from './Components';
 

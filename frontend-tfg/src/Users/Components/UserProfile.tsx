@@ -16,7 +16,7 @@ import {User} from "../Domain";
 const UserProfile = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    let {nickname} = useParams();
+    let {userID} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
     const [targetUserID, setTargetUserID] = useState<string>('');
@@ -27,7 +27,7 @@ const UserProfile = () => {
     let isAdmin = useSelector(userRedux.selectors.selectIsAdmin);
     let isSearchedUserBannedByAdmin = useSelector(userRedux.selectors.isUserSearchBannedByAdmin);
     let isUserSearchFollowedByUser = useSelector(userRedux.selectors.isUserSearchFollowedByUser);
-    const isCurrentUserProfile : boolean = (isUserLoggedIn && (nickname === loggedUser?.nickname));
+    const isCurrentUserProfile : boolean = (isUserLoggedIn && (userID === loggedUser?.userID));
 
 
     const handleClickDeleteUser : MouseEventHandler<HTMLButtonElement> = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,8 +55,8 @@ const UserProfile = () => {
             dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
                 currentUserID, targetUserID, () => {}, () => {})
             );
-        dispatch(userRedux.actions.findUserByNicknameAsyncAction(nickname!, onSuccess, onError));
-    }, [nickname, targetUserID, dispatch]);
+        dispatch(userRedux.actions.findUserByIDAsyncAction(userID!, onSuccess, onError));
+    }, [userID, targetUserID, dispatch]);
 
 
 
@@ -134,16 +134,27 @@ const UserProfile = () => {
                                 </Row>
                             </Col>
 
-                            {/* Seguidores, siguiendos y botón */}
-                            {(!isCurrentUserProfile) &&
-                                <Col>
-                                    {(isUserSearchFollowedByUser) ?
-                                        <UnfollowButton {...unfollowButtonProps} />
-                                        :
-                                        <FollowButton {...followButtonProps} />
-                                    }
-                                </Col>
-                            }
+                            {/* Seguir usuario */}
+                            <Col md={2}>
+                                {(!isCurrentUserProfile && isUserLoggedIn) &&
+                                    <Row>
+                                        {(isUserSearchFollowedByUser) ?
+                                            <UnfollowButton {...unfollowButtonProps} />
+                                            :
+                                            <FollowButton {...followButtonProps} />
+                                        }
+                                    </Row>
+                                }
+
+                                {/* Botón para ver seguidores*/}
+                                <Row>
+                                    <Button
+                                        onClick={() => navigate(`/users/${userID}/followers`)}
+                                    >
+                                        <FormattedMessage id='social.components.Followers.button' />
+                                    </Button>
+                                </Row>
+                            </Col>
 
                             {/* Botones */}
                             <Col md={2} style={userActionsCol}>

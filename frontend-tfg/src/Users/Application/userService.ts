@@ -94,9 +94,9 @@ export const changePassword = (userID: string,
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
 
-export const findUserByNickname = (nickname: string,
-                                   onSuccessCallback: CallbackFunction,
-                                   onErrorCallback: CallbackFunction): void => {
+export const findUserByID = (userID: string,
+                             onSuccessCallback: CallbackFunction,
+                             onErrorCallback: CallbackFunction): void => {
     // Callback para cuando se encuentra al usuario con éxito
     let onSuccess = (user: User) : void => {
         user = formatUserData(user);
@@ -104,7 +104,7 @@ export const findUserByNickname = (nickname: string,
     };
 
     // Configurar petición al servicio
-    const endpoint = USERS_ENDPOINT + `/?nickname=${nickname}`;
+    const endpoint = USERS_ENDPOINT + `/${userID}`;
     const requestConfig = configFetchParameters('GET');
 
     // Realizar la petición
