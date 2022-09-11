@@ -103,4 +103,16 @@ public class User {
         ratings.add(rate);
         rate.setAuthor(this);
     }
+    
+    /** Indica que el usuario ha obtenido un seguidor */
+    public void addFollower(Follow follower) {
+        followers.add(follower);
+        follower.setFollowed(this);
+    }
+    
+    /** Indica que el usuario comienza a seguir a otro usuario */
+    public void addFollowing(Follow following) {
+        followings.add(following);
+        following.setFollowing(this);
+    }
 }
