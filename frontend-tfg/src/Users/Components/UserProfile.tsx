@@ -9,6 +9,8 @@ import UserAvatar from "./UserAvatar";
 import {cardHeaderRow, userActionsCol, userDataCol} from './styles/userProfile';
 import {FormattedMessage} from "react-intl";
 import BanUserButton from "./BanUserButton";
+import {FollowButton, FollowButtonProps, socialRedux, UnfollowButton, UnfollowButtonProps} from "../../Social";
+import {User} from "../Domain";
 
 
 const UserProfile = () => {
@@ -17,12 +19,14 @@ const UserProfile = () => {
     let {nickname} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
     const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
+    const [targetUserID, setTargetUserID] = useState<string>('');
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
     let currentUserID = useSelector(userRedux.selectors.selectUserID);
     let searchedUser = useSelector(userRedux.selectors.selectUserSearch);
     let isAdmin = useSelector(userRedux.selectors.selectIsAdmin);
     let isSearchedUserBannedByAdmin = useSelector(userRedux.selectors.isUserSearchBannedByAdmin);
+    let isUserSearchFollowedByUser = useSelector(userRedux.selectors.isUserSearchFollowedByUser);
     const isCurrentUserProfile : boolean = (isUserLoggedIn && (nickname === loggedUser?.nickname));
 
 
@@ -41,15 +45,40 @@ const UserProfile = () => {
 
     // Solicita los datos del usuario cada vez que cambie el nickname en la URL
     useEffect( () => {
-        let onSuccess = () => {};
-
+        let onSuccess = (targetUser: User) => {
+            setTargetUserID(targetUser.userID!);
+        };
         let onError = (error: ErrorDto) => {
             setBackendErrors(error);
         }
 
+            dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
+                currentUserID, targetUserID, () => {}, () => {})
+            );
         dispatch(userRedux.actions.findUserByNicknameAsyncAction(nickname!, onSuccess, onError));
-    }, [nickname, dispatch]);
+    }, [nickname, targetUserID, dispatch]);
 
+
+
+    let followButtonProps: FollowButtonProps = {
+        targetUserID: targetUserID,
+        onErrorCallback: (error: ErrorDto) => setBackendErrors(error),
+        onFollowCallback: () => {
+            dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
+                currentUserID, targetUserID, () => {}, () => {})
+            );
+        },
+    }
+
+    let unfollowButtonProps: UnfollowButtonProps = {
+        targetUserID: targetUserID,
+        onErrorCallback: (error: ErrorDto) => setBackendErrors(error),
+        onUnfollowCallback: () => {
+            dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
+                currentUserID, targetUserID, () => {}, () => {})
+            );
+        },
+    }
 
     return (
         <div>
@@ -105,8 +134,19 @@ const UserProfile = () => {
                                 </Row>
                             </Col>
 
-                            {/* Seguidores y botones */}
-                            <Col style={userActionsCol}>
+                            {/* Seguidores, siguiendos y botón */}
+                            {(!isCurrentUserProfile) &&
+                                <Col>
+                                    {(isUserSearchFollowedByUser) ?
+                                        <UnfollowButton {...unfollowButtonProps} />
+                                        :
+                                        <FollowButton {...followButtonProps} />
+                                    }
+                                </Col>
+                            }
+
+                            {/* Botones */}
+                            <Col md={2} style={userActionsCol}>
                                 {/* Botón para editar perfil */}
                                 <Row>
                                     {(isCurrentUserProfile) &&

@@ -25,3 +25,16 @@ export const unfollowUser = (requestorID: string,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const checkUserFollowsTarget = (requestorID: string,
+                                      targetID: string,
+                                      onSuccessCallback: CallbackFunction,
+                                      onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = SOCIAL_ENDPOINT + `/followings/${requestorID}/check?`;
+    endpoint += `targetID=${targetID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}

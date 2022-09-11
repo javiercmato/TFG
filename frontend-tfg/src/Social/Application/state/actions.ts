@@ -17,6 +17,13 @@ export const unfollowUserAction = () : SocialDispatchType => ({
     type: actionTypes.FOLLOW_USER,
 })
 
+export const checkUserFollowsTargetAction = (isFollowing: boolean) : SocialDispatchType => ({
+    type: actionTypes.CHECK_USER_FOLLOWS_TARGET,
+    payload: isFollowing,
+})
+
+
+
 /* ************************* ASYNC ACTIONS ******************** */
 
 export const followUserAsyncAction = (requestorID: string,
@@ -77,4 +84,34 @@ export const unfollowUserAsyncAction = (requestorID: string,
 
     // Llamar al servicio y ejecutar los callbacks
     socialService.unfollowUser(requestorID, targetID, onSuccess, onError);
+}
+
+export const checkUserFollowsTargetAsyncAction = (requestorID: string,
+                                                  targetID: string,
+                                                  onSuccessCallback: CallbackFunction,
+                                                  onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (response: boolean) : void => {
+        // Actualiza estado de la aplicación
+        dispatch(checkUserFollowsTargetAction(response));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback(response);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    socialService.checkUserFollowsTarget(requestorID, targetID, onSuccess, onError);
 }
