@@ -1,13 +1,19 @@
 import {combineReducers} from "redux";
-import {SocialDispatchType} from './actionTypes';
+import * as actionTypes from './actionTypes';
+import {GetFollowersActionType, GetFollowingsActionType, SocialDispatchType} from './actionTypes';
 import {initialState, ISocialState} from "./ISocialState";
 import {Follow} from "../../Domain";
+import {Search} from "../../../App";
 
 
-const followings = (state: Array<Follow> = initialState.followings,
-                    action: SocialDispatchType) : Array<Follow> => {
+const followings = (state: Search<Follow> = initialState.followings,
+                    action: SocialDispatchType) : Search<Follow> => {
     switch (action.type) {
+        case actionTypes.GET_FOLLOWINGS: {
+            let search: Search<Follow> = (action as GetFollowingsActionType).payload;
 
+            return (search);
+        }
 
         default:
             return state;
@@ -15,10 +21,14 @@ const followings = (state: Array<Follow> = initialState.followings,
 }
 
 
-const followers = (state: Array<Follow> = initialState.followers,
-                    action: SocialDispatchType) : Array<Follow> => {
+const followers = (state: Search<Follow> = initialState.followers,
+                    action: SocialDispatchType) : Search<Follow> => {
     switch (action.type) {
+        case actionTypes.GET_FOLLOWERS: {
+            let search: Search<Follow> = (action as GetFollowersActionType).payload;
 
+            return (search);
+        }
 
         default:
             return state;

@@ -47,7 +47,7 @@ const user = (state: Nullable<User> = initialState.user,
 const userSearch = (state: Nullable<User> = initialState.userSearch,
                     action: UserDispatchType) : Nullable<User> => {
     switch (action.type) {
-        case actionTypes.FIND_USER_BY_NICKNAME:
+        case actionTypes.FIND_USER_BY_ID:
             return (action as FindUserActionType).payload;
 
         case actionTypes.BAN_USER: {

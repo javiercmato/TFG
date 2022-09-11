@@ -191,7 +191,7 @@ public class UserController {
     @GetMapping(path = "/",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public UserDTO findUserByID(@RequestParam("nickname") String nickname) throws EntityNotFoundException {
+    public UserDTO findUserByID(@RequestParam("userID") String nickname) throws EntityNotFoundException {
         User user = userService.findUserByNickname(nickname);
         
         return UserConversor.toUserDTO(user);
