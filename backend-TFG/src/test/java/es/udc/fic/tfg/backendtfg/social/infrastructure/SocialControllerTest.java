@@ -655,5 +655,88 @@ class SocialControllerTest {
         );
     }
     
+    @Test
+    void whenUnfollowUser_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/unfollow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        
+        // Comprobar resultados
+        action.andExpect(status().isNoContent());
+    }
     
+    @Test
+    void whenUnfollowUser_andUserWasNotFollowed_thenBadRequest_becauseUserNotFollowedException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/unfollow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                SocialController.USER_NOT_FOLLOWED_EXCEPTION_KEY,
+                locale,
+                new Object[] {targetUserJwtData.getNickname()},
+                targetUserJwtData.getNickname()
+        );
+        
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenUnfollowUser_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/unfollow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                delete(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent)
+        );
+    }
 }

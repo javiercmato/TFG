@@ -42,6 +42,7 @@ public class SocialController {
     // Referencias a los errores en los ficheros de i18n
     public static final String RECIPE_ALREADY_RATED_EXCEPTION_KEY           = "social.domain.exceptions.RecipeAlreadyRatedException";
     public static final String USER_ALREADY_FOLLOWED_EXCEPTION_KEY          = "social.domain.exceptions.UserAlreadyFollowedException";
+    public static final String USER_NOT_FOLLOWED_EXCEPTION_KEY              = "social.domain.exceptions.UserNotFollowedException";
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
     @ExceptionHandler(RecipeAlreadyRatedException.class)
@@ -69,6 +70,23 @@ public class SocialController {
                 locale
         );
     
+        return new ErrorsDTO(globalErrorMessage);
+    }
+    
+    @ExceptionHandler(UserNotFollowedException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)     // 404
+    @ResponseBody
+    public ErrorsDTO handleUserNotFollowedExceptionException(UserNotFollowedException exception, Locale locale) {
+        String exceptionMessage = messageSource.getMessage(
+                exception.getNickname(), null, exception.getNickname(), locale
+        );
+        String globalErrorMessage = messageSource.getMessage(
+                USER_NOT_FOLLOWED_EXCEPTION_KEY,
+                new Object[] {exceptionMessage},
+                USER_NOT_FOLLOWED_EXCEPTION_KEY,
+                locale
+        );
+        
         return new ErrorsDTO(globalErrorMessage);
     }
     
