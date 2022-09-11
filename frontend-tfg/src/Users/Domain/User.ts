@@ -8,7 +8,8 @@ interface User {
     avatar?: string,
     registerdate?: Date,
     role?: string,
-    isBannedByAdmin?: boolean
+    isBannedByAdmin?: boolean,
+    isFollowedByUser?: boolean,
 }
 
 export default User;

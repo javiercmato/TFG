@@ -138,6 +138,14 @@ const translations = {
     'recipes.warning.CommentIsBannedByAdmin': 'Comentario ha sido moderado por el administrador',
 
 
+    /* ******************** Social ******************** */
+    'social.components.FollowButton.text': 'Seguir usuario',
+    'social.components.UnfollowButton.text': 'Dejar de seguir usuario',
+    'social.components.Followers.button': 'Ver seguidores',
+    'social.components.FollowersPage.title': 'Seguidores y siguiendos',
+    'social.components.FollowersPage.following': 'Siguiendo a',
+    'social.components.FollowersPage.followedBy': 'Seguido por',
+
 
 }
 

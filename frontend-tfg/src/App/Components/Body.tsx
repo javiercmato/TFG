@@ -16,6 +16,7 @@ import {body} from './styles/body';
 import {useAppSelector} from "../../store";
 import {IngredientsPage} from "../../Ingredients";
 import {CreateRecipeForm, RecipeDetails, RecipesPage} from "../../Recipes";
+import {FollowersPage} from "../../Social";
 
 
 const Body = () => {
@@ -30,7 +31,7 @@ const Body = () => {
                 {/* ****************************** USERS ****************************** */}
                 <Route path="/signUp" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/users/:nickname" element={<UserProfile />} />
+                <Route path="/users/:userID" element={<UserProfile />} />
                 {isUserLogged && <Route path="/logout" element={<Logout />} />}
                 {isUserLogged && <Route path="/changePassword" element={<ChangePassword />} />}
                 {isUserLogged && <Route path="/profile" element={<UpdateProfile />} />}
@@ -41,6 +42,8 @@ const Body = () => {
                 <Route path="/recipes" element={<RecipesPage />} />
                 <Route path="/recipes/create" element={<CreateRecipeForm />} />
                 <Route path="/recipes/:recipeID" element={<RecipeDetails />} />
+                {/* ****************************** SOCIAL ****************************** */}
+                <Route path="/users/:userID/followers" element={<FollowersPage />} />
 
 
                 {/* ****************************** DEFAULT ROUTE ****************************** */}

@@ -1,4 +1,4 @@
-import {useNavigate, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
@@ -137,7 +137,17 @@ const RecipeDetails = () => {
                 {/* Nombre y descripción*/}
                 <Row>
                     <Col>
-                        <h2>{recipeData?.name}</h2>
+                        <Row>
+                            <Col md={10}>
+                                <h2>{recipeData?.name}</h2>
+                            </Col>
+                            <Col md={2}>
+                                <Link to={`/users/${recipeData.author.userID}`}>
+                                    {recipeData.author.nickname}
+                                </Link>
+                            </Col>
+
+                        </Row>
                         <Row>
                             <span className="border border-dark">
                                 {recipeData?.description}

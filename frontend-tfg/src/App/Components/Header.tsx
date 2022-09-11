@@ -13,6 +13,7 @@ import {Fragment} from "react";
 
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
+    const userID: string = useAppSelector(userRedux.selectors.selectUserID);
 
     // Enlaces globales a los subsistemas
     const globalLinks = [
@@ -29,7 +30,7 @@ const Header = () => {
     // Elementos del desplegable para acciones del usuario registrado
     const loggedUserActions = [
         {
-            link: `/users/${nickname}`,
+            link: `/users/${userID}`,
             i18nID: 'seeProfile',
             isDivided: false,
         },

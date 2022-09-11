@@ -222,4 +222,11 @@ public class SocialController {
         return FollowConversor.toFollowBlockDTO(block);
     }
     
+    @GetMapping(path="/followings/{userID}/check")
+    public boolean checkUserIsFollowingTarget(@PathVariable("userID") UUID requestorID,
+            @RequestParam("targetID") UUID targetID) {
+        // Llamada al servicio
+        return socialService.doesFollowTarget(requestorID, targetID);
+    }
+    
 }

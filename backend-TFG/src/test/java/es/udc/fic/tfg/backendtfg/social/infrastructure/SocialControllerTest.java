@@ -803,5 +803,34 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenCheckUserIsFollowingTarget_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/followings/" + requestorUserJwtData.getUserID() + "/check";
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+                        .queryParam("targetID", targetUserJwtData.getUserID().toString())
+        );
+        
+        // Comprobar resultados
+        //boolean expectedResponse = socialService.doesFollowTarget(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(true);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
     
 }
