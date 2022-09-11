@@ -11,8 +11,11 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConvers
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeDetailsDTO;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
 import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.UserAlreadyFollowedException;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.FollowConversor;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,8 @@ public class SocialController {
     
     /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
     // Referencias a los errores en los ficheros de i18n
-    public static final String RECIPE_ALREADY_RATED_EXCEPTION_KEY         = "social.domain.exceptions.RecipeAlreadyRatedException";
+    public static final String RECIPE_ALREADY_RATED_EXCEPTION_KEY           = "social.domain.exceptions.RecipeAlreadyRatedException";
+    public static final String USER_ALREADY_FOLLOWED_EXCEPTION_KEY          = "social.domain.exceptions.UserAlreadyFollowedException";
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
     @ExceptionHandler(RecipeAlreadyRatedException.class)
@@ -51,6 +55,23 @@ public class SocialController {
         );
     
         return new ErrorsDTO(errorMessage);
+    }
+    
+    @ExceptionHandler(UserAlreadyFollowedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleUserAlreadyFollowedException(UserAlreadyFollowedException exception, Locale locale) {
+        String exceptionMessage = messageSource.getMessage(
+                exception.getNickname(), null, exception.getNickname(), locale
+        );
+        String globalErrorMessage = messageSource.getMessage(
+                USER_ALREADY_FOLLOWED_EXCEPTION_KEY,
+                new Object[] {exceptionMessage},
+                USER_ALREADY_FOLLOWED_EXCEPTION_KEY,
+                locale
+        );
+    
+        return new ErrorsDTO(globalErrorMessage);
     }
     
     
@@ -120,4 +141,21 @@ public class SocialController {
         return RecipeConversor.toRecipeDetailsDTO(ratedRecipe);
     }
     
+    @PutMapping(path = "/follow/{requestorID}/{targetID}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public FollowDTO followUser(@RequestAttribute("userID") UUID userID,
+                                @PathVariable("requestorID") UUID requestorID,
+                                @PathVariable("targetID") UUID targetID)
+            throws PermissionException, UserAlreadyFollowedException, EntityNotFoundException {
+        // Comprobar que el usuario actual y el usuario que realiza la operación son el mismo
+        if (!controllerUtils.doUsersMatch(userID, requestorID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        Follow follow = socialService.followUser(userID, targetID);
+        
+        // Generar respuesta
+        return FollowConversor.toFollowDTO(follow);
+    }
 }

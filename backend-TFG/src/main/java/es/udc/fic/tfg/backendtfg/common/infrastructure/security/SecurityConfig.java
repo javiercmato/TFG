@@ -68,6 +68,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/social/comments/*").permitAll()                                   // getRecipeComments
                 .antMatchers(HttpMethod.PUT,    "/api/social/comments/admin/ban/*").permitAll()                         // banCommentAsAdmin
                 .antMatchers(HttpMethod.POST,   "/api/social/rate/*").permitAll()                                       // rateRecipe
+                .antMatchers(HttpMethod.PUT,    "/api/social/follow/*/*").permitAll()                                   // followUser
                 
         
         

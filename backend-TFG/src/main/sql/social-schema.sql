@@ -39,3 +39,19 @@ CREATE TABLE IF NOT EXISTS social.Rating (
         ON DELETE CASCADE
         ON UPDATE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS social.Follow (
+    -- Following sigue al usurio Followed
+    following_id            uuid,           -- Usuario que empieza a seguir
+    followed_id             uuid,           -- Usuario al que se ha seguido,
+    followDate              TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT PK_Follow PRIMARY KEY (following_id, followed_id),
+    CONSTRAINT FK_Following_TO_User FOREIGN KEY (following_id) REFERENCES users.usertable(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    CONSTRAINT FK_Followed_TO_User FOREIGN KEY (following_id) REFERENCES users.usertable(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+);
