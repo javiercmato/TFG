@@ -1,8 +1,7 @@
 package es.udc.fic.tfg.backendtfg.users.domain.entities;
 
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Rating;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -81,6 +80,15 @@ public class User {
     @OneToMany(mappedBy = "author", orphanRemoval = true)
     private Set<Rating> ratings = new LinkedHashSet<>();
     
+    @OneToMany(mappedBy = "following", orphanRemoval = true)
+    /** Usuarios a los que sigue el usuario actual */
+    private Set<Follow> followings = new LinkedHashSet<>();
+    
+    @OneToMany(mappedBy = "followed", orphanRemoval = true)
+    /** Seguidores del usuario actual */
+    private Set<Follow> followers = new LinkedHashSet<>();
+    
+    
     /* *************** DOMAIN-MODEL *************** */
     @Transient
     /** Devuelve las listas privadas del usuario */
@@ -94,5 +102,29 @@ public class User {
     public void addRating(Rating rate) {
         ratings.add(rate);
         rate.setAuthor(this);
+    }
+    
+    /** Indica que el usuario ha obtenido un seguidor */
+    public void addFollower(Follow follower) {
+        followers.add(follower);
+        follower.setFollowed(this);
+    }
+    
+    /** Indica que el usuario ha perdido un seguidor */
+    public void removeFollower(Follow follower) {
+        followers.remove(follower);
+        follower.setFollowed(null);
+    }
+    
+    /** Indica que el usuario comienza a seguir a otro usuario */
+    public void addFollowing(Follow following) {
+        followings.add(following);
+        following.setFollowing(this);
+    }
+    
+    /** Indica que el usuario ha dejado de seguir a otro usuario */
+    public void removeFollowing(Follow following) {
+        followings.remove(following);
+        following.setFollowing(null);
     }
 }

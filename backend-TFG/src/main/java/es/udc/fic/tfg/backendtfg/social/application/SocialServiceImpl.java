@@ -6,11 +6,11 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
-import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
-import es.udc.fic.tfg.backendtfg.social.domain.repositories.RatingRepository;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
+import es.udc.fic.tfg.backendtfg.social.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
+import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -32,6 +32,10 @@ public class SocialServiceImpl implements SocialService {
     private CommentRepository commentRepo;
     @Autowired
     private RatingRepository ratingRepo;
+    @Autowired
+    private FollowRepository followRepo;
+    @Autowired
+    private UserRepository userRepo;
     
     
     /* ******************** FUNCIONALIDADES COMENTARIOS ******************** */
@@ -109,6 +113,85 @@ public class SocialServiceImpl implements SocialService {
         
         // Recuperar toda la información de la receta
         return recipeRepo.retrieveRecipeDetails(recipeID).get();
+    }
+    
+    @Override
+    public Follow followUser(UUID requestorID, UUID targetID)
+            throws EntityNotFoundException, UserAlreadyFollowedException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        User requestor = userUtils.fetchUserByID(requestorID);
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        User target = userUtils.fetchUserByID(targetID);
+        
+        // Comprobar que no esté siguiendo al usuario objetivo. Sino lanza UserAlreadyFollowedException
+        FollowID followID = new FollowID(requestorID, targetID);
+        if (followRepo.existsById(followID))
+            throw new UserAlreadyFollowedException(target.getNickname());
+        
+        // Crear la relación entre los usuarios
+        Follow follow = new Follow();
+        follow.setId(followID);
+        follow.setFollowDate(LocalDateTime.now());
+        
+        // Indicar a los usuarios que se están siguiendo
+        requestor.addFollowing(follow);
+        target.addFollower(follow);
+        
+        // Guardar cambios y devolver relación
+        follow = followRepo.save(follow);
+        userRepo.save(requestor);
+        userRepo.save(target);
+        
+        return follow;
+    }
+    
+    @Override
+    public void unfollowUser(UUID requestorID, UUID targetID) throws EntityNotFoundException, UserNotFollowedException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        User requestor = userUtils.fetchUserByID(requestorID);
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        User target = userUtils.fetchUserByID(targetID);
+    
+        // Comprobar que sí esté siguiendo al usuario objetivo
+        FollowID followID = new FollowID(requestorID, targetID);
+        Optional<Follow> optionalFollow = followRepo.findById(followID);
+        if ( optionalFollow.isEmpty() ) {
+            throw new UserNotFollowedException(target.getNickname());
+        }
+        Follow follow = optionalFollow.get();
+        
+        // Indicar a los usuarios que se dejan de seguir
+        target.removeFollower(follow);
+        requestor.removeFollowing(follow);
+        
+        // Guardar cambios y borrar relación
+        userRepo.save(target);
+        userRepo.save(requestor);
+        followRepo.delete(follow);
+    }
+    
+    @Override
+    public Block<Follow> getFollowers(UUID userID, int page, int pageSize) throws EntityNotFoundException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        userUtils.fetchUserByID(userID);
+        
+        // Buscar los seguidores
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Follow> followersSlice = followRepo.findFollowers(userID, pageable);
+        
+        return new Block<>(followersSlice.getContent(), followersSlice.hasNext(), followersSlice.getNumberOfElements());
+    }
+    
+    @Override
+    public Block<Follow> getFollowings(UUID userID, int page, int pageSize) throws EntityNotFoundException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        userUtils.fetchUserByID(userID);
+    
+        // Buscar los seguidores
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Follow> followersSlice = followRepo.findFollowings(userID, pageable);
+    
+        return new Block<>(followersSlice.getContent(), followersSlice.hasNext(), followersSlice.getNumberOfElements());
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */

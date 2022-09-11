@@ -52,4 +52,4 @@ server:
 project:
   jwt:
     signKey: mySecretSignKey
-    expirationMinutes: 60
+    expirationMinutes: 1440
