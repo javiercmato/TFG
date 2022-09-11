@@ -6,8 +6,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.RecipeRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.UserAlreadyFollowedException;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -129,7 +128,7 @@ public class SocialServiceImpl implements SocialService {
         if (followRepo.existsById(followID))
             throw new UserAlreadyFollowedException(target.getNickname());
         
-        // Seguir al usuario
+        // Crear la relación entre los usuarios
         Follow follow = new Follow();
         follow.setId(followID);
         follow.setFollowDate(LocalDateTime.now());
@@ -144,6 +143,31 @@ public class SocialServiceImpl implements SocialService {
         userRepo.save(target);
         
         return follow;
+    }
+    
+    @Override
+    public void unfollowUser(UUID requestorID, UUID targetID) throws EntityNotFoundException, UserNotFollowedException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        User requestor = userUtils.fetchUserByID(requestorID);
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        User target = userUtils.fetchUserByID(targetID);
+    
+        // Comprobar que sí esté siguiendo al usuario objetivo
+        FollowID followID = new FollowID(requestorID, targetID);
+        Optional<Follow> optionalFollow = followRepo.findById(followID);
+        if ( optionalFollow.isEmpty() ) {
+            throw new UserNotFollowedException(target.getNickname());
+        }
+        Follow follow = optionalFollow.get();
+        
+        // Indicar a los usuarios que se dejan de seguir
+        target.removeFollower(follow);
+        requestor.removeFollowing(follow);
+        
+        // Guardar cambios y borrar relación
+        userRepo.save(target);
+        userRepo.save(requestor);
+        followRepo.delete(follow);
     }
     
     

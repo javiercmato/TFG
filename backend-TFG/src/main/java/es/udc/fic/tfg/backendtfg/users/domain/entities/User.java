@@ -110,9 +110,21 @@ public class User {
         follower.setFollowed(this);
     }
     
+    /** Indica que el usuario ha perdido un seguidor */
+    public void removeFollower(Follow follower) {
+        followers.remove(follower);
+        follower.setFollowed(null);
+    }
+    
     /** Indica que el usuario comienza a seguir a otro usuario */
     public void addFollowing(Follow following) {
         followings.add(following);
         following.setFollowing(this);
+    }
+    
+    /** Indica que el usuario ha dejado de seguir a otro usuario */
+    public void removeFollowing(Follow following) {
+        followings.remove(following);
+        following.setFollowing(null);
     }
 }
