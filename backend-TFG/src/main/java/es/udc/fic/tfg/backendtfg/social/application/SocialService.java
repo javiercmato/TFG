@@ -6,8 +6,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.UserAlreadyFollowedException;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
 
 import java.util.UUID;
 
@@ -62,5 +61,15 @@ public interface SocialService {
      * @throws UserAlreadyFollowedException El usuario objetivo ya está siendo seguido por el usuario actual
      */
     Follow followUser(UUID requestorID, UUID targetID) throws EntityNotFoundException, UserAlreadyFollowedException;
+    
+    /**
+     * Dejar de seguir a un usuario.
+     * @param requestorID ID del usuario que solicita la operación de dejar de seguir
+     * @param targetID ID del usuario que se desea dejar de seguir
+     * @return Relación de seguimiento entre usuarios
+     * @throws EntityNotFoundException No se encuentra alguno de los usuarios
+     * @throws UserNotFollowedException El usuario objetivo no estaba siendo seguido
+     */
+    void unfollowUser(UUID requestorID, UUID targetID) throws EntityNotFoundException, UserNotFollowedException;
     
 }

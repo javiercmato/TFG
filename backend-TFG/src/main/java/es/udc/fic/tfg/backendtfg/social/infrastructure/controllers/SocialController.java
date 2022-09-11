@@ -12,16 +12,14 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeDetailsDTO;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.RecipeAlreadyRatedException;
-import es.udc.fic.tfg.backendtfg.social.domain.exceptions.UserAlreadyFollowedException;
+import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.FollowConversor;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -157,5 +155,24 @@ public class SocialController {
         
         // Generar respuesta
         return FollowConversor.toFollowDTO(follow);
+    }
+    
+    @DeleteMapping(path = "/unfollow/{requestorID}/{targetID}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> unfollowUser(@RequestAttribute("userID") UUID userID,
+            @PathVariable("requestorID") UUID requestorID,
+            @PathVariable("targetID") UUID targetID)
+            throws PermissionException, EntityNotFoundException, UserNotFollowedException {
+        // Comprobar que el usuario actual y el usuario que realiza la operación son el mismo
+        if (!controllerUtils.doUsersMatch(userID, requestorID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        socialService.unfollowUser(userID, targetID);
+    
+        // Generar respuesta
+        return ResponseEntity.noContent().build();
     }
 }
