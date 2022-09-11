@@ -15,10 +15,12 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
+import es.udc.fic.tfg.backendtfg.social.domain.repositories.FollowRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.controllers.SocialController;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.FollowConversor;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -83,6 +85,8 @@ class SocialControllerTest {
     private CommentRepository commentRepository;
     @Autowired
     private SocialService socialService;
+    @Autowired
+    private FollowRepository followRepo;
     
     
     /* ************************* MÉTODOS AUXILIARES ************************* */
@@ -177,6 +181,21 @@ class SocialControllerTest {
     private String getI18NExceptionMessageWithParams(String propertyName, Locale locale, Object[] args, Class exceptionClass) {
         String exceptionMessage = messageSource.getMessage(
                 exceptionClass.getSimpleName(), null, exceptionClass.getSimpleName(), locale
+        );
+        // Añadir el mensaje traducido al principio del array de argumentos a traducir
+        Object[] values = new Object[args.length + 1];
+        System.arraycopy(args, 0, values, 1, args.length);
+        return messageSource.getMessage(
+                propertyName,
+                args,
+                propertyName,
+                locale
+        );
+    }
+    
+    private String getI18NExceptionMessageWithParams(String propertyName, Locale locale, Object[] args, String value) {
+        String exceptionMessage = messageSource.getMessage(
+                value, null, value, locale
         );
         // Añadir el mensaje traducido al principio del array de argumentos a traducir
         Object[] values = new Object[args.length + 1];
@@ -475,7 +494,6 @@ class SocialControllerTest {
         Recipe ratedRecipe = recipeService.getRecipeDetails(recipe.getId());
         RecipeDetailsDTO expectedResponse = RecipeConversor.toRecipeDetailsDTO(ratedRecipe);
         String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
-        System.out.println("expectedResponse (\n" + encodedResponseBodyContent);
         action.andExpect(status().isOk())
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
@@ -546,5 +564,96 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent)
         );
     }
+    
+    @Test
+    void whenFollowUser_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/follow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        
+        // Comprobar resultados
+        FollowID followID = new FollowID(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        Follow follow = followRepo.findById(followID).get();
+        FollowDTO expectedResponse = FollowConversor.toFollowDTO(follow);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFollowUserTwice_thenBadRequest_becauseUserAlreadyFollowedException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        String endpointAddress = API_ENDPOINT + "/follow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                SocialController.USER_ALREADY_FOLLOWED_EXCEPTION_KEY,
+                locale,
+                new Object[] {targetUserJwtData.getNickname()},
+                targetUserJwtData.getNickname()
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isBadRequest())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenFollowUser_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/follow/" + requestorUserJwtData.getUserID() + "/" + targetUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                put(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent)
+        );
+    }
+    
     
 }

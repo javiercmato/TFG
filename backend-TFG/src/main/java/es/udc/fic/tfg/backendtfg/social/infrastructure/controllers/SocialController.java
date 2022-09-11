@@ -141,7 +141,7 @@ public class SocialController {
         return RecipeConversor.toRecipeDetailsDTO(ratedRecipe);
     }
     
-    @PutMapping(path = "/api/social/follow/{requestorID}/{targetID}",
+    @PutMapping(path = "/follow/{requestorID}/{targetID}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public FollowDTO followUser(@RequestAttribute("userID") UUID userID,
