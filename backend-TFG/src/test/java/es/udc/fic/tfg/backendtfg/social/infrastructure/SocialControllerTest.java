@@ -2,9 +2,11 @@ package es.udc.fic.tfg.backendtfg.social.infrastructure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
+import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityAlreadyExistsException;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
+import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
@@ -309,7 +311,6 @@ class SocialControllerTest {
               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
               .andExpect(content().string(encodedResponseBodyContent));
     }
-    
     
     @Test
     void whenGetRecipeComments_thenOK() throws Exception {
@@ -739,4 +740,68 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent)
         );
     }
+    
+    @Test
+    void whenGetFollowers_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/followers/" + requestorUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        
+        // Comprobar resultados
+        Block<Follow> response = socialService.getFollowers(requestorUserJwtData.getUserID(), INITIAL_PAGE, PAGE_SIZE);
+        BlockDTO<FollowDTO> expectedResponse = FollowConversor.toFollowBlockDTO(response);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    @Test
+    void whenGetFollowings_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO requestorUserDTO = registerValidUser("requestor");
+        JwtData requestorUserJwtData = jwtGenerator.extractInfo(requestorUserDTO.getServiceToken());
+        AuthenticatedUserDTO targetUserDTO = registerValidUser("target");
+        JwtData targetUserJwtData = jwtGenerator.extractInfo(targetUserDTO.getServiceToken());
+        socialService.followUser(requestorUserJwtData.getUserID(), targetUserJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/followings/" + requestorUserJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + requestorUserDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", requestorUserJwtData.getUserID())
+                        .requestAttr("token", requestorUserJwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        
+        // Comprobar resultados
+        Block<Follow> response = socialService.getFollowings(requestorUserJwtData.getUserID(), INITIAL_PAGE, PAGE_SIZE);
+        BlockDTO<FollowDTO> expectedResponse = FollowConversor.toFollowBlockDTO(response);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
+    
+    
 }
