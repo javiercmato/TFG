@@ -11,12 +11,16 @@ import java.util.UUID;
 
 public interface FollowRepository extends PagingAndSortingRepository<Follow, FollowID> {
     
-    /** Recupera los seguidores que tiene el usuario */
-    @Query(value = "SELECT f from Follow f WHERE f.following.id = ?1",
-        countQuery = "SELECT count(f) FROM Follow f WHERE f.following.id = ?1"
+    /** Recupera la gente que sigue al usuario recibido */
+    @Query(value = "SELECT f from Follow f WHERE f.followed.id = ?1",
+        countQuery = "SELECT count(f) FROM Follow f WHERE f.followed.id = ?1"
     )
     Slice<Follow> findFollowers(UUID following, Pageable pageable);
     
-    
+    /** Recupera la gente a la que está siguiendo el usuario recibido */
+    @Query(value = "SELECT f from Follow f WHERE f.following.id = ?1",
+            countQuery = "SELECT count(f) FROM Follow f WHERE f.following.id = ?1"
+    )
+    Slice<Follow> findFollowings(UUID following, Pageable pageable);
 
 }
