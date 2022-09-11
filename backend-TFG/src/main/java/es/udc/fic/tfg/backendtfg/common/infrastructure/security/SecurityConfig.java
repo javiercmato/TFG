@@ -70,6 +70,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,   "/api/social/rate/*").permitAll()                                       // rateRecipe
                 .antMatchers(HttpMethod.PUT,    "/api/social/follow/*/*").permitAll()                                   // followUser
                 .antMatchers(HttpMethod.DELETE, "/api/social/unfollow/*/*").permitAll()                                 // unfollowUser
+                .antMatchers(HttpMethod.GET,    "/api/social/followers/*").permitAll()                                  // getFollowers
                 
         
         

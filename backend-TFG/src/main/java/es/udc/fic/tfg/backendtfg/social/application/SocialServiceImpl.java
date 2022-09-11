@@ -170,7 +170,17 @@ public class SocialServiceImpl implements SocialService {
         followRepo.delete(follow);
     }
     
-    
+    @Override
+    public Block<Follow> getFollowers(UUID userID, int page, int pageSize) throws EntityNotFoundException {
+        // Buscar el usuario actual. Si no existe lanza EntityNotFoundException
+        userUtils.fetchUserByID(userID);
+        
+        // Buscar los seguidores
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Follow> followersSlice = followRepo.findFollowers(userID, pageable);
+        
+        return new Block<>(followersSlice.getContent(), followersSlice.hasNext(), followersSlice.getNumberOfElements());
+    }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la receta por el ID recibido */

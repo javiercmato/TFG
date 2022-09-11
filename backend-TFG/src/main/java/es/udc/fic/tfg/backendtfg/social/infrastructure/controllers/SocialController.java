@@ -193,4 +193,19 @@ public class SocialController {
         // Generar respuesta
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping(path = "/followers/{userID}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<FollowDTO> getFollowers(@PathVariable("userID") UUID userID,
+                                            @RequestParam("page") int page,
+                                            @RequestParam("pageSize") int pageSize)
+        throws EntityNotFoundException {
+        // Llamada al servicio
+        Block<Follow> block = socialService.getFollowers(userID, page, pageSize);
+    
+        // Generar respuesta
+        return FollowConversor.toFollowBlockDTO(block);
+    }
+    
 }

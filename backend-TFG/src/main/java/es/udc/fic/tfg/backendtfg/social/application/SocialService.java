@@ -72,4 +72,13 @@ public interface SocialService {
      */
     void unfollowUser(UUID requestorID, UUID targetID) throws EntityNotFoundException, UserNotFollowedException;
     
+    /**
+     * Recupera los seguidores del usuario.
+     * @param userID ID del usuario que desea recuperar sus seguidores
+     * @param page Número de página
+     * @param pageSize Tamaño de la página
+     * @return Bloque de seguidores del usuario
+     * @throws EntityNotFoundException No se encuentra al usuario
+     */
+    Block<Follow> getFollowers(UUID userID, int page, int pageSize) throws EntityNotFoundException;
 }
