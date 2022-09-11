@@ -91,4 +91,12 @@ public interface SocialService {
      * @throws EntityNotFoundException No se encuentra al usuario
      */
     Block<Follow> getFollowings(UUID userID, int page, int pageSize) throws EntityNotFoundException;
+    
+    /**
+     * Indica si un usuario está siguiento a otro.
+     * @param requestorID ID del usuario que realiza la consulta
+     * @param targetID ID del usuario objetivo
+     * @return True si Requestor sigue a Target
+     */
+    boolean doesFollowTarget(UUID requestorID, UUID targetID);
 }

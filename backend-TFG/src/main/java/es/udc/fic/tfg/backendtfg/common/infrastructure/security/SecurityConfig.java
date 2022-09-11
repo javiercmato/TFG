@@ -71,6 +71,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.PUT,    "/api/social/follow/*/*").permitAll()                                   // followUser
                 .antMatchers(HttpMethod.DELETE, "/api/social/unfollow/*/*").permitAll()                                 // unfollowUser
                 .antMatchers(HttpMethod.GET,    "/api/social/followers/*").permitAll()                                  // getFollowers
+                .antMatchers(HttpMethod.GET,    "/api/social/followings/*").permitAll()                                 // getFollowings
                 
         
         

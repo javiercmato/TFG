@@ -194,6 +194,13 @@ public class SocialServiceImpl implements SocialService {
         return new Block<>(followersSlice.getContent(), followersSlice.hasNext(), followersSlice.getNumberOfElements());
     }
     
+    @Override
+    public boolean doesFollowTarget(UUID requestorID, UUID targetID) {
+        FollowID id = new FollowID(requestorID, targetID);
+        
+        return followRepo.existsById(id);
+    }
+    
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la receta por el ID recibido */
     private Recipe fetchRecipeByID(UUID recipeID) throws EntityNotFoundException {
