@@ -55,3 +55,60 @@ CREATE TABLE IF NOT EXISTS social.Follow (
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS social.Notification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    isRead              bool        NOT NULL    DEFAULT false,
+    createdAt           TIMESTAMP   NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+    type                varchar     NOT NULL,
+
+    CONSTRAINT PK_Notification PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS social.FollowNotification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    notification_id     uuid        NOT NULL,
+    following_id        uuid        NOT NULL,
+    followed_id         uuid        NOT NULL,
+
+    CONSTRAINT PK_FollowNotification PRIMARY KEY (id),
+    CONSTRAINT FK_FollowNotification_TO_Notification FOREIGN KEY (notification_id) REFERENCES social.Notification(id),
+    CONSTRAINT FK_FollowNotification_TO_Follow FOREIGN KEY (following_id, followed_id) REFERENCES social.Follow(following_id, followed_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS social.CommentNotification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    notification_id     uuid        NOT NULL,
+    comment_id          uuid        NOT NULL,
+
+    CONSTRAINT FK_CommentNotification_TO_Notification FOREIGN KEY (notification_id) REFERENCES social.Notification(id),
+    CONSTRAINT FK_CommentNotification_TO_Comment FOREIGN KEY (comment_id) REFERENCES social.Comment(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS social.RatingNotification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    notification_id     uuid        NOT NULL,
+    recipe_id           uuid        NOT NULL,
+    author_id           uuid        NOT NULL,
+
+    CONSTRAINT FK_RatingNotification_TO_Notification FOREIGN KEY (notification_id) REFERENCES social.Notification(id),
+    CONSTRAINT FK_RatingNotification_TO_Rating FOREIGN KEY (recipe_id, author_id) REFERENCES social.Rating(recipe_id, author_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS social.RecipeNotification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    notification_id     uuid        NOT NULL,
+    recipe_id           uuid        NOT NULL,
+
+    CONSTRAINT FK_RecipeNotification_TO_Notification FOREIGN KEY (notification_id) REFERENCES social.Notification(id),
+    CONSTRAINT FK_RecipeNotification_TO_Recipe FOREIGN KEY (recipe_id) REFERENCES recipes.recipe(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+)
