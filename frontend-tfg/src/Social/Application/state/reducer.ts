@@ -1,8 +1,13 @@
 import {combineReducers} from "redux";
 import * as actionTypes from './actionTypes';
-import {GetFollowersActionType, GetFollowingsActionType, SocialDispatchType} from './actionTypes';
+import {
+    GetFollowersActionType,
+    GetFollowingsActionType,
+    GetNotificationsActionType,
+    SocialDispatchType
+} from './actionTypes';
 import {initialState, ISocialState} from "./ISocialState";
-import {Follow} from "../../Domain";
+import {Follow, Notification} from "../../Domain";
 import {Search} from "../../../App";
 
 
@@ -35,10 +40,24 @@ const followers = (state: Search<Follow> = initialState.followers,
     }
 }
 
+const notifications = (state: Search<Notification> = initialState.notifications,
+                       action: SocialDispatchType) : Search<Notification> => {
+    switch (action.type) {
+        case actionTypes.GET_NOTIFICATIONS: {
+            let search: Search<Notification> = (action as GetNotificationsActionType).payload;
+
+            return (search);
+        }
+
+        default:
+            return state;
+    }
+}
 
 const socialReducer = combineReducers<ISocialState>({
     followings: followings,
     followers: followers,
+    notifications: notifications
 });
 
 export default socialReducer;
