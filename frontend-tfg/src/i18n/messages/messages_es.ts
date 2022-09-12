@@ -53,6 +53,7 @@ const translations = {
     'common.fields.privateLists': 'Listas privadas',
     'common.fields.rating': 'Puntuación',
     'common.fields.comments': 'Comentarios',
+    'common.fields.notifications': 'Notificaciones',
 
 
     'common.Components.WarningModal.title': 'Aviso',
@@ -71,6 +72,7 @@ const translations = {
     'app.components.Header.userActions.seeProfile': 'Ver mi perfil',
     'app.components.Header.userActions.editProfile': 'Editar perfil',
     'app.components.Header.userActions.privateLists': 'Mis listas privadas',
+    'app.components.Header.notificationsButton.text': 'Ver notificaciones',
 
 
     /* ******************** Users ******************** */

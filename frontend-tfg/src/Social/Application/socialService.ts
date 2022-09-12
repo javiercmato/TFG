@@ -69,3 +69,18 @@ export const getFollowings = (userID: string,
     // Realizar la petición
     appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
 }
+
+export const getUnreadNotifications = (userID: string,
+                                       page: number = 0,
+                                       pageSize: number = DEFAULT_PAGE_SIZE,
+                                       onSuccessCallback: CallbackFunction,
+                                       onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = SOCIAL_ENDPOINT + `/notifications/${userID}` + '?';
+    endpoint += `page=${page}`;
+    endpoint += `&pageSize=${pageSize}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccessCallback, onErrorCallback);
+}
