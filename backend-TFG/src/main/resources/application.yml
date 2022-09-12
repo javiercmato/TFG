@@ -1,5 +1,7 @@
 # Fichero con la configuración global común para todos los entornos de ejecución
 spring:
+  main:
+    allow-circular-references: true
   profiles:
     # Indica a Spring que use la configuración asociada al perfil activo actualmente
     active: '@activatedProperties@'
