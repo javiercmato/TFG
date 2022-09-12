@@ -88,7 +88,7 @@ public class User {
     /** Seguidores del usuario actual */
     private Set<Follow> followers = new LinkedHashSet<>();
     
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(mappedBy = "target", orphanRemoval = true)
     private Set<Notification> notifications = new LinkedHashSet<>();
     
     
@@ -130,4 +130,6 @@ public class User {
         followings.remove(following);
         following.setFollowing(null);
     }
+    
+    
 }
