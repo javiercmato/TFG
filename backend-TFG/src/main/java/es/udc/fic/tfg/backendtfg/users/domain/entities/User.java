@@ -88,6 +88,9 @@ public class User {
     /** Seguidores del usuario actual */
     private Set<Follow> followers = new LinkedHashSet<>();
     
+    @OneToMany(orphanRemoval = true)
+    private Set<Notification> notifications = new LinkedHashSet<>();
+    
     
     /* *************** DOMAIN-MODEL *************** */
     @Transient

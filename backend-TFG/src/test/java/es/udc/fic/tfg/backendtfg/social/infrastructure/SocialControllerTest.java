@@ -21,8 +21,7 @@ import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.FollowRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.controllers.SocialController;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.FollowConversor;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.*;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.UserRole;
@@ -832,5 +831,95 @@ class SocialControllerTest {
               .andExpect(content().string(encodedResponseBodyContent));
     }
     
+    @Test
+    void whenGetUnreadNotifications_thenOK() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser("requestor");
+        JwtData userJwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        socialService.createNotification(DEFAULT_NOTIFICATION_TITLE, DEFAULT_NOTIFICATION_MESSAGE, userJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/notifications/" + userJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", userJwtData.getUserID())
+                        .requestAttr("token", userJwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        
+        // Comprobar resultados
+        Block<Notification> response = socialService.getUnreadNotifications(userJwtData.getUserID(), INITIAL_PAGE, PAGE_SIZE);
+        BlockDTO<NotificationDTO> expectedResponse = NotificationConversor.toNotificationBlockDTO(response);
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(expectedResponse);
+        action.andExpect(status().isOk())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
     
+    @Test
+    void whenGetUnreadNotifications_thenUnauthorized_becausePermissionException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser("requestor");
+        JwtData userJwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        socialService.createNotification(DEFAULT_NOTIFICATION_TITLE, DEFAULT_NOTIFICATION_MESSAGE, userJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/notifications/" + userJwtData.getUserID();
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", UUID.randomUUID())
+                        .requestAttr("token", userJwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        String errorMessage = getI18NExceptionMessage(CommonControllerAdvice.PERMISION_EXCEPTION_KEY, locale);
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isForbidden())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent)
+              );
+    }
+    
+    @Test
+    void whenGetUnreadNotifications_andUserDoesNotExist_thenNotFound_becauseEntityNotFoundException() throws Exception {
+        // Crear datos de prueba
+        AuthenticatedUserDTO userDTO = registerValidUser("requestor");
+        JwtData userJwtData = jwtGenerator.extractInfo(userDTO.getServiceToken());
+        socialService.createNotification(DEFAULT_NOTIFICATION_TITLE, DEFAULT_NOTIFICATION_MESSAGE, userJwtData.getUserID());
+        
+        // Ejecutar funcionalidades
+        String endpointAddress = API_ENDPOINT + "/notifications/" + NON_EXISTENT_UUID;
+        ResultActions action = mockMvc.perform(
+                get(endpointAddress)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_TOKEN_PREFIX + userDTO.getServiceToken())
+                        .header(HttpHeaders.ACCEPT_LANGUAGE, locale.getLanguage())
+                        // Valores anotados como @RequestAttribute
+                        .requestAttr("userID", NON_EXISTENT_UUID)
+                        .requestAttr("token", userJwtData.toString())
+                        .queryParam("page", String.valueOf(INITIAL_PAGE))
+                        .queryParam("pageSize", String.valueOf(PAGE_SIZE))
+        );
+        String errorMessage = getI18NExceptionMessageWithParams(
+                CommonControllerAdvice.ENTITY_NOT_FOUND_EXCEPTION_KEY,
+                locale,
+                new Object[] {User.class.getSimpleName(), NON_EXISTENT_UUID},
+                User.class
+        );
+    
+        // Comprobar resultados
+        String encodedResponseBodyContent = this.jsonMapper.writeValueAsString(new ErrorsDTO(errorMessage));
+        action.andExpect(status().isNotFound())
+              .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+              .andExpect(content().string(encodedResponseBodyContent));
+    }
 }
+
