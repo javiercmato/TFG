@@ -41,5 +41,7 @@ public class TestConstants {
     
     /* ************************* SOCIAL ************************* */
     public static final String DEFAULT_COMMENT_TEXT = "This is a comment";
+    public static final String DEFAULT_NOTIFICATION_TITLE = "Notification title";
+    public static final String DEFAULT_NOTIFICATION_MESSAGE = "This is a notification";
     
 }

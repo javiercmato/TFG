@@ -4,8 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
 
 import java.util.UUID;
@@ -99,4 +98,14 @@ public interface SocialService {
      * @return True si Requestor sigue a Target
      */
     boolean doesFollowTarget(UUID requestorID, UUID targetID);
+    
+    /**
+     * Crea una notificación dirigida al usuario recibido.
+     * @param title Título de la notificación
+     * @param message Contenido de la notificación
+     * @param targetUserID Usuario al que va dirigida la notificación
+     * @return Notificación recién creada
+     * @throws EntityNotFoundException
+     */
+    Notification createNotification(String title, String message, UUID targetUserID) throws EntityNotFoundException;
 }

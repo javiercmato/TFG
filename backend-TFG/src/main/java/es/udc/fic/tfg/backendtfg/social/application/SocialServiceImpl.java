@@ -36,6 +36,8 @@ public class SocialServiceImpl implements SocialService {
     private FollowRepository followRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private NotificationRepository notificationRepo;
     
     
     /* ******************** FUNCIONALIDADES COMENTARIOS ******************** */
@@ -199,6 +201,23 @@ public class SocialServiceImpl implements SocialService {
         FollowID id = new FollowID(requestorID, targetID);
         
         return followRepo.existsById(id);
+    }
+    
+    @Override
+    public Notification createNotification(String title, String message, UUID targetUserID)
+            throws EntityNotFoundException {
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        User targetUser = userUtils.fetchUserByID(targetUserID);
+        
+        // Crear la notificación
+        Notification notification = new Notification();
+        notification.setTarget(targetUser);
+        notification.setRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
+        notification.setTitle(title.trim());
+        notification.setMessage(message.trim());
+        
+        return notificationRepo.save(notification);
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
