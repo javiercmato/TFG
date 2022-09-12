@@ -1,6 +1,6 @@
 import * as actionTypes from './actionTypes';
 import {SocialDispatchType} from './actionTypes';
-import {Follow} from "../../Domain";
+import {Follow, Notification} from "../../Domain";
 import {AppThunk} from "../../../store";
 import {appRedux, Block, ErrorDto, Search, SearchCriteria} from "../../../App";
 import * as socialService from '../socialService';
@@ -30,6 +30,11 @@ export const getFollowersAction = (followersSearch: Search<Follow>) : SocialDisp
 export const getFollowingsAction = (followingsSearch: Search<Follow>) : SocialDispatchType => ({
     type: actionTypes.GET_FOLLOWINGS,
     payload: followingsSearch,
+})
+
+export const getUnreadNotificationsAction = (notificationsSearch: Search<Notification>) : SocialDispatchType => ({
+    type: actionTypes.GET_NOTIFICATIONS,
+    payload: notificationsSearch,
 })
 
 
@@ -193,4 +198,39 @@ export const getFollowingsAsyncAction = (criteria: SearchCriteria,
     // Llamar al servicio y ejecutar los callbacks
     const {userID, page, pageSize} = criteria;
     socialService.getFollowings(userID!, page, pageSize, onSuccess, onError);
+}
+
+export const getUnreadNotificationsAsyncAction = (criteria: SearchCriteria,
+                                                  onSuccessCallback: CallbackFunction,
+                                                  onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+    const onSuccess: CallbackFunction = (block: Block<Notification>) : void => {
+        // Encapsula la respuesta
+        const search: Search<Notification> = {
+            criteria: criteria,
+            result: block
+        }
+        // Actualiza estado de la aplicación
+        dispatch(getUnreadNotificationsAction(search));
+        dispatch(appRedux.actions.loaded());        // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con los datos recibidos
+        onSuccessCallback(block);
+    }
+
+    // Función a ejecutar en caso de error
+    const onError: CallbackFunction = (error: ErrorDto): void => {
+        // Actualiza estado de la aplicación
+        dispatch(appRedux.actions.error(error));
+        dispatch(appRedux.actions.loaded());
+
+        // Ejecuta el callback recibido
+        onErrorCallback(error);
+    }
+
+    // Indicar que se está realizando una operación
+    dispatch(appRedux.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    const {userID, page, pageSize} = criteria;
+    socialService.getUnreadNotifications(userID!, page, pageSize, onSuccess, onError);
 }

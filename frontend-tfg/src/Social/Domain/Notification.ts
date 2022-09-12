@@ -1,7 +1,7 @@
 interface Notification {
     id: string,
     isRead: boolean,
-    createdAt: Date,
+    createdAt: string,
     title: string,
     message: string,
 }
