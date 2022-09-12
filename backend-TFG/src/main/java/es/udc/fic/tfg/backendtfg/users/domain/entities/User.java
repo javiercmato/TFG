@@ -88,6 +88,9 @@ public class User {
     /** Seguidores del usuario actual */
     private Set<Follow> followers = new LinkedHashSet<>();
     
+    @OneToMany(mappedBy = "target", orphanRemoval = true)
+    private Set<Notification> notifications = new LinkedHashSet<>();
+    
     
     /* *************** DOMAIN-MODEL *************** */
     @Transient
@@ -127,4 +130,6 @@ public class User {
         followings.remove(following);
         following.setFollowing(null);
     }
+    
+    
 }

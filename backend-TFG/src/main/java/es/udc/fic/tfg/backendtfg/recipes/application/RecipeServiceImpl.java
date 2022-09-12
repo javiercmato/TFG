@@ -9,10 +9,12 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
-import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
+import es.udc.fic.tfg.backendtfg.social.application.SocialService;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -22,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static es.udc.fic.tfg.backendtfg.social.application.SocialServiceImpl.*;
 
 @Service
 @Transactional
@@ -42,7 +46,9 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private RecipeIngredientRepository recipeIngredientRepo;
     @Autowired
-    private CommentRepository commentRepo;
+    private SocialService socialService;
+    @Autowired
+    private MessageSource messageSource;
     
     
     /* ******************** FUNCIONALIDADES INGREDIENTES ******************** */
@@ -113,8 +119,26 @@ public class RecipeServiceImpl implements RecipeService {
         // Asignar los ingredientes con sus cantidades y unidades de medida a la receta
         attachIngredientsToRecipe(params.getIngredients(), recipe);
     
-        // Guardar datos y devolver instancia
-        return recipeRepo.save(recipe);
+        // Guardar instancia
+        recipe = recipeRepo.save(recipe);
+        
+        // Notificar a los seguidores de que hay una nueva receta
+        for ( Follow follower : author.getFollowers() ) {
+            try {
+                // Crear título y cuerpo del mensaje
+                String title = messageSource.getMessage(NEW_RECIPE_TITLE, null, locale);
+                String message = messageSource.getMessage(NEW_RECIPE_BODY, new Object[] {author.getNickname()}, locale);
+                UUID followerID = follower.getId().getFollowing();
+                
+                // Crear y guardar notificación
+                socialService.createNotification(title, message, followerID);
+            } catch ( EntityNotFoundException e ) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        // Devolver instancia
+        return recipe;
     }
     
     @Transactional(readOnly = true)
@@ -278,5 +302,6 @@ public class RecipeServiceImpl implements RecipeService {
         }
     }
     
-    
+    /* ****************************** FUNCIONES AUXLIARES ****************************** */
+
 }

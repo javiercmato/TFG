@@ -73,6 +73,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.GET,    "/api/social/followers/*").permitAll()                                  // getFollowers
                 .antMatchers(HttpMethod.GET,    "/api/social/followings/*").permitAll()                                 // getFollowings
                 .antMatchers(HttpMethod.GET,    "/api/social/followings/*/check").permitAll()                           // checkUserFollowingTarget
+                .antMatchers(HttpMethod.GET,    "/api/social/notifications/*").permitAll()                              // getUnreadNotifications
                 
         
         

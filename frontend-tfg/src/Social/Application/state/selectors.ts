@@ -1,7 +1,7 @@
 import {RootState} from "../../../store";
 import {ISocialState} from "./ISocialState";
 import {Search} from "../../../App";
-import {Follow} from "../../Domain";
+import {Follow, Notification} from "../../Domain";
 
 const getModuleState = (state: RootState): ISocialState => state.social;
 
@@ -14,4 +14,6 @@ export const getFollowers = (state: RootState) : Search<Follow> => getModuleStat
 export const getFollowings = (state: RootState) : Search<Follow> => getModuleState(state).followings;
 
 
-/* ******************** DATOS DE SIGUIENDOS ******************** */
+/* ******************** DATOS DE NOTIFICACIONES ******************** */
+
+export const getNotifications = (state: RootState) : Search<Notification> => getModuleState(state).notifications;

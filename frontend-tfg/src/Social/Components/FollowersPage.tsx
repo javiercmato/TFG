@@ -68,13 +68,13 @@ const FollowersPage = () => {
                                             <Container>
                                                 <Row>
                                                     <Col>
-                                                        <Link to={`/users/${follow.followed.userID}`}>
-                                                            {follow.followed.nickname}
+                                                        <Link to={`/users/${follow.following.userID}`}>
+                                                            {follow.following.nickname}
                                                         </Link>
                                                     </Col>
 
                                                     <Col>
-                                                        {follow.followed.name}
+                                                        {follow.following.name}
                                                     </Col>
                                                 </Row>
                                             </Container>

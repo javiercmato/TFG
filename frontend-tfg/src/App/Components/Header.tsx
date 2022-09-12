@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
+import {Button, Container, Nav, Navbar, NavbarBrand, NavDropdown} from "react-bootstrap";
 import Dropdown from 'react-bootstrap/Dropdown'
 import NavbarToggle from "react-bootstrap/NavbarToggle";
 import NavbarCollapse from "react-bootstrap/NavbarCollapse";
@@ -9,11 +9,18 @@ import {FaHome} from "react-icons/fa";
 import {useAppSelector} from "../../store";
 import {userRedux} from "../../Users";
 import {headerLink, navbar, navGlobalItem, navItem} from "./styles/header";
-import {Fragment} from "react";
+import {Fragment, useState} from "react";
+import {NotificationsList} from "../../Social";
 
 const Header = () => {
     const nickname: string = useAppSelector(userRedux.selectors.selectNickname);
     const userID: string = useAppSelector(userRedux.selectors.selectUserID);
+    const [showNotifications, setShowNotifications] = useState<boolean>(false);
+
+    const handleShowNotificationsButton = () => {
+        setShowNotifications(true);
+    }
+
 
     // Enlaces globales a los subsistemas
     const globalLinks = [
@@ -101,6 +108,20 @@ const Header = () => {
                             </Nav.Item>
                         ))}
                     </Nav>
+
+                    {/* Botón para ver notificaciones */}
+                    {(nickname) &&
+                        <Nav className="ms-auto">
+                            <>
+                                <Button variant="info" onClick={handleShowNotificationsButton}>
+                                    <FormattedMessage id="app.components.Header.notificationsButton.text" />
+                                </Button>
+                                {(showNotifications) &&
+                                    <NotificationsList shouldShow={showNotifications} onHideCallback={() => setShowNotifications(false)} />
+                                }
+                            </>
+                        </Nav>
+                    }
 
                     {/* Elementos a mostrar para un usuario registrado */}
                     {nickname ?

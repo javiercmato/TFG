@@ -12,17 +12,29 @@ import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Transactional
 public class SocialServiceImpl implements SocialService {
+    public static final Locale locale = Locale.getDefault();
+    
+    /* ******************** TRADUCCIONES DE MENSAJES ******************** */
+    public static final String NEW_RECIPE_TITLE         = "social.notification.newRecipe.title";
+    public static final String NEW_RECIPE_BODY          = "social.notification.newRecipe.body";
+    public static final String NEW_FOLLOWER_TITLE       = "social.notification.newFollower.title";
+    public static final String NEW_FOLLOWER_BODY        = "social.notification.newFollower.body";
+    public static final String NEW_COMMENT_TITLE        = "social.notification.recipeComment.title";
+    public static final String NEW_COMMENT_BODY         = "social.notification.recipeComment.body";
+    public static final String NEW_RATING_TITLE         = "social.notification.recipeRating.title";
+    public static final String NEW_RATING_BODY          = "social.notification.recipeRating.body";
+    
     /* ******************** DEPENDENCIAS ******************** */
     @Autowired
     private UserUtils userUtils;
@@ -36,6 +48,12 @@ public class SocialServiceImpl implements SocialService {
     private FollowRepository followRepo;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private NotificationRepository notificationRepo;
+    @Autowired
+    private SocialService socialService;
+    @Autowired
+    private MessageSource messageSource;
     
     
     /* ******************** FUNCIONALIDADES COMENTARIOS ******************** */
@@ -53,6 +71,19 @@ public class SocialServiceImpl implements SocialService {
         // Guardar comentario y asignárselo a la receta
         comment = commentRepo.save(comment);
         recipe.addComment(comment);
+        
+        // Notificar al propietario de la receta de que tiene un comentario nuevo
+        try {
+            // Crear título y cuerpo del mensaje
+            String title = messageSource.getMessage(NEW_COMMENT_TITLE, null, locale);
+            String message = messageSource.getMessage(NEW_COMMENT_BODY, new Object[] {recipe.getName()}, locale);
+            UUID recipeOwnerID = recipe.getAuthor().getId();
+        
+            // Crear y guardar notificación
+            socialService.createNotification(title, message, recipeOwnerID);
+        } catch ( EntityNotFoundException e ) {
+            throw new RuntimeException(e);
+        }
         
         return comment;
     }
@@ -110,6 +141,19 @@ public class SocialServiceImpl implements SocialService {
         recipe.rate(rating);
         ratingRepo.save(rating);
         recipeRepo.save(recipe);
+    
+        // Notificar al propietario de la receta de que tiene una nueva puntuación
+        try {
+            // Crear título y cuerpo del mensaje
+            String title = messageSource.getMessage(NEW_RATING_TITLE, null, locale);
+            String message = messageSource.getMessage(NEW_RATING_BODY, new Object[] {recipe.getName()}, locale);
+            UUID recipeOwnerID = recipe.getAuthor().getId();
+        
+            // Crear y guardar notificación
+            socialService.createNotification(title, message, recipeOwnerID);
+        } catch ( EntityNotFoundException e ) {
+            throw new RuntimeException(e);
+        }
         
         // Recuperar toda la información de la receta
         return recipeRepo.retrieveRecipeDetails(recipeID).get();
@@ -141,6 +185,18 @@ public class SocialServiceImpl implements SocialService {
         follow = followRepo.save(follow);
         userRepo.save(requestor);
         userRepo.save(target);
+    
+        // Notificar al usuario de que tiene un nuevo seguidor
+        try {
+            // Crear título y cuerpo del mensaje
+            String title = messageSource.getMessage(NEW_FOLLOWER_TITLE, null, locale);
+            String message = messageSource.getMessage(NEW_FOLLOWER_BODY, null, locale);
+        
+            // Crear y guardar notificación
+            socialService.createNotification(title, message, targetID);
+        } catch ( EntityNotFoundException e ) {
+            throw new RuntimeException(e);
+        }
         
         return follow;
     }
@@ -199,6 +255,36 @@ public class SocialServiceImpl implements SocialService {
         FollowID id = new FollowID(requestorID, targetID);
         
         return followRepo.existsById(id);
+    }
+    
+    @Override
+    public Notification createNotification(String title, String message, UUID targetUserID)
+            throws EntityNotFoundException {
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        User targetUser = userUtils.fetchUserByID(targetUserID);
+        
+        // Crear la notificación
+        Notification notification = new Notification();
+        notification.setTarget(targetUser);
+        notification.setRead(false);
+        notification.setCreatedAt(LocalDateTime.now());
+        notification.setTitle(title.trim());
+        notification.setMessage(message.trim());
+        
+        return notificationRepo.save(notification);
+    }
+    
+    @Override
+    public Block<Notification> getUnreadNotifications(UUID targetUserID, int page, int pageSize)
+            throws EntityNotFoundException {
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        userUtils.fetchUserByID(targetUserID);
+        
+        // Buscar las notificaciones
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Notification> slice = notificationRepo.findByTarget_IdAndIsReadFalseOrderByCreatedAtDesc(targetUserID, pageable);
+        
+        return new Block<>(slice.getContent(), slice.hasNext(), slice.getNumberOfElements());
     }
     
     /* ******************** FUNCIONES AUXILIARES ******************** */
