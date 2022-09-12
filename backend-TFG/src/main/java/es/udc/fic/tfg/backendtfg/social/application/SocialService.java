@@ -108,4 +108,14 @@ public interface SocialService {
      * @throws EntityNotFoundException
      */
     Notification createNotification(String title, String message, UUID targetUserID) throws EntityNotFoundException;
+    
+    /**
+     * Devuelve paginadamente las notificaciones del usuario sin leer, ordenadas por fecha descendiente.
+     * @param targetUserID ID del usuario
+     * @param page Número de página
+     * @param pageSize Tamaño de página
+     * @return Página de notificaciones
+     * @throws EntityNotFoundException NO se encuentra al usuario
+     */
+    Block<Notification> getUnreadNotifications(UUID targetUserID, int page, int pageSize) throws EntityNotFoundException;
 }

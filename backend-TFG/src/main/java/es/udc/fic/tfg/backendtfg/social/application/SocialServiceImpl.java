@@ -220,6 +220,19 @@ public class SocialServiceImpl implements SocialService {
         return notificationRepo.save(notification);
     }
     
+    @Override
+    public Block<Notification> getUnreadNotifications(UUID targetUserID, int page, int pageSize)
+            throws EntityNotFoundException {
+        // Buscar el usuario objetivo. Si no existe lanza EntityNotFoundException
+        userUtils.fetchUserByID(targetUserID);
+        
+        // Buscar las notificaciones
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Slice<Notification> slice = notificationRepo.findByTarget_IdAndIsReadFalseOrderByCreatedAtDesc(targetUserID, pageable);
+        
+        return new Block<>(slice.getContent(), slice.hasNext(), slice.getNumberOfElements());
+    }
+    
     /* ******************** FUNCIONES AUXILIARES ******************** */
     /** Busca la receta por el ID recibido */
     private Recipe fetchRecipeByID(UUID recipeID) throws EntityNotFoundException {
