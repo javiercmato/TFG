@@ -10,11 +10,9 @@ import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.RecipeDetailsDTO;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
-import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.FollowConversor;
+import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.*;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.utils.UserControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,4 +220,28 @@ public class SocialController {
         return FollowConversor.toFollowBlockDTO(block);
     }
     
+    @GetMapping(path="/followings/{userID}/check")
+    public boolean checkUserIsFollowingTarget(@PathVariable("userID") UUID requestorID,
+            @RequestParam("targetID") UUID targetID) {
+        // Llamada al servicio
+        return socialService.doesFollowTarget(requestorID, targetID);
+    }
+    
+    @GetMapping(path = "/notifications/{userID}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<NotificationDTO> getUnreadNotifications(@RequestAttribute("userID") UUID userID,
+            @PathVariable("userID") UUID pathUserID,
+            @RequestParam("page") int page,
+            @RequestParam("pageSize") int pageSize) throws EntityNotFoundException, PermissionException {
+        // Comprobar que el usuario actual y el usuario que realiza la operación son el mismo
+        if (!controllerUtils.doUsersMatch(userID, pathUserID))
+            throw new PermissionException();
+        
+        // Llamada al servicio
+        Block<Notification> block = socialService.getUnreadNotifications(userID, page, pageSize);
+        
+        // Generar respuesta
+        return NotificationConversor.toNotificationBlockDTO(block);
+    }
 }

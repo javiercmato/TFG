@@ -22,5 +22,5 @@ public interface FollowRepository extends PagingAndSortingRepository<Follow, Fol
             countQuery = "SELECT count(f) FROM Follow f WHERE f.following.id = ?1"
     )
     Slice<Follow> findFollowings(UUID following, Pageable pageable);
-
+    
 }

@@ -45,7 +45,7 @@ const CommentBox = ({comment, onErrorCallback}: Props) => {
                             <Row>
                                 <Row>
                                     <Col md={10}>
-                                        <Link to={`/users/${comment.author.nickname}`}>
+                                        <Link to={`/users/${comment.author.userID}`}>
                                             {comment.author.name}
                                         </Link>
                                     </Col>

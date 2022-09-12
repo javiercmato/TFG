@@ -55,3 +55,18 @@ CREATE TABLE IF NOT EXISTS social.Follow (
         ON DELETE SET NULL
         ON UPDATE CASCADE
 );
+
+
+CREATE TABLE IF NOT EXISTS social.Notification (
+    id                  uuid        DEFAULT "public".uuid_generate_v1(),
+    isRead              bool        NOT NULL    DEFAULT false,
+    createdAt           TIMESTAMP   NOT NULL    DEFAULT CURRENT_TIMESTAMP,
+    title               varchar     NOT NULL,
+    message             varchar     NOT NULL,
+    target_id           uuid        NOT NULL,
+
+    CONSTRAINT PK_Notification PRIMARY KEY (id),
+    CONSTRAINT FK_Notification_TO_User FOREIGN KEY (target_id) REFERENCES users.usertable(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);

@@ -4,8 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.EntityNotFoundException;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.PermissionException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
-import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.social.domain.exceptions.*;
 
 import java.util.UUID;
@@ -91,4 +90,32 @@ public interface SocialService {
      * @throws EntityNotFoundException No se encuentra al usuario
      */
     Block<Follow> getFollowings(UUID userID, int page, int pageSize) throws EntityNotFoundException;
+    
+    /**
+     * Indica si un usuario está siguiento a otro.
+     * @param requestorID ID del usuario que realiza la consulta
+     * @param targetID ID del usuario objetivo
+     * @return True si Requestor sigue a Target
+     */
+    boolean doesFollowTarget(UUID requestorID, UUID targetID);
+    
+    /**
+     * Crea una notificación dirigida al usuario recibido.
+     * @param title Título de la notificación
+     * @param message Contenido de la notificación
+     * @param targetUserID Usuario al que va dirigida la notificación
+     * @return Notificación recién creada
+     * @throws EntityNotFoundException
+     */
+    Notification createNotification(String title, String message, UUID targetUserID) throws EntityNotFoundException;
+    
+    /**
+     * Devuelve paginadamente las notificaciones del usuario sin leer, ordenadas por fecha descendiente.
+     * @param targetUserID ID del usuario
+     * @param page Número de página
+     * @param pageSize Tamaño de página
+     * @return Página de notificaciones
+     * @throws EntityNotFoundException NO se encuentra al usuario
+     */
+    Block<Notification> getUnreadNotifications(UUID targetUserID, int page, int pageSize) throws EntityNotFoundException;
 }

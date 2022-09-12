@@ -23,7 +23,9 @@ class FollowUnitTest {
         UUID followingID = UUID.randomUUID();
         UUID followedID = UUID.randomUUID();
         User followingUser = new User();
+        followingUser.setId(followingID);
         User followedUser = new User();
+        followedUser.setId(followedID);
         LocalDateTime followDate = LocalDateTime.now();
         
         // Ejecutar código

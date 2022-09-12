@@ -29,7 +29,7 @@ export const changePasswordAction = () : UserDispatchType => ({
 })
 
 export const findUserByNicknameAction = (user: User) : UserDispatchType => ({
-    type: actionTypes.FIND_USER_BY_NICKNAME,
+    type: actionTypes.FIND_USER_BY_ID,
     payload: user,
 })
 
@@ -181,9 +181,9 @@ export const changePasswordAsyncAction = (userID: string,
     userService.changePassword(userID, oldPassword, newPassword, onSuccessCallback, onErrorCallback);
 }
 
-export const findUserByNicknameAsyncAction = (nickname: string,
-                                              onSuccessCallback: CallbackFunction,
-                                              onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+export const findUserByIDAsyncAction = (userID: string,
+                                        onSuccessCallback: CallbackFunction,
+                                        onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
     const onSuccess: CallbackFunction = (user: User) : void => {
         // Actualiza estado de la aplicación
@@ -208,7 +208,7 @@ export const findUserByNicknameAsyncAction = (nickname: string,
     dispatch(app.actions.loading());
 
     // Llamar al servicio y ejecutar los callbacks
-    userService.findUserByNickname(nickname, onSuccess, onError);
+    userService.findUserByID(userID, onSuccess, onError);
 }
 
 export const updateProfileAsyncAction = (userID: string,

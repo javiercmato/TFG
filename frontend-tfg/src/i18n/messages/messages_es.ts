@@ -53,6 +53,7 @@ const translations = {
     'common.fields.privateLists': 'Listas privadas',
     'common.fields.rating': 'Puntuación',
     'common.fields.comments': 'Comentarios',
+    'common.fields.notifications': 'Notificaciones',
 
 
     'common.Components.WarningModal.title': 'Aviso',
@@ -71,6 +72,7 @@ const translations = {
     'app.components.Header.userActions.seeProfile': 'Ver mi perfil',
     'app.components.Header.userActions.editProfile': 'Editar perfil',
     'app.components.Header.userActions.privateLists': 'Mis listas privadas',
+    'app.components.Header.notificationsButton.text': 'Ver notificaciones',
 
 
     /* ******************** Users ******************** */
@@ -137,6 +139,14 @@ const translations = {
     'recipes.components.RateRecipe.': 'Seleccionar puntuación',
     'recipes.warning.CommentIsBannedByAdmin': 'Comentario ha sido moderado por el administrador',
 
+
+    /* ******************** Social ******************** */
+    'social.components.FollowButton.text': 'Seguir usuario',
+    'social.components.UnfollowButton.text': 'Dejar de seguir usuario',
+    'social.components.Followers.button': 'Ver seguidores',
+    'social.components.FollowersPage.title': 'Seguidores y siguiendos',
+    'social.components.FollowersPage.following': 'Siguiendo a',
+    'social.components.FollowersPage.followedBy': 'Seguido por',
 
 
 }

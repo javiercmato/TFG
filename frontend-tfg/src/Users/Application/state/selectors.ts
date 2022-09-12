@@ -37,6 +37,7 @@ export const isUserSearchAdmin = (state: RootState) : boolean => getUserSearchMo
 
 export const isUserSearchBannedByAdmin = (state: RootState) : boolean => getUserSearchModule(state)?.isBannedByAdmin!;
 
+export const isUserSearchFollowedByUser = (state: RootState) : boolean => getUserSearchModule(state)?.isFollowedByUser!;
 
 /* ******************** DATOS DE LISTAS PRIVADAS ******************** */
 
