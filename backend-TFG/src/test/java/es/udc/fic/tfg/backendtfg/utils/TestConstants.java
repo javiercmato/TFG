@@ -27,11 +27,11 @@ public class TestConstants {
     
     /* ************************* INGREDIENTS ************************* */
     public static final String DEFAULT_INGREDIENT_NAME = "ingredient";
-    public static final String DEFAULT_INGREDIENTTYPE_NAME = "ingredientType";
+    public static final String DEFAULT_INGREDIENTTYPE_NAME = "INGREDIENT TYPE";
     
     
     /* ************************* RECIPES ************************* */
-    public static final String DEFAULT_CATEGORY_NAME = "category";
+    public static final String DEFAULT_CATEGORY_NAME = "CATEGORY";
     public static final String DEFAULT_RECIPE_NAME = "recipe name";
     public static final Long DEFAULT_RECIPE_DURATION = (long) 10;
     public static final Integer DEFAULT_RECIPE_DINERS = 2;

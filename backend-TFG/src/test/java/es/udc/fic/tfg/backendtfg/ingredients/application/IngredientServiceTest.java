@@ -88,7 +88,7 @@ class IngredientServiceTest {
     /** Genera datos de un tipo de ingrediente válido. */
     private IngredientType generateValidIngredientType(String ingredientTypeName) {
         IngredientType ingredientType = new IngredientType();
-        ingredientType.setName(ingredientTypeName);
+        ingredientType.setName(ingredientTypeName.toUpperCase());
         
         return ingredientType;
     }
