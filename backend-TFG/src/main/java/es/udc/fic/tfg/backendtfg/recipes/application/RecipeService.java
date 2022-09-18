@@ -4,6 +4,7 @@ import es.udc.fic.tfg.backendtfg.common.domain.entities.Block;
 import es.udc.fic.tfg.backendtfg.common.domain.exceptions.*;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeIngredientsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.CreateRecipeParamsDTO;
 
@@ -35,9 +36,11 @@ public interface RecipeService {
      * @param recipeParams Parámetros para crer una receta
      * @return Receta creada
      * @throws EmptyRecipeStepsListException Se intenta crear una receta sin pasos
+     * @throws EmptyRecipeIngredientsListException Se intenta crear una receta sin ingredientes
      * @throws EntityNotFoundException No se encuentra al usuario o algún ingrediente
      */
-    Recipe createRecipe(CreateRecipeParamsDTO recipeParams) throws EmptyRecipeStepsListException, EntityNotFoundException;
+    Recipe createRecipe(CreateRecipeParamsDTO recipeParams)
+            throws EmptyRecipeStepsListException, EntityNotFoundException, EmptyRecipeIngredientsListException;
     
     /**
      * Recupera la información de una receta.

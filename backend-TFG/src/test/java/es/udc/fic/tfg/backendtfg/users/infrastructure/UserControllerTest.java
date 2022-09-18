@@ -5,6 +5,9 @@ import es.udc.fic.tfg.backendtfg.common.application.JwtGenerator;
 import es.udc.fic.tfg.backendtfg.common.domain.jwt.JwtData;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControllerAdvice;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
+import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
@@ -14,7 +17,6 @@ import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.users.application.UserService;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.users.domain.exceptions.IncorrectLoginException;
-import es.udc.fic.tfg.backendtfg.users.domain.repositories.PrivateListRepository;
 import es.udc.fic.tfg.backendtfg.users.domain.repositories.UserRepository;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.controllers.UserController;
 import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.PrivateListConversor;
@@ -65,9 +67,11 @@ class UserControllerTest {
     @Autowired
     private UserService userService;
     @Autowired
+    private IngredientService ingredientService;
+    @Autowired
     private UserController userController;
     @Autowired
-    private PrivateListRepository privateListRepository;
+    private IngredientTypeRepository ingredientTypeRepository;
     @Autowired
     private RecipeService recipeService;
     @Autowired
@@ -128,6 +132,7 @@ class UserControllerTest {
         return dto;
     }
     
+    /** Registra una receta válida */
     private Recipe registerRecipe(UUID authorID, UUID categoryID) throws Exception {
         // Crear pasos
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
@@ -138,6 +143,13 @@ class UserControllerTest {
                                     .encodeToString(
                                             loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION));
         picturesParams.add(new CreateRecipePictureParamsDTO(1, encodedImage));
+        // Crear ingredientes de receta
+        IngredientType ingredientType = new IngredientType();
+        ingredientType.setName(VALID_INGREDIENTTYPE_NAME);
+        ingredientTypeRepository.save(ingredientType);
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), authorID);
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
     
         CreateRecipeParamsDTO paramsDTO = new CreateRecipeParamsDTO();
         paramsDTO.setName(DEFAULT_RECIPE_NAME);
@@ -148,7 +160,7 @@ class UserControllerTest {
         paramsDTO.setCategoryID(categoryID);
         paramsDTO.setPictures(picturesParams);
         paramsDTO.setSteps(stepsParams);
-        paramsDTO.setIngredients(Collections.emptyList());
+        paramsDTO.setIngredients(ingredientsParams);
         
         return recipeService.createRecipe(paramsDTO);
     }

@@ -9,16 +9,16 @@ import es.udc.fic.tfg.backendtfg.common.infrastructure.controllers.CommonControl
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.BlockDTO;
 import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.ingredients.application.IngredientService;
+import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientTypeRepository;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
-import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.CategoryRepository;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.*;
-import es.udc.fic.tfg.backendtfg.social.domain.repositories.CommentRepository;
 import es.udc.fic.tfg.backendtfg.social.domain.repositories.FollowRepository;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.controllers.SocialController;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.*;
@@ -44,6 +44,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static es.udc.fic.tfg.backendtfg.common.infrastructure.security.JwtFilter.AUTH_TOKEN_PREFIX;
+import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.PNG_EXTENSION;
+import static es.udc.fic.tfg.backendtfg.utils.ImageUtils.loadImageFromResourceName;
 import static es.udc.fic.tfg.backendtfg.utils.TestConstants.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -75,15 +77,9 @@ class SocialControllerTest {
     @Autowired
     private RecipeService recipeService;
     @Autowired
-    private RecipeRepository recipeRepo;
-    @Autowired
-    private RecipeIngredientRepository recipeIngredientRepo;
-    @Autowired
     private IngredientTypeRepository ingredientTypeRepository;
     @Autowired
     private IngredientService ingredientService;
-    @Autowired
-    private CommentRepository commentRepository;
     @Autowired
     private SocialService socialService;
     @Autowired
@@ -152,18 +148,35 @@ class SocialControllerTest {
     }
     
     
-    /** Registra una receta válida sin ingredientes */
+    /** Registra una receta válida */
     private Recipe registerRecipe(UUID authorID, UUID categoryID) throws Exception {
         // Crear pasos
         List<CreateRecipeStepParamsDTO> stepsParams = new ArrayList<>();
         stepsParams.add(new CreateRecipeStepParamsDTO(1, DEFAULT_RECIPESTEP_TEXT));
         // Crear imágenes
         List<CreateRecipePictureParamsDTO> picturesParams = new ArrayList<>();
+        String encodedImage = Base64.getEncoder()
+                                    .encodeToString(
+                                            loadImageFromResourceName(DEFAULT_RECIPE_IMAGE_1, PNG_EXTENSION));
+        picturesParams.add(new CreateRecipePictureParamsDTO(1, encodedImage));
+        // Crear ingredientes de receta
+        IngredientType ingredientType = new IngredientType();
+        ingredientType.setName(VALID_INGREDIENTTYPE_NAME);
+        ingredientTypeRepository.save(ingredientType);
+        Ingredient ingredient = ingredientService.createIngredient(DEFAULT_INGREDIENT_NAME, ingredientType.getId(), authorID);
+        List<CreateRecipeIngredientParamsDTO> ingredientsParams = new ArrayList<>();
+        ingredientsParams.add(new CreateRecipeIngredientParamsDTO(ingredient.getId(), "1", MeasureUnit.UNIDAD.toString()));
         
-        CreateRecipeParamsDTO paramsDTO = generateCreateRecipeParamsDTO(authorID, categoryID);
+        CreateRecipeParamsDTO paramsDTO = new CreateRecipeParamsDTO();
+        paramsDTO.setName(DEFAULT_RECIPE_NAME);
+        paramsDTO.setDescription(DEFAULT_RECIPE_DESCRIPTION);
+        paramsDTO.setDuration(DEFAULT_RECIPE_DURATION);
+        paramsDTO.setDiners(DEFAULT_RECIPE_DINERS);
+        paramsDTO.setAuthorID(authorID);
+        paramsDTO.setCategoryID(categoryID);
         paramsDTO.setPictures(picturesParams);
         paramsDTO.setSteps(stepsParams);
-        paramsDTO.setIngredients(Collections.emptyList());
+        paramsDTO.setIngredients(ingredientsParams);
         
         return recipeService.createRecipe(paramsDTO);
     }

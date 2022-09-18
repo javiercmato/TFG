@@ -28,6 +28,7 @@ public class TestConstants {
     /* ************************* INGREDIENTS ************************* */
     public static final String DEFAULT_INGREDIENT_NAME = "ingredient";
     public static final String DEFAULT_INGREDIENTTYPE_NAME = "INGREDIENT TYPE";
+    public static final String VALID_INGREDIENTTYPE_NAME = "VALID INGREDIENT TYPE";
     
     
     /* ************************* RECIPES ************************* */

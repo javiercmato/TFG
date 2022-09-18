@@ -6,6 +6,7 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeIngredientsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
@@ -92,7 +93,7 @@ public class RecipeServiceImpl implements RecipeService {
     
     @Override
     public Recipe createRecipe(CreateRecipeParamsDTO params)
-            throws EmptyRecipeStepsListException, EntityNotFoundException {
+            throws EmptyRecipeStepsListException, EntityNotFoundException, EmptyRecipeIngredientsListException {
         // Buscar el usuario. Si no existe lanza EntityNotFoundException
         User author = userUtils.fetchUserByID(params.getAuthorID());
         
@@ -271,7 +272,12 @@ public class RecipeServiceImpl implements RecipeService {
     
     /** Asigna los ingredientes, junto a sus cantidades y unidades de medida, a la receta recibida.
      * Si un ingrediente no existe lanza EntityNotFoundException */
-    private void attachIngredientsToRecipe(List<CreateRecipeIngredientParamsDTO> ingredientParams, Recipe recipe) throws EntityNotFoundException {
+    private void attachIngredientsToRecipe(List<CreateRecipeIngredientParamsDTO> ingredientParams, Recipe recipe)
+            throws EntityNotFoundException, EmptyRecipeIngredientsListException {
+        // Si no se recibe ningún ingrediente, se lanza EmptyRecipeIngrediensListException
+        if (ingredientParams.isEmpty())
+            throw new EmptyRecipeIngredientsListException();
+        
         // Obtener los ID de los ingredientes y ordenarlos
         List<UUID> ingredientIds = ingredientParams.stream()
                                                    .map(CreateRecipeIngredientParamsDTO::getIngredientID)
