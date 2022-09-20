@@ -74,6 +74,9 @@ export const deletePrivateListAction = () : UserDispatchType => ({
     type: actionTypes.DELETE_PRIVATE_LIST,
 })
 
+export const clearUserDetailsAction = () : UserDispatchType => ({
+    type: actionTypes.CLEAR_USER_DETAILS,
+})
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (

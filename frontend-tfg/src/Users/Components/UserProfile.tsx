@@ -56,6 +56,11 @@ const UserProfile = () => {
                 currentUserID, targetUserID, () => {}, () => {})
             );
         dispatch(userRedux.actions.findUserByIDAsyncAction(userID!, onSuccess, onError));
+
+        // Libera del store los datos del perfil visitado
+        return () => {
+            dispatch(userRedux.actions.clearUserDetailsAction());
+        }
     }, [userID, targetUserID, dispatch]);
 
 

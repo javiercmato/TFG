@@ -19,6 +19,7 @@ export const GET_PRIVATE_LIST_DETAILS: string = 'users/getPrivateListDetails';
 export const ADD_RECIPE_TO_PRIVATE_LIST: string = 'users/addRecipeToPrivateList';
 export const REMOVE_RECIPE_FROM_PRIVATE_LIST: string = 'users/removeRecipeFromPrivateList';
 export const DELETE_PRIVATE_LIST: string = 'users/deletePrivateList';
+export const CLEAR_USER_DETAILS: string = 'users/clearUserDetails';
 
 /* ******************** Tipos de datos ******************** */
 
@@ -88,6 +89,10 @@ export interface DeletePrivateListActionType {
     type: string,
 }
 
+export interface ClearUserDetailsActionType {
+    type: string,
+}
+
 export type UserDispatchType = SignUpUserActionType
     | LoginActionType
     | LogoutActionType
@@ -102,4 +107,5 @@ export type UserDispatchType = SignUpUserActionType
     | AddRecipeToPrivateListActionType
     | RemoveRecipeFromPrivateListActionType
     | DeletePrivateListActionType
+    | ClearUserDetailsActionType
 ;

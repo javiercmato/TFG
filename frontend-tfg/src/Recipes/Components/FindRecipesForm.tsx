@@ -53,6 +53,7 @@ const FindRecipesForm = () => {
 
     useEffect(() => {
 
+        // Libera del store la búsqueda realizada
         return () => {
             dispatch(recipesRedux.actions.clearRecipesSearchAction());
         };

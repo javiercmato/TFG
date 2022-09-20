@@ -68,6 +68,9 @@ const userSearch = (state: Nullable<User> = initialState.userSearch,
             })
         }
 
+        case actionTypes.CLEAR_USER_DETAILS:
+            return initialState.userSearch;
+
         default:
             return state;
     }

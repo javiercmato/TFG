@@ -25,6 +25,11 @@ const IngredientsPage = () => {
         }
         let onSuccess = () => {};
         dispatch(ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess));
+
+        // Limpiar del store los ingredientes al cambiar de página
+        return () => {
+            dispatch(ingredientsRedux.actions.clearIngredientsSearchAction());
+        }
     }, [dispatch, searchCriteria.page])
 
     return (
