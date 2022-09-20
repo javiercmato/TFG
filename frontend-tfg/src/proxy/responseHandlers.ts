@@ -15,9 +15,16 @@ export const handle2xxResponse = (response: Response, onSuccessCallback: Callbac
     if (response.status < 200 || response.status > 299) return false;
 
     // SI la respuesta contiene algún JSON en el cuerpo, se ejecuta el callback con su contenido parseado
-    if (_isJsonRespone(response))
+    if (_isJsonResponse(response)) {
+        console.log("respuesta con contenido");
         response.json()
             .then((json) => onSuccessCallback(json));
+
+        return true;
+    }
+
+    // Sino se ejecuta el callback sin ningún contenido
+    onSuccessCallback({});
 
     return true;
 };
@@ -44,7 +51,7 @@ export const handle4xxResponse = (response: Response, onErrorCallback?: Callback
     }
 
     // Comprobar si respuesta contiene información del error para procesarlo
-    if (!_isJsonRespone(response))
+    if (!_isJsonResponse(response))
         throw new ServiceException('Empty response body', response.status);
 
     // Si se recibe callback para gestionar errores se ejecuta con el contenido de la respuesta
@@ -64,7 +71,7 @@ export const handle4xxResponse = (response: Response, onErrorCallback?: Callback
  * @param {Response} response - Respuesta recibida
  * @returns {Boolean} Respuesta contiene un objeto JSON
  */
-const _isJsonRespone = (response: Response) : boolean => {
+const _isJsonResponse = (response: Response) : boolean => {
     // eslint-disable-next-line
     // @ts-ignore
     return response.headers

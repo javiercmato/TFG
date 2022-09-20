@@ -1,6 +1,6 @@
 const translations = {
     /* ******************** proxy ******************** */
-    'proxy.exceptions.Error': 'Error inesperado',
+    'proxy.exceptions.Error': 'Se produjo un error inesperado',
     'proxy.exceptions.NetworkErrorException': 'Fallo en la conexión con el servidor',
     'proxy.exceptions.ServiceException': 'Error en el servicio',
 

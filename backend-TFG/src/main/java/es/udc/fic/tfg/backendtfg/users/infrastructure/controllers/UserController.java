@@ -164,7 +164,7 @@ public class UserController {
     
     @DeleteMapping(path = "/{userID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    ResponseEntity<Void> deleteUser(@RequestAttribute("userID") UUID userID,
+    public ResponseEntity<Void> deleteUser(@RequestAttribute("userID") UUID userID,
             @PathVariable("userID") UUID pathUserID) throws EntityNotFoundException, PermissionException {
         // Comprobar que el usuario actual y el usuario objetivo son el mismo
         if (!controllerUtils.doUsersMatch(userID, pathUserID))
@@ -272,7 +272,7 @@ public class UserController {
     
     @PostMapping(path = "/{userID}/lists/{listID}/add/{recipeID}")
     @ResponseStatus(HttpStatus.OK)
-    public void addRecipeToPrivateList(@RequestAttribute("userID") UUID userID,
+    public ResponseEntity<Void> addRecipeToPrivateList(@RequestAttribute("userID") UUID userID,
                                        @PathVariable("userID") UUID pathUserID,
                                        @PathVariable("listID") UUID listID,
                                        @PathVariable("recipeID") UUID recipeID)
@@ -283,11 +283,13 @@ public class UserController {
         
         // Llamada al servicio
         userService.addRecipeToPrivateList(listID, recipeID);
+        
+        return ResponseEntity.ok().build();
     }
     
     @DeleteMapping(path = "/{userID}/lists/{listID}/remove/{recipeID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeRecipeFromPrivateList(@RequestAttribute("userID") UUID userID,
+    public ResponseEntity<Void> removeRecipeFromPrivateList(@RequestAttribute("userID") UUID userID,
             @PathVariable("userID") UUID pathUserID,
             @PathVariable("listID") UUID listID,
             @PathVariable("recipeID") UUID recipeID)
@@ -298,11 +300,13 @@ public class UserController {
         
         // Llamada al servicio
         userService.removeRecipeFromPrivateList(listID, recipeID);
+    
+        return ResponseEntity.noContent().build();
     }
     
     @DeleteMapping(path = "/{userID}/lists/{listID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePrivateList(@RequestAttribute("userID") UUID userID,
+    public ResponseEntity<Void> deletePrivateList(@RequestAttribute("userID") UUID userID,
             @PathVariable("userID") UUID pathUserID,
             @PathVariable("listID") UUID listID)
             throws EntityNotFoundException, PermissionException {
@@ -312,6 +316,8 @@ public class UserController {
         
         // Llamada al servicio
         userService.deletePrivateList(listID);
+        
+        return ResponseEntity.noContent().build();
     }
     
 }

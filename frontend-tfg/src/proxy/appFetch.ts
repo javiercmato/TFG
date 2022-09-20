@@ -74,7 +74,9 @@ export const appFetch = (
 
     fetch(resourceURL, configuration)
         .then( (response: Response) => _handleResponse(response, onSuccessCallback, onErrorCallback))
-        .catch(onNetworkErrorCallback);
+        .catch((exc) => {
+            onNetworkErrorCallback(exc);
+        });
 }
 
 /** Guarda el JWT del usuario en el navegador */

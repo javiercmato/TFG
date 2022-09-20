@@ -35,12 +35,14 @@ const RecipeDetails = () => {
     const handleDeleteClick = (e: any) => {
         e.preventDefault();
 
-        let onSuccess = () => navigate('/recipes');
+        let onSuccess = () => {
+            navigate('/recipes')
+        };
         let onError = (error: ErrorDto) => setBackendErrors(error);
         dispatch(recipesRedux.actions.deleteRecipeAsyncAction(String(recipeID), onSuccess, onError));
     }
 
-    const handleBanCommentError = (error: ErrorDto) => setBackendErrors(error);
+    const handleError = (error: ErrorDto) => setBackendErrors(error);
 
     const handleRateRecipe = (value: number) => {
         let rateParams: RateRecipeParamsDTO = {
@@ -74,7 +76,7 @@ const RecipeDetails = () => {
 
     let addToListProps: AddToPrivateListButtonProps = {
         recipe: recipeData!,
-        onErrorCallback: handleBanCommentError,
+        onErrorCallback: handleError,
     }
 
 

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
 import {store} from './store';
 import {Provider} from 'react-redux'
-import {App, appRedux} from "./App";
+import {App, appRedux, ErrorDto} from "./App";
 import {initializeBackend} from "./proxy";
 import {NetworkErrorException} from "./proxy/exceptions";
 import {initReactI18N} from "./i18n";
@@ -18,10 +18,11 @@ const {locale, messages} = initReactI18N();
 /* Configurar proxy con el backend: si no establece conexión lanza error */
 initializeBackend( () => {
     const networkException: NetworkErrorException = new NetworkErrorException();
+    const errorMessage: ErrorDto = {
+        globalError: networkException.message,
+    }
 
-    store.dispatch(
-        appRedux.actions.error(networkException)
-    );
+    store.dispatch(appRedux.actions.error(errorMessage));
 });
 
 
