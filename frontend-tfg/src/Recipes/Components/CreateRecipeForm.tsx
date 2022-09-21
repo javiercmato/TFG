@@ -97,7 +97,6 @@ const CreateRecipeForm = () => {
             setBackendErrors(null);
             formRef.classList.add('was-validated');
         }
-
     }
 
 
@@ -105,6 +104,7 @@ const CreateRecipeForm = () => {
         ingredientParams: recipeIngredientsParams,
         onAddIngredientParams: addIngredientParamsToRecipe,
         onRemoveIngredientParams: removeIngredientFromRecipe,
+        onBackendErrors: (error: ErrorDto) => setBackendErrors(error),
     }
 
     let picturesFormProps: RecipePicturesFormProps = {

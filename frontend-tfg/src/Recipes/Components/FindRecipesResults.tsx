@@ -4,7 +4,7 @@ import {Alert, Col, Container, Row} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
 import {RecipeCardProps} from "../../Ingredients/Components";
-import RecipeCard from "../../Ingredients/Components/RecipeCard";
+import RecipeCard from "./RecipeCard";
 import {Pager, PagerProps, SearchCriteria} from "../../App";
 import {container} from './styles/findRecipesResults'
 

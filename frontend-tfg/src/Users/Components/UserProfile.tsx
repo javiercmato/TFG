@@ -34,8 +34,8 @@ const UserProfile = () => {
         e.preventDefault();
 
         let onSuccess: NoArgsCallbackFunction = () => {
-            dispatch(userRedux.actions.logoutAsyncAction());
             navigate("/");
+            dispatch(userRedux.actions.logoutAsyncAction());
         };
         let onErrors: CallbackFunction = (err) => {setBackendErrors(err)};
 

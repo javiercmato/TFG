@@ -7,15 +7,21 @@ import {ChangeEvent, FormEvent, useState} from "react";
 import {useAppDispatch} from "../../store";
 import {ingredientsRedux} from "../Application";
 import IngredientTypeSelector from "./IngredientTypeSelector";
+import {ErrorDto} from "../../App";
 
+interface Props {
+    onBackendError: (error: ErrorDto) => void,
+}
 
-const CreateIngredient = () => {
+const CreateIngredient = ({onBackendError}: Props) => {
     const intl = useIntl();
     const dispatch = useAppDispatch();
     const [name, setName] = useState<string>('');
     const [typeID, setTypeID] = useState<string>('');
     const isLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     const userID = useSelector(userRedux.selectors.selectUserID);
+    const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
+
 
     const handleChangeType = (e: any) => {
         e.preventDefault();
@@ -26,7 +32,10 @@ const CreateIngredient = () => {
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         let onSuccess = () => {};
-        let onError = () => {};
+        let onError = (error: ErrorDto) => {
+            setBackendErrors(error);
+            (backendErrors) && onBackendError(error);
+        }
 
         dispatch(ingredientsRedux.actions.createIngredientAsyncAction(name, typeID, userID, onSuccess, onError));
     }
@@ -76,3 +85,4 @@ const CreateIngredient = () => {
 }
 
 export default CreateIngredient;
+export type {Props as CreateIngredientProps};

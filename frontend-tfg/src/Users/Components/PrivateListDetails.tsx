@@ -3,10 +3,10 @@ import {useAppDispatch, useAppSelector} from "../../store";
 import {userRedux} from "../Application";
 import {ErrorDto, Errors} from "../../App";
 import {Alert, Button, Card} from "react-bootstrap";
-import {RecipeCard, RecipeCardProps} from "../../Ingredients/Components";
 import {RecipeSummaryDTO} from "../../Recipes";
 import {card, cardHeader, cardSubtitle} from './styles/privateListDetails';
 import {FormattedMessage} from "react-intl";
+import RecipeCard, {RecipeCardProps} from "../../Recipes/Components/RecipeCard";
 
 interface Props {
     listID: string,

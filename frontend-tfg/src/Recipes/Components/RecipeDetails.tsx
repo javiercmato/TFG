@@ -31,6 +31,7 @@ const RecipeDetails = () => {
     const userID = useAppSelector(userRedux.selectors.selectUserID);
     const isRecipeBanned = useAppSelector(recipesRedux.selectors.isBannedByAdmin);
 
+    const isRecipeOwner = (isLoggedIn && recipeData?.author.userID === userID);
 
     const handleDeleteClick = (e: any) => {
         e.preventDefault();
@@ -127,14 +128,16 @@ const RecipeDetails = () => {
 
             <Container>
                 {/* Borrar receta */}
-                <Row>
-                    <Button variant="danger" onClick={handleDeleteClick}>
-                        <span>
-                            <FaTrash />
-                            <FormattedMessage id="common.buttons.delete" />
-                        </span>
-                    </Button>
-                </Row>
+                {(isRecipeOwner) &&
+                    <Row>
+                        <Button variant="danger" onClick={handleDeleteClick}>
+                            <span>
+                                <FaTrash />
+                                <FormattedMessage id="common.buttons.delete" />
+                            </span>
+                        </Button>
+                    </Row>
+                }
 
                 {/* Nombre y descripción*/}
                 <Row>

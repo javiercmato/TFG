@@ -1,4 +1,4 @@
-import FindRecipeIngredient from "./FindRecipeIngredient";
+import FindRecipeIngredient, {FindRecipeIngredientProps} from "./FindRecipeIngredient";
 import AddRecipeIngredient, {AddRecipeIngredientProps} from "./AddRecipeIngredient";
 import {Col, Container, Row} from "react-bootstrap";
 import FinalRecipeIngredientsList, {
@@ -8,22 +8,17 @@ import FinalRecipeIngredientsList, {
 import {CreateRecipeIngredientParamsDTO} from "../../Infrastructure";
 import {useState} from "react";
 import {FormattedMessage} from "react-intl";
+import {ErrorDto} from "../../../App";
 
-/** Datos que se mostrarán en la lista de ingredientes añadidos a la receta */
-interface RecipeIngredientDisplayData {
-    ingredientID: string,
-    quantity: string,
-    measureUnit: string,
-    name: string
-}
 
 interface Props {
     ingredientParams: Array<CreateRecipeIngredientParamsDTO>,
     onAddIngredientParams: (ingredientParams: Array<CreateRecipeIngredientParamsDTO>) => void,
     onRemoveIngredientParams: (ingredientID: string) => void,
+    onBackendErrors: (error: ErrorDto) => void,
 }
 
-const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemoveIngredientParams}: Props) => {
+const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemoveIngredientParams, onBackendErrors}: Props) => {
     const [recipeIngredientParams, setRecipeIngredientParams] = useState<Array<CreateRecipeIngredientParamsDTO>>(ingredientParams);           // Parámetros de los ingredientes a añadir a la receta
     const [displayableItems, setDisplayableItems] = useState<Array<DisplayCustomIngredient>>([]);                               // Información de ingredientes a visualizar en la lista
 
@@ -57,6 +52,9 @@ const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemov
         onRemoveIngredientParams(ingredientID);
     }
 
+    let findRecipeIngredientProps: FindRecipeIngredientProps = {
+        onBackendError: onBackendErrors,
+    }
 
     let addRecipeIngredientProps: AddRecipeIngredientProps = {
         onAddCustomizedIngredientCallback: onAddCustomizedIngredient
@@ -72,7 +70,7 @@ const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemov
             <Row>
                 {/* Componentes para mostrar y seleccionar ingredientes */}
                 <Col>
-                    <FindRecipeIngredient />
+                    <FindRecipeIngredient {...findRecipeIngredientProps} />
                     <AddRecipeIngredient {...addRecipeIngredientProps} />
                 </Col>
 
@@ -88,6 +86,5 @@ const RecipeIngredientsForm = ({ingredientParams, onAddIngredientParams, onRemov
     )
 }
 
-export type {RecipeIngredientDisplayData};
 export type {Props as RecipeIngredientsFormProps};
 export default RecipeIngredientsForm;

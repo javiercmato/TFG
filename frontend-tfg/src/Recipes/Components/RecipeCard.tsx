@@ -1,6 +1,6 @@
 import {Badge, Button, Card, Col, Row} from "react-bootstrap";
-import RecipeSummaryDTO from "../../Recipes/Infrastructure/RecipeSummaryDTO";
-import {recipesRedux} from "../../Recipes";
+import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
+import {recipesRedux} from "../index";
 import {useAppSelector} from "../../store";
 import {FormattedMessage} from "react-intl";
 import React from "react";

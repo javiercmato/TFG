@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,6 +84,17 @@ public class CommonControllerAdvice {
                 .collect(Collectors.toList());
         
         return new ErrorsDTO(fieldErrorDTOS);
+    }
+    
+    @ExceptionHandler(ServletRequestBindingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)     // 400
+    @ResponseBody
+    public ErrorsDTO handleServletRequestBindingException(ServletRequestBindingException exception, Locale locale) {
+        String globalErrorMessage = messageSource.getMessage(
+                PERMISION_EXCEPTION_KEY, null, PERMISION_EXCEPTION_KEY, locale
+        );
+        
+        return new ErrorsDTO(globalErrorMessage);
     }
     
 }
