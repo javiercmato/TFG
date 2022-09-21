@@ -138,6 +138,22 @@ public class RecipeController {
         return createBlock(recipeSummaryDTOList, recipesBlock.hasMoreItems(), recipesBlock.getItemsCount());
     }
     
+    @GetMapping(
+            path = "findByAuthor",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<RecipeSummaryDTO> findRecipesByAuthor(@RequestParam(value = "authorID") UUID authorID,
+                                                          @RequestParam("page") int page,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        // Llamada al servicio
+        Block<Recipe> recipesBlock = recipeService.findRecipesByUserID(authorID, page, pageSize);
+        
+        // Generar respuesta
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesBlock.getItems());
+        
+        return createBlock(recipeSummaryDTOList, recipesBlock.hasMoreItems(), recipesBlock.getItemsCount());
+    }
+    
     @DeleteMapping(path = "/{recipeID}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     ResponseEntity<Void> deleteRecipe(@RequestAttribute("userID") UUID userID,

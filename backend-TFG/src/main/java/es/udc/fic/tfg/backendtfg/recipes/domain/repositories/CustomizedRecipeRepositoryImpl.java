@@ -78,6 +78,34 @@ public class CustomizedRecipeRepositoryImpl implements CustomizedRecipeRepositor
     }
     
     
+    @Override
+    public Slice<Recipe> findByAuthor(UUID userID, int page, int pageSize) {
+    
+        String queryString = "SELECT DISTINCT recipe FROM Recipe recipe" +
+                // Une recetas con las entidades relacionadas para obtener sus datos
+                " LEFT JOIN FETCH recipe.ingredients recipeIngredients" +
+                " LEFT JOIN FETCH recipeIngredients.ingredient ingredient" +
+                " LEFT JOIN FETCH recipe.pictures" +
+            
+                /* [1] CONSTRUIR CONSULTA */
+                " WHERE recipe.author.id = :authorID" +
+                " ORDER BY recipe.creationDate DESC";
+    
+        /* [2] SUSTITUIR PARÁMETROS */
+        int firstResultPosition = page*pageSize;
+        Query query = em.createQuery(queryString)
+                        .setFirstResult(firstResultPosition)
+                        .setMaxResults(pageSize+1);             // Tamaño de página + 1 para saber si hay más elementos
+        query.setParameter("authorID", userID);
+        
+        /* [3] EJECUTAR CONSULTA Y OBTENER RESULTADOS */
+        List<Recipe> results = query.getResultList();
+        boolean hasNextPage = results.size() == (pageSize + 1);
+        if (hasNextPage) { results.remove(results.size() - 1); }
+    
+        return new SliceImpl<>(results, PageRequest.of(page, pageSize), hasNextPage);
+    }
+    
     /* ******************** FUNCIONES AUXILIARES ******************** */
     private String[] getWords(String keywords) {
         if (keywords == null || keywords.length() == 0) {

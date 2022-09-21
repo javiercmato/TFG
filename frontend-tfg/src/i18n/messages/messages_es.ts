@@ -100,6 +100,7 @@ const translations = {
 
 
     'users.warning.UserIsBannedByAdmin': 'Usuario ha sido moderado por el administrador',
+    'users.warning.UserHasNoRecipes': 'Usuario no ha subido ninguna receta aún',
 
 
     /* ******************** Ingredients ******************** */

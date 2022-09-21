@@ -106,6 +106,33 @@ export const findRecipes = (name: Nullable<string>,
     appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
 }
 
+export const findRecipesByAuthor = (authorID: string,
+                                    page: number = 0,
+                                    pageSize: number = DEFAULT_PAGE_SIZE,
+                                    onSuccessCallback: CallbackFunction,
+                                    onErrorCallback: CallbackFunction) : void => {
+    // Configurar petición al servicio
+    let endpoint = RECIPES_ENDPOINT + '/findByAuthor' + '?';
+    endpoint += `page=${page}`;
+    endpoint += `&pageSize=${pageSize}`;
+    endpoint += `&authorID=${authorID}`;
+    const requestConfig = configFetchParameters('GET');
+
+    // Añade la cabecera a las imágenes para poder mostrarlas correctamente
+    let onSuccess = (block: Block<RecipeSummaryDTO>) => {
+        block.items.forEach((item: RecipeSummaryDTO) => {
+            if (item.picture !== null) {
+                item.picture = addBase64ImageHeader(item.picture);
+            }
+        })
+
+        onSuccessCallback(block);
+    }
+
+    // Realizar la petición
+    appFetch(endpoint, requestConfig, onSuccess, onErrorCallback);
+}
+
 export const deleteRecipe = (recipeID: string,
                              onSuccessCallback: CallbackFunction,
                              onErrorCallback: CallbackFunction) : void => {

@@ -165,6 +165,15 @@ public class RecipeServiceImpl implements RecipeService {
     }
     
     @Override
+    public Block<Recipe> findRecipesByUserID(UUID userID, int page, int pageSize) {
+        // Busca las recetas en el repositorio
+        Slice<Recipe> recipeSlice = recipeRepo.findByAuthor(userID, page, pageSize);
+    
+        // Devuelve resultados
+        return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
+    }
+    
+    @Override
     public void deleteRecipe(UUID recipeID, UUID userID) throws EntityNotFoundException, PermissionException {
         // Buscar la receta. Si no existe lanza EntityNotFoundException
         Recipe recipe = fetchRecipeByID(recipeID);

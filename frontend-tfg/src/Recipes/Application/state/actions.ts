@@ -45,6 +45,11 @@ export const findRecipesAction = (recipesSearch: Search<RecipeSummaryDTO>) : Rec
     payload: recipesSearch,
 })
 
+export const findRecipesByAuthorAction = (recipesSearch: Search<RecipeSummaryDTO>) : RecipeDispatchType => ({
+    type: actionTypes.FIND_RECIPES_BY_AUTHOR,
+    payload: recipesSearch,
+})
+
 export const clearRecipesSearchAction = () : RecipeDispatchType => ({
     type: actionTypes.CLEAR_RECIPES_SEARCH,
 })
@@ -221,6 +226,34 @@ export const findRecipesAsyncAction = (criteria: SearchCriteria, onSuccessCallba
     // Llamar al servicio y ejecutar los callbacks
     const {name, category, ingredients, page, pageSize} = criteria;
     recipeService.findRecipes(name, category, ingredients, page, pageSize, onSuccess, onError);
+}
+
+export const findRecipesByAuthorAsyncAction = (criteria: SearchCriteria, onSuccessCallback: CallbackFunction): AppThunk => dispatch => {
+    // Función a ejecutar en caso de éxito
+    const onSuccess: CallbackFunction = (block: Block<RecipeSummaryDTO>) : void => {
+        // Encapsula la respuesta
+        const search: Search<RecipeSummaryDTO> = {
+            criteria: criteria,
+            result: block
+        }
+
+        // Actualiza estado de la aplicación
+        dispatch(findRecipesByAuthorAction(search));
+        dispatch(app.actions.loaded());         // Indica operación ya finalizada
+
+        // Ejecuta el callback recibido con el usuario recuperado
+        onSuccessCallback(block);
+    };
+
+    // Función a ejecutar en caso de error (buscar elementos no produce errores, por eso una función vacía
+    const onError = () => {};
+
+    // Indicar que se está realizando una operación
+    dispatch(app.actions.loading());
+
+    // Llamar al servicio y ejecutar los callbacks
+    const {userID, page, pageSize} = criteria;
+    recipeService.findRecipesByAuthor(userID!, page, pageSize, onSuccess, onError);
 }
 
 export const deleteRecipeAsyncAction = (recipeID: string,

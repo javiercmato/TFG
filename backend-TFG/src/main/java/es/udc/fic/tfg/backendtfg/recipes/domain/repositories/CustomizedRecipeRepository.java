@@ -12,4 +12,10 @@ public interface CustomizedRecipeRepository {
      * Busca recetas paginadas por nombre, categoría o lista de ingredientes
      */
     Slice<Recipe> findByCriteria(String name, UUID categoryID, List<UUID> ingredientsID, int page, int pageSize);
+    
+    /**
+     * Busca recetas paginadas creadas por el usuario recibido
+     */
+    Slice<Recipe> findByAuthor(UUID userID, int page, int pageSize);
+    
 }

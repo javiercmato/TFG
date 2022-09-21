@@ -64,6 +64,16 @@ public interface RecipeService {
     Block<Recipe> findRecipesByCriteria(String name, UUID categoryId, List<UUID> ingredientIDsList, int page, int pageSize);
     
     /**
+     * Recupera todas las recetas creadas por el usuario recibido.
+     * Resultados ordenados por fecha de creación descendiente (más recientes primero).
+     * @param userID ID del usuario
+     * @param page Número de página a cargar
+     * @param pageSize Tamaño de página
+     * @return Bloque de recetas del usuario
+     */
+    Block<Recipe> findRecipesByUserID(UUID userID, int page, int pageSize);
+    
+    /**
      * Elimina una receta.
      * @param recipeID ID de la receta a eliminar
      * @param recipeID ID de del usuario que solicita el borrado

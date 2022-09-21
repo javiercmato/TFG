@@ -11,6 +11,7 @@ import {FormattedMessage} from "react-intl";
 import BanUserButton from "./BanUserButton";
 import {FollowButton, FollowButtonProps, socialRedux, UnfollowButton, UnfollowButtonProps} from "../../Social";
 import {User} from "../Domain";
+import UserRecipes, {UserRecipesProps} from "./UserRecipes";
 
 
 const UserProfile = () => {
@@ -52,10 +53,8 @@ const UserProfile = () => {
             setBackendErrors(error);
         }
 
-            dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
-                currentUserID, targetUserID, () => {}, () => {})
-            );
         dispatch(userRedux.actions.findUserByIDAsyncAction(userID!, onSuccess, onError));
+        dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(currentUserID, targetUserID, () => {}, () => {}));
 
         // Libera del store los datos del perfil visitado
         return () => {
@@ -83,6 +82,10 @@ const UserProfile = () => {
                 currentUserID, targetUserID, () => {}, () => {})
             );
         },
+    }
+
+    let userRecipesProps: UserRecipesProps = {
+        userID: String(userID),
     }
 
     return (
@@ -203,7 +206,7 @@ const UserProfile = () => {
 
                     {/* Contenido del perfil */}
                     <Card.Body>
-
+                        <UserRecipes {...userRecipesProps}/>
                     </Card.Body>
 
                 </Card>
