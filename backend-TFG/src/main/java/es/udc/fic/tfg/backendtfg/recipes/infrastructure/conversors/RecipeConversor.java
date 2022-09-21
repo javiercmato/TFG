@@ -3,6 +3,7 @@ package es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.infrastructure.conversors.CommentConversor;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.conversors.UserConversor;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -96,6 +97,7 @@ public class RecipeConversor {
         }
         dto.setIngredientsCount(entity.getIngredients().size());
         dto.setAverageRating(entity.getAverageRating());
+        dto.setAuthor(UserConversor.toUserSummaryDTO(entity.getAuthor()));
         
         return dto;
     }

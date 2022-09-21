@@ -1,3 +1,5 @@
+import {UserSummaryDTO} from "../../Users";
+
 interface RecipeSummaryDTO {
     id: string,
     categoryID: string,
@@ -9,6 +11,7 @@ interface RecipeSummaryDTO {
     diners: Nullable<number>,
     ingredientsCount: number,
     averageRating: number,
+    author: UserSummaryDTO,
 }
 
 

@@ -20,6 +20,7 @@ const UserAvatar = ({imageB64, isThumbnail, userNickname, round}: Props) => {
 
     return (
         <Image
+            style={{maxWidth: "150px", maxHeight: "150px"}}
             src={imageB64}
             thumbnail={isThumbnail || false}
         />

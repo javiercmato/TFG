@@ -18,7 +18,7 @@ const UserProfile = () => {
     const navigate = useNavigate();
     let {userID} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
-    const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
+    const [showBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
     const [targetUserID, setTargetUserID] = useState<string>('');
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
@@ -98,7 +98,7 @@ const UserProfile = () => {
                     border="light"
                 >
                     {/* Mostrar alerta si usuario está baneado */}
-                    {(isSearchedUserBannedByAdmin && shouldBannedUserAlert) &&
+                    {(isSearchedUserBannedByAdmin && showBannedUserAlert) &&
                         <Alert variant="warning"
                             dismissible
                             onClose={() => setShowBannedUserAlert(false)}
@@ -109,7 +109,7 @@ const UserProfile = () => {
 
                     {/* Datos del usuario */}
                     <Card.Header>
-                        <Row style={cardHeaderRow}>
+                        <Row style={cardHeaderRow} md={4}>
                             {/* Avatar */}
                             <Col>
                                 {(searchedUser) &&
@@ -122,7 +122,7 @@ const UserProfile = () => {
                             </Col>
 
                             {/* Información del usuario */}
-                            <Col style={userDataCol}>
+                            <Col style={userDataCol} md={4}>
                                 {/* Nombre */}
                                 <Row>
                                     <h3>{searchedUser.name + ' ' + searchedUser.surname}</h3>
@@ -140,26 +140,28 @@ const UserProfile = () => {
                             </Col>
 
                             {/* Seguir usuario */}
-                            <Col md={2}>
-                                {(!isCurrentUserProfile && isUserLoggedIn) &&
-                                    <Row>
-                                        {(isUserSearchFollowedByUser) ?
-                                            <UnfollowButton {...unfollowButtonProps} />
-                                            :
-                                            <FollowButton {...followButtonProps} />
-                                        }
-                                    </Row>
-                                }
+                            {(!isSearchedUserBannedByAdmin) &&
+                                <Col md={2}>
+                                    {(!isCurrentUserProfile && isUserLoggedIn) &&
+                                        <Row>
+                                            {(isUserSearchFollowedByUser) ?
+                                                <UnfollowButton {...unfollowButtonProps} />
+                                                :
+                                                <FollowButton {...followButtonProps} />
+                                            }
+                                        </Row>
+                                    }
 
-                                {/* Botón para ver seguidores*/}
-                                <Row>
-                                    <Button
-                                        onClick={() => navigate(`/users/${userID}/followers`)}
-                                    >
-                                        <FormattedMessage id='social.components.Followers.button' />
-                                    </Button>
-                                </Row>
-                            </Col>
+                                    {/* Botón para ver seguidores*/}
+                                    <Row>
+                                        <Button
+                                            onClick={() => navigate(`/users/${userID}/followers`)}
+                                        >
+                                            <FormattedMessage id='social.components.Followers.button' />
+                                        </Button>
+                                    </Row>
+                                </Col>
+                            }
 
                             {/* Botones */}
                             <Col md={2} style={userActionsCol}>

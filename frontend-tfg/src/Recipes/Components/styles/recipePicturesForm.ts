@@ -8,7 +8,9 @@ export const carouselRow: CSSProperties = {
 
 export const carouselPicture: CSSProperties = {
     display: "block",
-    maxHeight: "auto",
+    maxWidth: "400px",
+    maxHeight: "400px",
+    //maxHeight: "auto",
     width: "auto",
     overflow: "hidden",
 }
