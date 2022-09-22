@@ -4,7 +4,7 @@ export const card: CSSProperties = {
     margin: "10px",
     padding: "10px",
     textAlign: "center",
-    maxWidth: "47%",
+    maxWidth: "45%",
 }
 
 export const cardHeader: CSSProperties = {
