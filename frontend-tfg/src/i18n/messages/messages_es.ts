@@ -1,6 +1,6 @@
 const translations = {
     /* ******************** proxy ******************** */
-    'proxy.exceptions.Error': 'Error inesperado',
+    'proxy.exceptions.Error': 'Se produjo un error inesperado',
     'proxy.exceptions.NetworkErrorException': 'Fallo en la conexión con el servidor',
     'proxy.exceptions.ServiceException': 'Error en el servicio',
 
@@ -100,6 +100,7 @@ const translations = {
 
 
     'users.warning.UserIsBannedByAdmin': 'Usuario ha sido moderado por el administrador',
+    'users.warning.UserHasNoRecipes': 'Usuario no ha subido ninguna receta aún',
 
 
     /* ******************** Ingredients ******************** */

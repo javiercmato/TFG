@@ -5,10 +5,11 @@ import {PrivateListSelector, userRedux} from "../../Users";
 import {Alert, Button, Modal} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import {PrivateListSelectorProps} from "../../Users/Components/PrivateListSelector";
+import {ErrorDto} from "../../App";
 
 interface Props {
     recipe: Recipe,
-    onErrorCallback: CallbackFunction,
+    onErrorCallback: (error: ErrorDto) => void,
 }
 
 const AddToPrivateListButton = ({recipe, onErrorCallback}: Props) => {
@@ -16,16 +17,21 @@ const AddToPrivateListButton = ({recipe, onErrorCallback}: Props) => {
     const userID = useAppSelector(userRedux.selectors.selectUserID);
     const isLoggedIn = useAppSelector(userRedux.selectors.isLoggedIn);
     const [listID, setListId] = useState<string>('');
-    const [show, setShow] = useState<boolean>(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
 
 
     const handleModalAddButton = (e: any) => {
         e.preventDefault();
 
         let onSuccess: NoArgsCallbackFunction = () => {
-            setShow(false);
+            console.log("añadido con éxito")
+            setShowModal(false);
         };
-        let onErrors: CallbackFunction = (err) => {onErrorCallback(err)};
+        let onErrors: CallbackFunction = (err) => {
+            console.log("error añadidendo");
+            onErrorCallback(err);
+            setShowModal(false);
+        };
         dispatch(userRedux.actions.addRecipeToPrivateListAsyncAction(userID, listID, recipe.id, onSuccess, onErrors));
     }
 
@@ -38,20 +44,20 @@ const AddToPrivateListButton = ({recipe, onErrorCallback}: Props) => {
         onChangeCallback: handlePrivateListChange,
     }
 
+
     return (
         <>
-            <Button onClick={() => setShow(true)}>
+            <Button onClick={() => setShowModal(true)}>
                 <FormattedMessage id="recipes.components.AddToPrivateListButton.text" />
             </Button>
 
             <Modal
-                show={show}
-                onHide={() => setShow(false)}
+                show={showModal}
+                onHide={() => setShowModal(false)}
             >
                 <Modal.Header closeButton />
                 <Modal.Body>
                     {(isLoggedIn) ?
-
                         <PrivateListSelector {...privateListSelectorProps} />
                     :
                         <Alert variant="danger">
@@ -65,7 +71,6 @@ const AddToPrivateListButton = ({recipe, onErrorCallback}: Props) => {
                         <FormattedMessage id="common.buttons.add" />
                     </Button>
                 </Modal.Footer>
-
             </Modal>
         </>
     );

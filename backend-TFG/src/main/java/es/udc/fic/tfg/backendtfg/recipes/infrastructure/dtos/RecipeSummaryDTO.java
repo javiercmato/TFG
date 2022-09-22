@@ -1,6 +1,7 @@
 package es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import es.udc.fic.tfg.backendtfg.users.infrastructure.dtos.UserSummaryDTO;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -36,4 +37,7 @@ public class RecipeSummaryDTO {
     private Integer ingredientsCount;
     
     private Float averageRating;
+    
+    @NotNull
+    private UserSummaryDTO author;
 }

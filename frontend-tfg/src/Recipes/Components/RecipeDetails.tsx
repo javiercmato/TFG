@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Alert, Button, Carousel, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Button, Carousel, Col, Container, Row} from "react-bootstrap";
 import {
     RecipeData,
     RecipeDataProps,
@@ -14,12 +14,14 @@ import {
 } from "./index";
 import {userRedux} from "../../Users";
 import {FormattedMessage} from "react-intl";
-import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
 import CommentForm from "./Comments/CommentForm";
 import {RateRecipeParamsDTO} from "../Infrastructure";
+import Picture from "./Picture";
+import {RecipePicture} from "../Domain";
+import {container, recipeButtons, row} from './styles/recipeDetails';
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -31,16 +33,19 @@ const RecipeDetails = () => {
     const userID = useAppSelector(userRedux.selectors.selectUserID);
     const isRecipeBanned = useAppSelector(recipesRedux.selectors.isBannedByAdmin);
 
+    const isRecipeOwner = (isLoggedIn && recipeData?.author.userID === userID);
 
     const handleDeleteClick = (e: any) => {
         e.preventDefault();
 
-        let onSuccess = () => navigate('/recipes');
+        let onSuccess = () => {
+            navigate('/recipes')
+        };
         let onError = (error: ErrorDto) => setBackendErrors(error);
         dispatch(recipesRedux.actions.deleteRecipeAsyncAction(String(recipeID), onSuccess, onError));
     }
 
-    const handleBanCommentError = (error: ErrorDto) => setBackendErrors(error);
+    const handleError = (error: ErrorDto) => setBackendErrors(error);
 
     const handleRateRecipe = (value: number) => {
         let rateParams: RateRecipeParamsDTO = {
@@ -74,7 +79,7 @@ const RecipeDetails = () => {
 
     let addToListProps: AddToPrivateListButtonProps = {
         recipe: recipeData!,
-        onErrorCallback: handleBanCommentError,
+        onErrorCallback: handleError,
     }
 
 
@@ -107,12 +112,17 @@ const RecipeDetails = () => {
     // Mostrar aviso si la receta está baneada por el administrador
     if (isRecipeBanned) {
         return (
-            <>
-                <BanRecipeButton {...banButtonProps} />
-                <Alert variant="warning">
-                    <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
-                </Alert>
-            </>
+            <Row>
+                <Col md={9}>
+                    <Alert variant="warning">
+                        <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
+                    </Alert>
+                </Col>
+
+                <Col>
+                    <BanRecipeButton {...banButtonProps} />
+                </Col>
+            </Row>
         )
     }
 
@@ -123,21 +133,23 @@ const RecipeDetails = () => {
                 onCloseCallback={() => setBackendErrors(null)}
             />
 
-            <Container>
+            <Container style={container}>
                 {/* Borrar receta */}
-                <Row>
-                    <Button variant="danger" onClick={handleDeleteClick}>
-                        <span>
-                            <FaTrash />
-                            <FormattedMessage id="common.buttons.delete" />
-                        </span>
-                    </Button>
-                </Row>
+                {(isRecipeOwner) &&
+                    <Row style={row}>
+                        <Button variant="danger" onClick={handleDeleteClick}>
+                            <span>
+                                <FaTrash />
+                                <FormattedMessage id="common.buttons.delete" />
+                            </span>
+                        </Button>
+                    </Row>
+                }
 
                 {/* Nombre y descripción*/}
-                <Row>
+                <Row style={row}>
                     <Col>
-                        <Row>
+                        <Row style={row}>
                             <Col md={10}>
                                 <h2>{recipeData?.name}</h2>
                             </Col>
@@ -146,24 +158,26 @@ const RecipeDetails = () => {
                                     {recipeData.author.nickname}
                                 </Link>
                             </Col>
-
                         </Row>
-                        <Row>
+
+                        <br />
+
+                        <Row style={row}>
                             <span className="border border-dark">
                                 {recipeData?.description}
                             </span>
                         </Row>
                     </Col>
 
-                    {/* Botones para editar y banear receta */}
-                    <Col md={(isLoggedIn) ? 3: 0}>
+                    {/* Botones para añadir a lista privada y banear receta */}
+                    <Col md={(isLoggedIn) ? 3: 0} style={recipeButtons}>
                         <BanRecipeButton {...banButtonProps} />
                         <AddToPrivateListButton {...addToListProps} />
                     </Col>
                 </Row>
 
                 {/* Información básica de la receta */}
-                <Row>
+                <Row style={row}>
                     {/* Ingredientes de la receta */}
                     <Col>
                         <h4>
@@ -174,23 +188,27 @@ const RecipeDetails = () => {
 
                     {/* Categoría, datos, votación y añadir a lista privada */}
                     <Col>
-                        <Row>
-                            <RecipeData {...recipeDataProps} />
+                        <Row style={row}>
+                            <RecipeData {...recipeDataProps}/>
                         </Row>
 
                     </Col>
                 </Row>
 
+                <br/>
+
                 {/* Pasos de preparación */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.steps" />
                     </h4>
                     <RecipeSteps {...recipeStepsProps} />
                 </Row>
 
+                <br />
+
                 {/* Fotos de la receta */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.pictures" />
                     </h4>
@@ -200,21 +218,21 @@ const RecipeDetails = () => {
                         </Alert>
                         :
                         <Carousel>
-                            {recipeData.pictures?.map((picture) =>
+                            {recipeData.pictures?.map((picture: RecipePicture) =>
                                 <Carousel.Item key={picture.order}>
-                                    <Image
-                                        src={picture.pictureData}
-                                        style={carouselPicture}
-                                    />
+                                    <div style={{minHeight: "400px", minWidth: "400px"}}>
+                                        <Picture b64String={picture.pictureData} bigSize={true} />
+                                    </div>
                                 </Carousel.Item>
                             )}
                         </Carousel>
                     }
-
                 </Row>
 
+                <br />
+
                 {/* Comentarios */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.comments" />
                     </h4>

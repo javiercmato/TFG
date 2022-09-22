@@ -1,14 +1,22 @@
-import {useAppSelector} from "../../store";
+import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
 import {Form} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
+import {useEffect} from "react";
 
 interface Props {
     onChangeCallback: any,
 }
 
 const CategorySelector = ({onChangeCallback}: Props) => {
+    const dispatch = useAppDispatch();
     const categories = useAppSelector(recipesRedux.selectors.selectCategories);
+
+    useEffect(() => {
+        let onSuccess = () => {};
+        let onError = () => {};
+        dispatch(recipesRedux.actions.getCategoriesAsyncAction(onSuccess, onError));
+    }, [dispatch]);
 
     return (
         <Form.Select

@@ -15,3 +15,5 @@ export type {RecipeSummaryDTO} from './Infrastructure';
 export {RecipesPage} from './Components';
 export {CreateRecipeForm} from './Components';
 export {RecipeDetails} from './Components';
+export {RecipeCard} from './Components';
+export {Picture} from './Components';

@@ -83,6 +83,9 @@ const FindIngredientsResults = () => {
                 </ListGroup>
             </Row>
 
+            <br />
+
+
             <Row style={pagerRow}>
                 <Col>
                     <div className={"d-flex justify-content-center"}>

@@ -68,7 +68,7 @@ public class IngredientServiceImpl implements IngredientService {
         
         // Crear tipo de ingrediente
         IngredientType type = new IngredientType();
-        type.setName(ingredientTypeName);
+        type.setName(ingredientTypeName.toUpperCase());
         
         // Guardar datos y devolver instancia
         return ingredientTypeRepo.save(type);
@@ -83,7 +83,7 @@ public class IngredientServiceImpl implements IngredientService {
         Sort ascNameSort = Sort.by(Direction.ASC, "name");
         Iterable<IngredientType> typesIterable = ingredientTypeRepo.findAll(ascNameSort);
         // Crea una lista de resultados
-        typesIterable.forEach( (t) -> results.add(t));
+        typesIterable.forEach(results::add);
         
         return results;
     }

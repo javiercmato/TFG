@@ -1,10 +1,10 @@
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Alert, Col, Container, Row} from "react-bootstrap";
+import {Alert, Container, Row} from "react-bootstrap";
 import {FormattedMessage} from "react-intl";
 import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
 import {RecipeCardProps} from "../../Ingredients/Components";
-import RecipeCard from "../../Ingredients/Components/RecipeCard";
+import RecipeCard from "./RecipeCard";
 import {Pager, PagerProps, SearchCriteria} from "../../App";
 import {container} from './styles/findRecipesResults'
 
@@ -69,14 +69,9 @@ const FindRecipesResults = () => {
                 })}
             </Row>
 
+
             {/* Paginación */}
-            <Row>
-                <Col>
-                    <div className={"d-flex justify-content-center"}>
-                        <Pager {...pagerProps} />
-                    </div>
-                </Col>
-            </Row>
+            <Pager {...pagerProps} />
         </Container>
     )
 }

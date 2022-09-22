@@ -4,7 +4,9 @@ import {
     AddCommentActionType,
     BanCommentActionType,
     BanRecipeActionType,
+    CreateCategoryActionType,
     FindRecipesActionType,
+    FindRecipesByAuthorActionType,
     GetCategoriesActionType,
     GetRecipeCommentsActionType,
     GetRecipeDetailsActionType,
@@ -22,9 +24,9 @@ const categories = (state: Array<Category> = initialState.categories,
                     action: RecipeDispatchType): Array<Category> => {
     switch (action.type) {
         case actionTypes.CREATE_CATEGORY: {
-            //let payload: Category = (action as CreateCategoryActionType).payload;
+            let payload: Category = (action as CreateCategoryActionType).payload;
 
-            return state;
+            return [...state, payload];
         }
 
         case actionTypes.GET_CATEGORIES: {
@@ -122,6 +124,12 @@ const recipesSearch = (state: Search<RecipeSummaryDTO> = initialState.recipeSear
     switch (action.type) {
         case actionTypes.FIND_RECIPES: {
             let search: Search<RecipeSummaryDTO> = (action as FindRecipesActionType).payload;
+
+            return search;
+        }
+
+        case actionTypes.FIND_RECIPES_BY_AUTHOR: {
+            let search: Search<RecipeSummaryDTO> = (action as FindRecipesByAuthorActionType).payload;
 
             return search;
         }

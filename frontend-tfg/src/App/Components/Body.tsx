@@ -1,7 +1,6 @@
 import {Route, Routes} from 'react-router-dom';
 import {Container} from "react-bootstrap";
 import AppGlobalComponents from "./AppGlobalComponents";
-import Home from "./Home";
 import {
     ChangePassword,
     Login,
@@ -27,7 +26,7 @@ const Body = () => {
             <br/>
             <AppGlobalComponents />
             <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/" element={<RecipesPage />} />
                 {/* ****************************** USERS ****************************** */}
                 <Route path="/signUp" element={<SignUp />} />
                 <Route path="/login" element={<Login />} />
@@ -47,7 +46,7 @@ const Body = () => {
 
 
                 {/* ****************************** DEFAULT ROUTE ****************************** */}
-                <Route element={<Home />} />
+                <Route element={<RecipesPage />} />
             </Routes>
         </Container>
     )

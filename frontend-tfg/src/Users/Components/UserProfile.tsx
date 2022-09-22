@@ -11,6 +11,7 @@ import {FormattedMessage} from "react-intl";
 import BanUserButton from "./BanUserButton";
 import {FollowButton, FollowButtonProps, socialRedux, UnfollowButton, UnfollowButtonProps} from "../../Social";
 import {User} from "../Domain";
+import UserRecipes, {UserRecipesProps} from "./UserRecipes";
 
 
 const UserProfile = () => {
@@ -18,7 +19,7 @@ const UserProfile = () => {
     const navigate = useNavigate();
     let {userID} = useParams();
     const [backendErrors, setBackendErrors] = useState<Nullable<ErrorDto>>(null);
-    const [shouldBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
+    const [showBannedUserAlert, setShowBannedUserAlert] = useState<boolean>(true);
     const [targetUserID, setTargetUserID] = useState<string>('');
     let isUserLoggedIn = useSelector(userRedux.selectors.isLoggedIn);
     let loggedUser = useSelector(userRedux.selectors.selectCurrentUser);
@@ -34,8 +35,8 @@ const UserProfile = () => {
         e.preventDefault();
 
         let onSuccess: NoArgsCallbackFunction = () => {
-            dispatch(userRedux.actions.logoutAsyncAction());
             navigate("/");
+            dispatch(userRedux.actions.logoutAsyncAction());
         };
         let onErrors: CallbackFunction = (err) => {setBackendErrors(err)};
 
@@ -52,10 +53,13 @@ const UserProfile = () => {
             setBackendErrors(error);
         }
 
-            dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(
-                currentUserID, targetUserID, () => {}, () => {})
-            );
         dispatch(userRedux.actions.findUserByIDAsyncAction(userID!, onSuccess, onError));
+        dispatch(socialRedux.actions.checkUserFollowsTargetAsyncAction(currentUserID, targetUserID, () => {}, () => {}));
+
+        // Libera del store los datos del perfil visitado
+        return () => {
+            dispatch(userRedux.actions.clearUserDetailsAction());
+        }
     }, [userID, targetUserID, dispatch]);
 
 
@@ -80,6 +84,10 @@ const UserProfile = () => {
         },
     }
 
+    let userRecipesProps: UserRecipesProps = {
+        userID: String(userID),
+    }
+
     return (
         <div>
             <Errors
@@ -93,7 +101,7 @@ const UserProfile = () => {
                     border="light"
                 >
                     {/* Mostrar alerta si usuario está baneado */}
-                    {(isSearchedUserBannedByAdmin && shouldBannedUserAlert) &&
+                    {(isSearchedUserBannedByAdmin && showBannedUserAlert) &&
                         <Alert variant="warning"
                             dismissible
                             onClose={() => setShowBannedUserAlert(false)}
@@ -104,7 +112,7 @@ const UserProfile = () => {
 
                     {/* Datos del usuario */}
                     <Card.Header>
-                        <Row style={cardHeaderRow}>
+                        <Row style={cardHeaderRow} md={4}>
                             {/* Avatar */}
                             <Col>
                                 {(searchedUser) &&
@@ -117,7 +125,7 @@ const UserProfile = () => {
                             </Col>
 
                             {/* Información del usuario */}
-                            <Col style={userDataCol}>
+                            <Col style={userDataCol} md={4}>
                                 {/* Nombre */}
                                 <Row>
                                     <h3>{searchedUser.name + ' ' + searchedUser.surname}</h3>
@@ -135,26 +143,28 @@ const UserProfile = () => {
                             </Col>
 
                             {/* Seguir usuario */}
-                            <Col md={2}>
-                                {(!isCurrentUserProfile && isUserLoggedIn) &&
-                                    <Row>
-                                        {(isUserSearchFollowedByUser) ?
-                                            <UnfollowButton {...unfollowButtonProps} />
-                                            :
-                                            <FollowButton {...followButtonProps} />
-                                        }
-                                    </Row>
-                                }
+                            {(!isSearchedUserBannedByAdmin) &&
+                                <Col md={2}>
+                                    {(!isCurrentUserProfile && isUserLoggedIn) &&
+                                        <Row>
+                                            {(isUserSearchFollowedByUser) ?
+                                                <UnfollowButton {...unfollowButtonProps} />
+                                                :
+                                                <FollowButton {...followButtonProps} />
+                                            }
+                                        </Row>
+                                    }
 
-                                {/* Botón para ver seguidores*/}
-                                <Row>
-                                    <Button
-                                        onClick={() => navigate(`/users/${userID}/followers`)}
-                                    >
-                                        <FormattedMessage id='social.components.Followers.button' />
-                                    </Button>
-                                </Row>
-                            </Col>
+                                    {/* Botón para ver seguidores*/}
+                                    <Row>
+                                        <Button
+                                            onClick={() => navigate(`/users/${userID}/followers`)}
+                                        >
+                                            <FormattedMessage id='social.components.Followers.button' />
+                                        </Button>
+                                    </Row>
+                                </Col>
+                            }
 
                             {/* Botones */}
                             <Col md={2} style={userActionsCol}>
@@ -194,9 +204,10 @@ const UserProfile = () => {
                         </Row>
                     </Card.Header>
 
+
                     {/* Contenido del perfil */}
                     <Card.Body>
-
+                        <UserRecipes {...userRecipesProps}/>
                     </Card.Body>
 
                 </Card>

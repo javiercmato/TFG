@@ -4,6 +4,7 @@ import {FormattedMessage} from "react-intl";
 import CommentInput from "./CommentInput";
 import CommentBox from "./CommentBox";
 import {ErrorDto} from "../../../App";
+import {commentsForm} from "../styles/recipeDetails";
 
 
 interface Props {
@@ -16,10 +17,12 @@ const CommentForm = ({comments, onErrorCallback}: Props) => {
 
 
     return (
-        <Container>
+        <Container style={commentsForm}>
             <Row>
                 <CommentInput onErrorCallback={onErrorCallback}/>
             </Row>
+
+            <br />
 
             <Row>
                 {(hasComments) ?

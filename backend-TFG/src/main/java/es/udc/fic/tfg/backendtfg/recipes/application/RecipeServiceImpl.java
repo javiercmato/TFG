@@ -6,10 +6,12 @@ import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.Ingredient;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.entities.MeasureUnit;
 import es.udc.fic.tfg.backendtfg.ingredients.domain.repositories.IngredientRepository;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.*;
+import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeIngredientsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.repositories.*;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.dtos.*;
 import es.udc.fic.tfg.backendtfg.social.application.SocialService;
+import es.udc.fic.tfg.backendtfg.social.domain.entities.Comment;
 import es.udc.fic.tfg.backendtfg.social.domain.entities.Follow;
 import es.udc.fic.tfg.backendtfg.users.application.utils.UserUtils;
 import es.udc.fic.tfg.backendtfg.users.domain.entities.User;
@@ -69,7 +71,7 @@ public class RecipeServiceImpl implements RecipeService {
         
         // Crear categoría
         Category category = new Category();
-        category.setName(categoryName);
+        category.setName(categoryName.toUpperCase());
         
         // Guardar datos y devolver instancia
         return categoryRepo.save(category);
@@ -91,7 +93,7 @@ public class RecipeServiceImpl implements RecipeService {
     
     @Override
     public Recipe createRecipe(CreateRecipeParamsDTO params)
-            throws EmptyRecipeStepsListException, EntityNotFoundException {
+            throws EmptyRecipeStepsListException, EntityNotFoundException, EmptyRecipeIngredientsListException {
         // Buscar el usuario. Si no existe lanza EntityNotFoundException
         User author = userUtils.fetchUserByID(params.getAuthorID());
         
@@ -124,17 +126,13 @@ public class RecipeServiceImpl implements RecipeService {
         
         // Notificar a los seguidores de que hay una nueva receta
         for ( Follow follower : author.getFollowers() ) {
-            try {
-                // Crear título y cuerpo del mensaje
-                String title = messageSource.getMessage(NEW_RECIPE_TITLE, null, locale);
-                String message = messageSource.getMessage(NEW_RECIPE_BODY, new Object[] {author.getNickname()}, locale);
-                UUID followerID = follower.getId().getFollowing();
-                
-                // Crear y guardar notificación
-                socialService.createNotification(title, message, followerID);
-            } catch ( EntityNotFoundException e ) {
-                throw new RuntimeException(e);
-            }
+            // Crear título y cuerpo del mensaje
+            String title = messageSource.getMessage(NEW_RECIPE_TITLE, null, locale);
+            String message = messageSource.getMessage(NEW_RECIPE_BODY, new Object[] {author.getNickname()}, locale);
+            UUID followerID = follower.getId().getFollowing();
+            
+            // Crear y guardar notificación
+            socialService.createNotification(title, message, followerID);
         }
         
         // Devolver instancia
@@ -151,7 +149,7 @@ public class RecipeServiceImpl implements RecipeService {
         
         // Devolver la receta
         Recipe recipe = optionalRecipe.get();
-        recipe.getComments().forEach((c) -> c.getText());
+        recipe.getComments().forEach(Comment::getText);
         
         return recipe;
     }
@@ -162,6 +160,15 @@ public class RecipeServiceImpl implements RecipeService {
         // Busca las recetas en el repositorio
         Slice<Recipe> recipeSlice = recipeRepo.findByCriteria(name, categoryId, ingredientIDsList, page, pageSize);
         
+        // Devuelve resultados
+        return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
+    }
+    
+    @Override
+    public Block<Recipe> findRecipesByUserID(UUID userID, int page, int pageSize) {
+        // Busca las recetas en el repositorio
+        Slice<Recipe> recipeSlice = recipeRepo.findByAuthor(userID, page, pageSize);
+    
         // Devuelve resultados
         return new Block<>(recipeSlice.getContent(), recipeSlice.hasNext(), recipeSlice.getNumberOfElements());
     }
@@ -274,7 +281,12 @@ public class RecipeServiceImpl implements RecipeService {
     
     /** Asigna los ingredientes, junto a sus cantidades y unidades de medida, a la receta recibida.
      * Si un ingrediente no existe lanza EntityNotFoundException */
-    private void attachIngredientsToRecipe(List<CreateRecipeIngredientParamsDTO> ingredientParams, Recipe recipe) throws EntityNotFoundException {
+    private void attachIngredientsToRecipe(List<CreateRecipeIngredientParamsDTO> ingredientParams, Recipe recipe)
+            throws EntityNotFoundException, EmptyRecipeIngredientsListException {
+        // Si no se recibe ningún ingrediente, se lanza EmptyRecipeIngrediensListException
+        if (ingredientParams.isEmpty())
+            throw new EmptyRecipeIngredientsListException();
+        
         // Obtener los ID de los ingredientes y ordenarlos
         List<UUID> ingredientIds = ingredientParams.stream()
                                                    .map(CreateRecipeIngredientParamsDTO::getIngredientID)

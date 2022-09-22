@@ -3,16 +3,19 @@ import {useAppDispatch, useAppSelector} from "../../../store";
 import {ChangeEvent, FormEvent, useState} from "react";
 import {Alert, Button, Col, FormControl, InputGroup, Modal, Row} from "react-bootstrap";
 import {FaSearch} from "react-icons/fa";
-import CreateIngredient from "../../../Ingredients/Components/CreateIngredient";
+import CreateIngredient, {CreateIngredientProps} from "../../../Ingredients/Components/CreateIngredient";
 import {findRecipeIngredientTitle} from "../styles/findRecipeIngredient";
-import {defaultSearchCriteria, SearchCriteria} from "../../../App";
+import {defaultSearchCriteria, ErrorDto, SearchCriteria} from "../../../App";
 import {ingredientsRedux} from "../../../Ingredients";
 import {userRedux} from "../../../Users";
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
+interface Props {
+    onBackendError: (error: ErrorDto) => void,
+}
 
-const FindRecipeIngredient = () => {
+const FindRecipeIngredient = ({onBackendError}: Props) => {
     const dispatch = useAppDispatch();
     const intl = useIntl();
     const [queryName, setQueryName] = useState<string>('');         // Nombre que se usará para la búsqueda
@@ -35,6 +38,10 @@ const FindRecipeIngredient = () => {
             ingredientsRedux.actions.findIngredientsAsyncAction(criteria, onSuccess)
             : ingredientsRedux.actions.findAllIngredientsAsyncAction(criteria, onSuccess);
         dispatch(action);
+    }
+
+    let createIngredientProps: CreateIngredientProps = {
+        onBackendError: onBackendError,
     }
 
     return (
@@ -70,7 +77,7 @@ const FindRecipeIngredient = () => {
                 <Modal.Body>
                     {/* Si está logeado muestra formulario. Sino avisa de que no puede crear ingrediente */}
                     {(isLoggedIn) ?
-                        <CreateIngredient />
+                        <CreateIngredient {...createIngredientProps} />
                         : <Alert variant="danger">
                             <FormattedMessage id="common.alerts.notLoggedIn" />
                         </Alert>
@@ -81,4 +88,5 @@ const FindRecipeIngredient = () => {
     )
 }
 
+export type {Props as FindRecipeIngredientProps};
 export default FindRecipeIngredient;

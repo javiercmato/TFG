@@ -7,6 +7,7 @@ import es.udc.fic.tfg.backendtfg.common.infrastructure.dtos.ErrorsDTO;
 import es.udc.fic.tfg.backendtfg.recipes.application.RecipeService;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Category;
 import es.udc.fic.tfg.backendtfg.recipes.domain.entities.Recipe;
+import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeIngredientsListException;
 import es.udc.fic.tfg.backendtfg.recipes.domain.exceptions.EmptyRecipeStepsListException;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.CategoryConversor;
 import es.udc.fic.tfg.backendtfg.recipes.infrastructure.conversors.RecipeConversor;
@@ -37,6 +38,7 @@ public class RecipeController {
     /* ******************** TRADUCCIONES DE EXCEPCIONES ******************** */
     // Referencias a los errores en los ficheros de i18n
     public static final String EMPTY_RECIPE_STEPS_EXCEPTION_KEY         = "recipes.domain.exceptions.EmptyRecipeStepsException";
+    public static final String EMPTY_RECIPE_INGREDIENTS_EXCEPTION_KEY         = "recipes.domain.exceptions.EmptyRecipeIngredientsException";
     
     
     /* ******************** MANEJADORES DE EXCEPCIONES ******************** */
@@ -48,6 +50,17 @@ public class RecipeController {
                 EMPTY_RECIPE_STEPS_EXCEPTION_KEY, null, EMPTY_RECIPE_STEPS_EXCEPTION_KEY, locale
         );
     
+        return new ErrorsDTO(errorMessage);
+    }
+    
+    @ExceptionHandler(EmptyRecipeIngredientsListException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)         // 400
+    @ResponseBody
+    public ErrorsDTO handleEmptyRecipeIngredientsListExceptionn(EmptyRecipeIngredientsListException exception, Locale locale) {
+        String errorMessage = messageSource.getMessage(
+                EMPTY_RECIPE_INGREDIENTS_EXCEPTION_KEY, null, EMPTY_RECIPE_INGREDIENTS_EXCEPTION_KEY, locale
+        );
+        
         return new ErrorsDTO(errorMessage);
     }
     
@@ -85,7 +98,7 @@ public class RecipeController {
     @ResponseStatus(HttpStatus.CREATED)
     public RecipeDTO createRecipe(@Validated @RequestBody CreateRecipeParamsDTO params,
                                   @RequestAttribute("userID") UUID userID)
-            throws EmptyRecipeStepsListException, EntityNotFoundException, PermissionException {
+            throws EmptyRecipeStepsListException, EntityNotFoundException, PermissionException, EmptyRecipeIngredientsListException {
         // Comprobar que el usuario actual y el usuario objetivo son el mismo
         if (!userControllerUtils.doUsersMatch(userID, params.getAuthorID()))
             throw new PermissionException();
@@ -118,6 +131,22 @@ public class RecipeController {
                                                   @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         // Llamada al servicio
         Block<Recipe> recipesBlock = recipeService.findRecipesByCriteria(name, categoryID, ingredientIdList, page, pageSize);
+        
+        // Generar respuesta
+        List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesBlock.getItems());
+        
+        return createBlock(recipeSummaryDTOList, recipesBlock.hasMoreItems(), recipesBlock.getItemsCount());
+    }
+    
+    @GetMapping(
+            path = "findByAuthor",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public BlockDTO<RecipeSummaryDTO> findRecipesByAuthor(@RequestParam(value = "authorID") UUID authorID,
+                                                          @RequestParam("page") int page,
+                                                          @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+        // Llamada al servicio
+        Block<Recipe> recipesBlock = recipeService.findRecipesByUserID(authorID, page, pageSize);
         
         // Generar respuesta
         List<RecipeSummaryDTO> recipeSummaryDTOList = RecipeConversor.toRecipeSummaryListDTO(recipesBlock.getItems());

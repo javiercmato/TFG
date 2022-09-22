@@ -9,7 +9,11 @@ import {cardHeader} from "./styles/createIngredientType";
 import {FaPlus} from "react-icons/fa";
 import {ingredientsRedux} from "../Application";
 
-const CreateIngredientType = () => {
+interface Props {
+    onBackendError: (error: ErrorDto) => void,
+}
+
+const CreateIngredientType = ({onBackendError}: Props) => {
     const dispatch = useAppDispatch();
     const intl = useIntl();
     const [name, setName] = useState<string>('');
@@ -22,6 +26,7 @@ const CreateIngredientType = () => {
         let onSuccess = () => {}
         let onError = (error: ErrorDto) => {
             setBackendErrors(error);
+            (backendErrors) && onBackendError(error);
         }
 
         dispatch(ingredientsRedux.actions.createIngredientTypeAsyncAction(name, onSuccess, onError));
@@ -64,3 +69,4 @@ const CreateIngredientType = () => {
 }
 
 export default CreateIngredientType;
+export type {Props as CreateIngredientTypeProps};

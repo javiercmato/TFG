@@ -74,6 +74,9 @@ export const deletePrivateListAction = () : UserDispatchType => ({
     type: actionTypes.DELETE_PRIVATE_LIST,
 })
 
+export const clearUserDetailsAction = () : UserDispatchType => ({
+    type: actionTypes.CLEAR_USER_DETAILS,
+})
 
 /* ************************* ASYNC ACTIONS ******************** */
 export const signUpAsyncAction = (
@@ -395,12 +398,12 @@ export const getPrivateListDetailsAsyncAction = (userID: string,
 }
 
 export const addRecipeToPrivateListAsyncAction = (userID: string,
-                                                 privateListID: string,
-                                                 recipeID: string,
-                                                 onSuccessCallback: NoArgsCallbackFunction,
-                                                 onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
+                                                  privateListID: string,
+                                                  recipeID: string,
+                                                  onSuccessCallback: NoArgsCallbackFunction,
+                                                  onErrorCallback: CallbackFunction) : AppThunk => dispatch => {
     // Función a ejecutar en caso de éxito
-    const onSuccess: CallbackFunction = () : void => {
+    const onSuccess: NoArgsCallbackFunction = () : void => {
         // Actualiza estado de aplicación
         dispatch(addRecipeToPrivateListAction());
         dispatch(app.actions.loaded());         // Indica operación ya finalizada
