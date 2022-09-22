@@ -43,13 +43,13 @@ const NotificationsList = ({shouldShow, onHideCallback} : Props) => {
             </Offcanvas.Header>
 
             <Offcanvas.Body>
-                {(notifications === null) ?
+                {(notifications?.itemsCount === 0) ?
                     <Alert variant="info">
                         <FormattedMessage id="common.alerts.noResults" />
                     </Alert>
                     :
                 <ListGroup>
-                    {notifications.items.map((notification) =>
+                    {notifications?.items.map((notification) =>
                         <ListGroupItem>
                             <NotificationListItem notification={notification} />
                         </ListGroupItem>

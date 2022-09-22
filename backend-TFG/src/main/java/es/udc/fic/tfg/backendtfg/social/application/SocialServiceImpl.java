@@ -23,7 +23,7 @@ import java.util.*;
 @Service
 @Transactional
 public class SocialServiceImpl implements SocialService {
-    public static final Locale locale = Locale.getDefault();
+    public static final Locale locale = new Locale("es");
     
     /* ******************** TRADUCCIONES DE MENSAJES ******************** */
     public static final String NEW_RECIPE_TITLE         = "social.notification.newRecipe.title";
@@ -75,8 +75,9 @@ public class SocialServiceImpl implements SocialService {
         // Notificar al propietario de la receta de que tiene un comentario nuevo
         try {
             // Crear título y cuerpo del mensaje
+            String recipeName = recipe.getName();
             String title = messageSource.getMessage(NEW_COMMENT_TITLE, null, locale);
-            String message = messageSource.getMessage(NEW_COMMENT_BODY, new Object[] {recipe.getName()}, locale);
+            String message = messageSource.getMessage(NEW_COMMENT_BODY, new Object[] {recipeName}, locale);
             UUID recipeOwnerID = recipe.getAuthor().getId();
         
             // Crear y guardar notificación
