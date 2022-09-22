@@ -100,7 +100,8 @@ const UserRecipes = ({userID}: Props) => {
                 {/* Paginación */}
                 <Row>
                     <Col>
-                        <div className={"d-flex justify-content-center"}>
+                        <br />
+                        <div className={"d-flex"}>
                             <Pager {...pagerProps} />
                         </div>
                     </Col>

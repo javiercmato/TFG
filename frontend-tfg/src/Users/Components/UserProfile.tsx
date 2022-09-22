@@ -204,6 +204,7 @@ const UserProfile = () => {
                         </Row>
                     </Card.Header>
 
+
                     {/* Contenido del perfil */}
                     <Card.Body>
                         <UserRecipes {...userRecipesProps}/>
