@@ -1,6 +1,6 @@
 import {useAppSelector} from "../../store";
 import {ingredientsRedux} from "../Application";
-import {Container, Form, ListGroup, ListGroupItem} from "react-bootstrap";
+import {Form, ListGroup, ListGroupItem} from "react-bootstrap";
 import {ChangeEvent, useEffect} from "react";
 
 
@@ -41,7 +41,6 @@ const IngredientsChecklist = ({ingredientIDList, setIngredientIDList, onCheckIte
     }
 
     return (
-        <Container>
             <ListGroup>
                 {ingredientsSearch.items.map( (item) =>
                     <ListGroupItem key={item.id}>
@@ -53,7 +52,6 @@ const IngredientsChecklist = ({ingredientIDList, setIngredientIDList, onCheckIte
                     </ListGroupItem>
                 )}
             </ListGroup>
-        </Container>
     )
 }
 

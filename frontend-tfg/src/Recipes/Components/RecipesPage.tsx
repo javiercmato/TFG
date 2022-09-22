@@ -9,6 +9,7 @@ import {FindRecipesResults} from "./index";
 import {useEffect, useState} from "react";
 import {WarningModal, WarningModalProps} from "../../App";
 import {recipesRedux} from "../Application";
+import {categories} from './styles/recipesPage';
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
 
@@ -39,14 +40,16 @@ const RecipesPage = () => {
 
     return (
         <>
-            <Row>
-                {/* Formulario para crear y mostrar las categorías */}
-                <Col md={2}>
+            <Row style={categories}>
+                {/* Formulario para crear las categorías */}
+                <Col md={3}>
                     {(isAdminLoggedIn) &&
                         <Row className={"gy-3"}>
                             <CreateCategory />
                         </Row>
                     }
+
+                    <br/>
 
                     <Row>
                         <Button onClick={handleCreateRecipeClick}>
@@ -54,6 +57,7 @@ const RecipesPage = () => {
                         </Button>
                     </Row>
                 </Col>
+
 
                 {/* Buscador de recetas y resultados */}
                 <Col>

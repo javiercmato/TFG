@@ -7,6 +7,7 @@ import {IngredientsChecklist, IngredientsChecklistProps} from "../../Ingredients
 import {defaultSearchCriteria, SearchCriteria} from "../../App";
 import {useAppDispatch} from "../../store";
 import {recipesRedux} from "../Application";
+import {searchButton} from "./styles/findRecipesForm";
 
 
 const DEFAULT_PAGE_SIZE: number = Number(process.env.REACT_APP_DEFAULT_PAGE_SIZE);
@@ -81,14 +82,12 @@ const FindRecipesForm = () => {
                 </Row>
 
                 <Row>
-                    <Container>
-                        <FindIngredients />
-                        <IngredientsChecklist {...ingredientsChecklistProps} />
-                    </Container>
+                    <FindIngredients />
+                    <IngredientsChecklist {...ingredientsChecklistProps} />
                 </Row>
 
                 <Row>
-                    <Button onClick={handleSubmit}>
+                    <Button onClick={handleSubmit} style={searchButton}>
                         <FormattedMessage id="recipes.components.FindRecipesForm.searchButton" />
                     </Button>
                 </Row>
