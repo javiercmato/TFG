@@ -1,4 +1,4 @@
-import {Alert, Badge, Button, Card, Col, Row} from "react-bootstrap";
+import {Alert, Badge, Button, Card, Col, Container, Row} from "react-bootstrap";
 import RecipeSummaryDTO from "../Infrastructure/RecipeSummaryDTO";
 import {recipesRedux} from "../index";
 import {useAppSelector} from "../../store";
@@ -9,6 +9,8 @@ import {GiKnifeFork} from "react-icons/gi";
 import {MdFastfood} from "react-icons/md";
 import {Link} from "react-router-dom";
 import {userRedux} from "../../Users";
+import Picture from "./Picture";
+import {card, cardFooter, cardHeader, category, row} from './styles/recipeCard';
 
 interface Props {
     recipe: RecipeSummaryDTO,
@@ -23,21 +25,21 @@ const RecipeCard = ({recipe, privateListRemoveButton}: Props) => {
     const isRecipeOwner = (userID === recipe.author.userID);
 
     return (
-        <Card>
-            <Card.Header>
-                <Badge>
-                    {categoryName}
-                </Badge>
+        <Card style={card}>
+            <Card.Header style={cardHeader}>
+                <Row>
+                    <Badge style={category}>
+                        {categoryName}
+                    </Badge>
+                </Row>
             </Card.Header>
 
             {(recipe.picture) &&
-                <div className={"w-25"}>
-                    <Card.Img src={recipe.picture} />
-                </div>
+                <Picture b64String={recipe.picture} bigSize={false}/>
             }
 
             <Card.Body>
-                <Row>
+                <Row style={row}>
                     <Col>
                         <h5>{recipe.name}</h5>
                     </Col>
@@ -49,19 +51,19 @@ const RecipeCard = ({recipe, privateListRemoveButton}: Props) => {
                     </Col>
                 </Row>
 
-                <Row>
+                <Row style={row}>
                     <span>{recipe.description}</span>
                 </Row>
 
-                <Row>
+                <Row style={row}>
                     <Col>
-                        <Row>
+                        <Row style={row}>
                             <span>
                                 <FaClock/> {recipe.duration} <FormattedMessage id="common.fields.minutes"/>
                             </span>
                         </Row>
 
-                        <Row>
+                        <Row style={row}>
                             <span>
                                 <MdFastfood/> {recipe.ingredientsCount} <FormattedMessage id="common.fields.ingredients"/>
                             </span>
@@ -69,7 +71,7 @@ const RecipeCard = ({recipe, privateListRemoveButton}: Props) => {
                     </Col>
 
                     <Col>
-                        <Row>
+                        <Row style={row}>
                             <span>
                                 <GiKnifeFork/> {recipe.diners} <FormattedMessage id="common.fields.diners"/>
                             </span>
@@ -78,33 +80,35 @@ const RecipeCard = ({recipe, privateListRemoveButton}: Props) => {
                 </Row>
             </Card.Body>
 
-            <Card.Footer>
-                <Row>
-                    {(recipe.isBannedByAdmin) &&
-                        <Col>
-                            <Alert variant="warning">
-                                <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
-                            </Alert>
-                        </Col>
-                    }
+            <Card.Footer style={cardFooter}>
+                <Container>
+                    <Row style={row}>
+                        {(recipe.isBannedByAdmin) &&
+                            <Col>
+                                <Alert variant="warning">
+                                    <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
+                                </Alert>
+                            </Col>
+                        }
 
-                    {// Se pueden ver los detalles si: no está baneada, es el dueño de la receta o es el administrador
-                    (!recipe.isBannedByAdmin || isRecipeOwner || isAdmin ) &&
-                        <Col>
-                            <Link to={`/recipes/${recipe.id}`}>
-                                <Button>
-                                    <FormattedMessage id="recipes.components.RecipeCard.button.recipeDetails" />
-                                </Button>
-                            </Link>
-                        </Col>
-                    }
+                        {// Se pueden ver los detalles si: no está baneada, es el dueño de la receta o es el administrador
+                        (!recipe.isBannedByAdmin || isRecipeOwner || isAdmin ) &&
+                            <Col>
+                                <Link to={`/recipes/${recipe.id}`}>
+                                    <Button>
+                                        <FormattedMessage id="recipes.components.RecipeCard.button.recipeDetails" />
+                                    </Button>
+                                </Link>
+                            </Col>
+                        }
 
-                    {(privateListRemoveButton) &&
-                        <Col>
-                            {privateListRemoveButton}
-                        </Col>
-                    }
-                </Row>
+                        {(privateListRemoveButton) &&
+                            <Col>
+                                {privateListRemoveButton}
+                            </Col>
+                        }
+                    </Row>
+                </Container>
             </Card.Footer>
         </Card>
     )

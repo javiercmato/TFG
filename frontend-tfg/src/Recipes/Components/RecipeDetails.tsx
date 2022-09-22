@@ -3,7 +3,7 @@ import React, {useEffect, useState} from "react";
 import {ErrorDto, Errors} from "../../App";
 import {useAppDispatch, useAppSelector} from "../../store";
 import {recipesRedux} from "../Application";
-import {Alert, Button, Carousel, Col, Container, Image, Row} from "react-bootstrap";
+import {Alert, Button, Carousel, Col, Container, Row} from "react-bootstrap";
 import {
     RecipeData,
     RecipeDataProps,
@@ -14,12 +14,13 @@ import {
 } from "./index";
 import {userRedux} from "../../Users";
 import {FormattedMessage} from "react-intl";
-import {carouselPicture} from "./styles/recipePicturesForm";
 import {FaTrash} from "react-icons/fa";
 import BanRecipeButton, {BanRecipeButtonProps} from "./BanRecipeButton";
 import AddToPrivateListButton, {AddToPrivateListButtonProps} from "./AddToPrivateListButton";
 import CommentForm from "./Comments/CommentForm";
 import {RateRecipeParamsDTO} from "../Infrastructure";
+import Picture from "./Picture";
+import {RecipePicture} from "../Domain";
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -151,8 +152,10 @@ const RecipeDetails = () => {
                                     {recipeData.author.nickname}
                                 </Link>
                             </Col>
-
                         </Row>
+
+                        <br />
+
                         <Row>
                             <span className="border border-dark">
                                 {recipeData?.description}
@@ -205,17 +208,15 @@ const RecipeDetails = () => {
                         </Alert>
                         :
                         <Carousel>
-                            {recipeData.pictures?.map((picture) =>
+                            {recipeData.pictures?.map((picture: RecipePicture) =>
                                 <Carousel.Item key={picture.order}>
-                                    <Image
-                                        src={picture.pictureData}
-                                        style={carouselPicture}
-                                    />
+                                    <div style={{minHeight: "400px", minWidth: "400px"}}>
+                                        <Picture b64String={picture.pictureData} bigSize={true} />
+                                    </div>
                                 </Carousel.Item>
                             )}
                         </Carousel>
                     }
-
                 </Row>
 
                 {/* Comentarios */}

@@ -12,3 +12,4 @@ export {default as RecipeData} from './RecipeData';
 export {default as RecipeSteps} from './RecipeSteps';
 export {default as RecipeCard} from './RecipeCard';
 export {default as FindRecipesResults} from './FindRecipesResults';
+export {default as Picture} from './Picture';
