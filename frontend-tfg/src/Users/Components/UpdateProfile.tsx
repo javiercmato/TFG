@@ -37,7 +37,7 @@ const UpdateProfile = () => {
 
         if (formRef.checkValidity()) {
             let onSuccess = () => {
-                navigate(`/users/${currentUser?.nickname!}`);
+                navigate(`/users/${currentUser?.userID!}`);
             };
 
             let onError = (error: ErrorDto) => {

@@ -71,7 +71,9 @@ const FindRecipesResults = () => {
 
 
             {/* Paginación */}
-            <Pager {...pagerProps} />
+            <Row>
+                <Pager {...pagerProps} />
+            </Row>
         </Container>
     )
 }
