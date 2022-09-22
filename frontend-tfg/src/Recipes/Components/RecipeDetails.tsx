@@ -21,6 +21,7 @@ import CommentForm from "./Comments/CommentForm";
 import {RateRecipeParamsDTO} from "../Infrastructure";
 import Picture from "./Picture";
 import {RecipePicture} from "../Domain";
+import {container, recipeButtons, row} from './styles/recipeDetails';
 
 const RecipeDetails = () => {
     const navigate = useNavigate();
@@ -111,12 +112,17 @@ const RecipeDetails = () => {
     // Mostrar aviso si la receta está baneada por el administrador
     if (isRecipeBanned) {
         return (
-            <>
-                <BanRecipeButton {...banButtonProps} />
-                <Alert variant="warning">
-                    <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
-                </Alert>
-            </>
+            <Row>
+                <Col md={9}>
+                    <Alert variant="warning">
+                        <FormattedMessage id="recipes.warning.RecipeIsBannedByAdmin" />
+                    </Alert>
+                </Col>
+
+                <Col>
+                    <BanRecipeButton {...banButtonProps} />
+                </Col>
+            </Row>
         )
     }
 
@@ -127,10 +133,10 @@ const RecipeDetails = () => {
                 onCloseCallback={() => setBackendErrors(null)}
             />
 
-            <Container>
+            <Container style={container}>
                 {/* Borrar receta */}
                 {(isRecipeOwner) &&
-                    <Row>
+                    <Row style={row}>
                         <Button variant="danger" onClick={handleDeleteClick}>
                             <span>
                                 <FaTrash />
@@ -141,9 +147,9 @@ const RecipeDetails = () => {
                 }
 
                 {/* Nombre y descripción*/}
-                <Row>
+                <Row style={row}>
                     <Col>
-                        <Row>
+                        <Row style={row}>
                             <Col md={10}>
                                 <h2>{recipeData?.name}</h2>
                             </Col>
@@ -156,22 +162,22 @@ const RecipeDetails = () => {
 
                         <br />
 
-                        <Row>
+                        <Row style={row}>
                             <span className="border border-dark">
                                 {recipeData?.description}
                             </span>
                         </Row>
                     </Col>
 
-                    {/* Botones para editar y banear receta */}
-                    <Col md={(isLoggedIn) ? 3: 0}>
+                    {/* Botones para añadir a lista privada y banear receta */}
+                    <Col md={(isLoggedIn) ? 3: 0} style={recipeButtons}>
                         <BanRecipeButton {...banButtonProps} />
                         <AddToPrivateListButton {...addToListProps} />
                     </Col>
                 </Row>
 
                 {/* Información básica de la receta */}
-                <Row>
+                <Row style={row}>
                     {/* Ingredientes de la receta */}
                     <Col>
                         <h4>
@@ -182,23 +188,27 @@ const RecipeDetails = () => {
 
                     {/* Categoría, datos, votación y añadir a lista privada */}
                     <Col>
-                        <Row>
-                            <RecipeData {...recipeDataProps} />
+                        <Row style={row}>
+                            <RecipeData {...recipeDataProps}/>
                         </Row>
 
                     </Col>
                 </Row>
 
+                <br/>
+
                 {/* Pasos de preparación */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.steps" />
                     </h4>
                     <RecipeSteps {...recipeStepsProps} />
                 </Row>
 
+                <br />
+
                 {/* Fotos de la receta */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.pictures" />
                     </h4>
@@ -219,8 +229,10 @@ const RecipeDetails = () => {
                     }
                 </Row>
 
+                <br />
+
                 {/* Comentarios */}
-                <Row>
+                <Row style={row}>
                     <h4>
                         <FormattedMessage id="common.fields.comments" />
                     </h4>

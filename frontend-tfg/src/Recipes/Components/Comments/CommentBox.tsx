@@ -32,7 +32,7 @@ const CommentBox = ({comment, onErrorCallback}: Props) => {
     }
 
     return (
-        <Container className="my-auto border border-secondary">
+        <Container className="my-auto border border-secondary rounded p-2 m-2">
             <Row>
                 {/* Información del comentario */}
                 <Col md={10}>
