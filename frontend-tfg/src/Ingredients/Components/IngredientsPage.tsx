@@ -61,7 +61,7 @@ const IngredientsPage = () => {
                 }
 
                 {/* Columna para buscar ingredientes */}
-                <Col>
+                <Col className={"mx-4"}>
                     <Row className={"gy-3"}>
                         <h4><FormattedMessage id="ingredients.components.FindIngredients.findIngredients" /></h4>
                         <FindIngredients />
